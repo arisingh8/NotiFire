@@ -5,7 +5,7 @@
 /* 🌎 Color Variables */
 :root {
   --background: #f8f9fa;
-  --foreground: #5d5d5d;
+  --foreground: #171717;
   --primary: #e63946;  /* Light red accent */
   --secondary: #495057; /* Cool gray */
   --muted: #adb5bd;
@@ -78,11 +78,11 @@ a {
   @apply text-[var(--foreground)] hover:text-[var(--primary)] font-medium px-4 py-2;
 }
 
-/* 📌 Header & Footer */
+/* 📌 Header & Footer (Now Skinnier) */
 header {
-  @apply fixed top-0 left-0 w-full bg-white dark:bg-gray-950 shadow-md z-50;
+  @apply fixed top-0 left-0 w-full h-12 bg-white dark:bg-gray-950 shadow-md z-50 flex items-center justify-between px-6;
 }
 
 footer {
-  @apply fixed bottom-0 left-0 w-full bg-white dark:bg-gray-950 border-t border-[var(--border)] py-4 text-center;
+  @apply fixed bottom-0 left-0 w-full h-12 bg-white dark:bg-gray-950 border-t border-[var(--border)] flex items-center justify-center text-sm;
 }

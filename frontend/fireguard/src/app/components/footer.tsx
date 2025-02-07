@@ -6,7 +6,7 @@ const Footer: React.FC = () => {
   return (
     <footer className="fixed bottom-0 left-0 w-full bg-gray-800 text-white py-4 shadow-md z-50">
       <div className="container mx-auto text-center">
-        <p className="text-sm">&copy; {new Date().getFullYear()} Your Company. All rights reserved.</p>
+        <p className="text-sm">&copy; {new Date().getFullYear()} FireGuardAI. All rights reserved.</p>
         
         {/* Navigation Links */}
         <nav className="mt-2 space-x-4">

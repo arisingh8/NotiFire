@@ -1,14 +1,14 @@
-"use client"; // Ensures this component runs only on the client side
+"use client"; // Ensures this runs only on the client side
 
 import React, { useState } from "react";
 import Link from "next/link";
-import { Menu, X } from "lucide-react"; // For menu icons (install "lucide-react" if needed)
+import { Menu, X } from "lucide-react"; // Icons for mobile menu
 
 const Header: React.FC = () => {
   const [menuOpen, setMenuOpen] = useState(false);
 
   return (
-    <header className="bg-gray-900 text-white px-6 py-4">
+    <header className="fixed top-0 left-0 w-full bg-gray-900 text-white px-6 py-4 shadow-md z-50">
       <div className="container mx-auto flex justify-between items-center">
         {/* Logo */}
         <Link href="/" className="text-2xl font-bold">

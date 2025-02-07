@@ -1,15 +1,20 @@
-import React from 'react';
+import React from "react";
 
 const Hero: React.FC = () => {
-    return (
-        <section className="hero-section">
-            <div className="container mx-auto text-center py-20">
-                <h1 className="text-5xl font-bold mb-4">Welcome to FireGuardAI</h1>
-                <p className="text-xl mb-8">Your trusted partner in fire safety and prevention.</p>
-                <a href="#learn-more" className="btn btn-primary">Learn More</a>
-            </div>
-        </section>
-    );
+  return (
+    <section className="w-full bg-gradient-to-r from-blue-500 to-indigo-600 text-white text-center py-24 px-6">
+      <div className="container mx-auto">
+        <h1 className="text-5xl font-extrabold mb-4">Welcome to FireGuardAI</h1>
+        <p className="text-xl mb-6">Your trusted partner in fire safety and prevention.</p>
+        <a
+          href="#learn-more"
+          className="inline-block bg-white text-blue-600 font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-gray-200 transition"
+        >
+          Learn More
+        </a>
+      </div>
+    </section>
+  );
 };
 
 export default Hero;

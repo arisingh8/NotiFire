@@ -1,5 +1,6 @@
 "use client";
 
+import Button from "../components/button";
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { fetchWithAuth } from '@/utils/api';
@@ -54,7 +55,7 @@ const LoginPage = () => {
                     onChange={(e) => setPassword(e.target.value)}
                     required
                 />
-                <button type="submit" style={{ marginTop: '20px' }}>Login</button>
+                <Button type="submit" style={{ marginTop: '20px' }}>Login</Button>
             </form>
         </div>
     );

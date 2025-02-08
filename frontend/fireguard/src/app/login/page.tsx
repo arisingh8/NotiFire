@@ -1,96 +1,126 @@
 "use client";
 
-import Button from "../components/button";
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { fetchWithAuth } from '@/utils/api';
+import Link from 'next/link';
+import Input from '@/app/components/form/input';
+import Button from '@/app/components/button';
 
-const LoginPage = () => {
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const router = useRouter();
+interface LoginForm {
+  email: string;
+  password: string;
+}
 
-    const handleSubmit = async (event: React.FormEvent) => {
-        event.preventDefault();
-        // Add your authentication logic here
-        // For example, you can call an API to authenticate the user
-        // If authentication is successful, redirect to the dashboard
-        router.push('/dashboard');
-    };
+export default function LoginPage() {
+  const [formData, setFormData] = useState<LoginForm>({
+    email: '',
+    password: ''
+  });
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
 
-    // useEffect(() => {
-    //     // Example of fetching protected data
-    //     const fetchData = async () => {
-    //         try {
-    //             const response = await fetchWithAuth('http://localhost:8000/auth/me');
-    //             if (response.ok) {
-    //                 const data = await response.json();
-    //                 console.log('User data:', data);
-    //             }
-    //         } catch (error) {
-    //             console.error('Error:', error);
-    //         }
-    //     };
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    // Clear error when user starts typing
+    if (error) setError(null);
+  };
 
-    //     fetchData();
-    // }, []);
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    setIsLoading(true);
+    setError(null);
 
-    return (
-        <div style={{ 
-            display: 'flex', 
-            justifyContent: 'center', 
-            alignItems: 'center', 
-            height: '95vh',
-            backgroundColor: 'black',
-            overflow: 'hidden',
-            position: 'fixed',
-            width: '100%',
-            top: 0,
-            left: 0
-        }}>
-            <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', width: '300px' }}>
-                <h2 style={{ 
-                    marginBottom: '20px',
-                    fontSize: '24px',
-                    fontWeight: 'bold',
-                    textAlign: 'center', 
-                    color: 'white'
-                }}>Login</h2>
-                <label htmlFor="email">Email</label>
-                <input
-                    type="email"
-                    id="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                    style={{
-                        marginTop: '3px',
-                        marginBottom: '10px',
-                        padding: '10px',
-                        borderRadius: '5px',
-                        border: '1px solid #ccc'
-                    }}
-                />
-                <label htmlFor="password">Password</label>
-            
-                <input
-                    type="password"
-                    id="password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    required
-                    style={{
-                        marginTop: '3px',
-                        marginBottom: '10px',
-                        padding: '10px',
-                        borderRadius: '5px',
-                        border: '1px solid #ccc'
-                    }}
-                />
-                <Button type="submit" style={{ marginTop: '20px' }}>Login</Button>
-            </form>
+    try {
+      // TODO: Add your authentication logic here
+      // const response = await loginUser(formData);
+      
+      // Temporary: just redirect
+      router.push('/dashboard');
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Invalid email or password';
+      setError(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-screen bg-gray-900 flex items-center justify-center px-4">
+      <div className="w-full max-w-md">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-[#ffdbbb] mb-2 font-[family-name:var(--font-eb-garamond)]">
+            Welcome Back
+          </h1>
+          <p className="text-gray-400 font-[family-name:var(--font-eb-garamond)]">
+            Sign in to your account
+          </p>
         </div>
-    );
-};
 
-export default LoginPage;
+        {error && (
+          <div className="mb-6 p-4 bg-red-800/50 text-red-100 rounded-lg text-center">
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="bg-gray-800 rounded-lg shadow-xl p-8 space-y-6">
+          <Input
+            label="Email Address"
+            name="email"
+            type="email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+            placeholder="you@example.com"
+          />
+
+          <Input
+            label="Password"
+            name="password"
+            type="password"
+            value={formData.password}
+            onChange={handleChange}
+            required
+            placeholder="••••••••"
+          />
+
+          <Button
+            type="submit"
+            disabled={isLoading}
+            className={`
+              w-full
+              px-6
+              py-3
+              bg-[#ffdbbb]
+              text-gray-900
+              rounded-lg
+              font-bold
+              transition-opacity
+              ${isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:opacity-90'}
+            `}
+          >
+            {isLoading ? 'Signing in...' : 'Sign In'}
+          </Button>
+
+          <div className="text-center mt-4">
+            <p className="text-gray-400 font-[family-name:var(--font-eb-garamond)]">
+              Don&apos;t have an account?{' '}
+              <Link 
+                href="/signup" 
+                className="text-[#ffdbbb] hover:underline font-[family-name:var(--font-eb-garamond)]"
+              >
+                Sign up here
+              </Link>
+            </p>
+          </div>
+        </form>
+      </div>
+    </div>
+  );
+}

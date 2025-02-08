@@ -184,11 +184,13 @@ def create_at_risk(at_risk: AtRisk):
             "/login", status_code=status.HTTP_303_SEE_OTHER
         )
 
+    latitude, longitude = get_lat_lng_zipc(at_risk.state, at_risk.zipcode)
+
     logging.info(at_risk.model_dump_json())
     # Insert into 'at_risk' table
     result = (
         supabase.table("at_risk")
-        .insert({**at_risk.model_dump(), "user_id": data.user.id})
+        .insert({**at_risk.model_dump(), "user_id": data.user.id, "lat": latitude, "lng": longitude})
         .execute()
     )
     return {"message": "At-risk profile created", "data": result.data}
@@ -202,11 +204,13 @@ def create_dispatcher(dispatcher: Dispatcher):
         return responses.RedirectResponse(
             "/login", status_code=status.HTTP_303_SEE_OTHER
         )
+    
+    latitude, longitude = get_lat_lng_zipc(dispatcher.state, dispatcher.zipcode)
 
     # Insert into 'at_risk' table
     result = (
         supabase.table("dispatchers")
-        .insert({**dispatcher.model_dump(), "user_id": data.user.id})
+        .insert({**dispatcher.model_dump(), "user_id": data.user.id, "lat": latitude, "lng": longitude})
         .execute()
     )
     return {"message": "Dispatcher profile created", "data": result.data}
@@ -221,10 +225,12 @@ def create_responder(responder: FirstResponder):
             "/login", status_code=status.HTTP_303_SEE_OTHER
         )
 
+    latitude, longitude = get_lat_lng_zipc(responder.state, responder.zipcode)
+
     # Insert into 'at_risk' table
     result = (
         supabase.table("first_responders")
-        .insert({**responder.model_dump(), "user_id": data.user.id})
+        .insert({**responder.model_dump(), "user_id": data.user.id, "lat": latitude, "lng": longitude})
         .execute()
     )
     return {"message": "First responder profile created", "data": result.data}
@@ -354,11 +360,26 @@ import time
 geolocator = Nominatim(user_agent="fire_safety_app")
 
 
-def get_lat_lng(street: str, city: str, state: str, zip_code: str):
+def get_lat_lng_full(street: str, city: str, state: str, zip_code: str):
     """
     Converts an address to latitude and longitude using Nominatim Geocoder.
     """
     address = f"{street}, {city}, {state} {zip_code}"
+
+    try:
+        location = geolocator.geocode(address, timeout=10)
+        if location:
+            return location.latitude, location.longitude
+    except Exception as e:
+        print(f"Geocoding failed for {address}: {e}")
+
+    return None, None  # If geolocation fails
+
+def get_lat_lng_zipc(state: str, zip_code: str):
+    """
+    Converts an address to latitude and longitude using Nominatim Geocoder.
+    """
+    address = f"{state} {zip_code}"
 
     try:
         location = geolocator.geocode(address, timeout=10)
@@ -396,8 +417,8 @@ def generate_summary(fire_id: str):
     for person in at_risk_res.data:
         # If lat/lng is missing, use geocoding
         if person.get("lat") is None or person.get("lng") is None:
-            lat, lng = get_lat_lng(
-                person["street"], person["city"], person["state"], person["zip"]
+            lat, lng = get_lat_lng_zipc(
+                person["state"], person["zip"]
             )
             if lat is None or lng is None:
                 continue  # Skip if geocoding fails

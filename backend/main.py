@@ -5,7 +5,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from supabase_client import supabase
 from typing import List, Optional
 from pydantic import BaseModel
-from geopy.distance import geodesic
+from geopy import distance
 import pandas as pd
 import numpy as np
 import os
@@ -297,7 +297,8 @@ def responders_within(fire_id: str, radius_miles: float = 10.0):
 
     for responder in responders:
         if responder["lat"] is not None and responder["lng"] is not None:
-            distance_miles = geodesic((fire_lat, fire_lng), (responder["lat"], responder["lng"])).miles
+            distance_miles = distance.distance((fire_lat, fire_lng), (responder["lat"], responder["lng"])).miles
+            logger.info(f"{responder} {distance_miles}")
             if distance_miles <= radius_miles:
                 responder["distance"] = round(distance_miles, 2)
                 within.append(responder)
@@ -349,11 +350,10 @@ def get_alerts(responder_id: str):
 
 from anthropic import Anthropic
 from fastapi import HTTPException
-from geopy.distance import geodesic
+from geopy import distance
 
 from typing import Optional
 from fastapi import Query
-from geopy.distance import geodesic
 from geopy.geocoders import Nominatim
 import json
 import time
@@ -429,7 +429,7 @@ def generate_summary(fire_id: str):
         # Calculate distance from fire
         person_coords = (person["lat"], person["lng"])
         fire_coords = (f_lat, f_lng)
-        distance_miles = geodesic(person_coords, fire_coords).miles
+        distance_miles = distance.distance(person_coords, fire_coords).miles
 
         # Include only if within 5 miles
         if distance_miles <= 5:
@@ -567,7 +567,7 @@ def generate_summary(fire_id: Optional[str] = Query(None)):
         # Calculate distance from fire
         person_coords = (lat, lng)
         fire_coords = (fire_location["latitude"], fire_location["longitude"])
-        distance_miles = geodesic(person_coords, fire_coords).miles
+        distance_miles = distance.distance(person_coords, fire_coords).miles
 
         # Include only if within 5 miles
         if distance_miles <= 5:

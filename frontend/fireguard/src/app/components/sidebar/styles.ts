@@ -3,7 +3,7 @@ export const SidebarStyles = {
       fixed
       top-0
       h-full
-      w-80
+      w-250
       bg-gray-800
       border-gray-700
       shadow-xl
@@ -33,10 +33,10 @@ export const SidebarStyles = {
       transition-colors
       duration-150
     `,
-    hasChildren: "justify-between",
+    hasChildren: "",
     expanded: "bg-gray-700/50",
     icon: "mr-3 w-5 h-5",
-    label: "flex-1",
+    label: "flex-1 text-left",
     arrow: `
       ml-2
       text-sm

@@ -13,21 +13,24 @@ interface SidebarItem {
   }[];
 }
 
-interface SidebarProps {
-  items: SidebarItem[];
+// Export the interface
+export interface SidebarProps {
+  items?: SidebarItem[];
+  children?: React.ReactNode;
   title?: string;
   isOpen?: boolean;
   onClose?: () => void;
-  position?: 'left' | 'right';
+  side?: 'left' | 'right';
   className?: string;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
-  items,
+  items = [],
+  children,
   title,
   isOpen = true,
   onClose,
-  position = 'left',
+  side = 'left',
   className = ''
 }) => {
   const [expandedItems, setExpandedItems] = useState<Set<string>>(new Set());
@@ -49,7 +52,7 @@ const Sidebar: React.FC<SidebarProps> = ({
       className={`
         ${SidebarStyles.container}
         ${isOpen ? SidebarStyles.open : SidebarStyles.closed}
-        ${SidebarStyles[`position_${position}`]}
+        ${side === 'right' ? SidebarStyles.position_right : SidebarStyles.position_left}
         ${className}
       `}
     >
@@ -67,49 +70,55 @@ const Sidebar: React.FC<SidebarProps> = ({
         )}
       </div>
 
-      {/* Items */}
+      {/* Content */}
       <div className={SidebarStyles.content}>
-        {items.map((item) => (
-          <div key={item.label} className={SidebarStyles.itemContainer}>
-            <button
-              onClick={() => {
-                if (item.items) {
-                  toggleItem(item.label);
-                } else {
-                  item.onClick?.();
-                }
-              }}
-              className={`
-                ${SidebarStyles.item}
-                ${item.items ? SidebarStyles.hasChildren : ''}
-                ${expandedItems.has(item.label) ? SidebarStyles.expanded : ''}
-              `}
-            >
-              {item.icon && (
-                <span className={SidebarStyles.icon}>{item.icon}</span>
-              )}
-              <span className={SidebarStyles.label}>{item.label}</span>
-              {item.items && (
-                <span className={SidebarStyles.arrow}>▼</span>
-              )}
-            </button>
+        {children ? (
+          // Render children if provided
+          children
+        ) : (
+          // Otherwise render items list
+          items.map((item) => (
+            <div key={item.label} className={SidebarStyles.itemContainer}>
+              <button
+                onClick={() => {
+                  if (item.items) {
+                    toggleItem(item.label);
+                  } else {
+                    item.onClick?.();
+                  }
+                }}
+                className={`
+                  ${SidebarStyles.item}
+                  ${item.items ? SidebarStyles.hasChildren : ''}
+                  ${expandedItems.has(item.label) ? SidebarStyles.expanded : ''}
+                `}
+              >
+                {item.icon && (
+                  <span className={SidebarStyles.icon}>{item.icon}</span>
+                )}
+                <span className={SidebarStyles.label}>{item.label}</span>
+                {item.items && (
+                  <span className={SidebarStyles.arrow}>▼</span>
+                )}
+              </button>
 
-            {/* Nested Items */}
-            {item.items && expandedItems.has(item.label) && (
-              <div className={SidebarStyles.nestedItems}>
-                {item.items.map((nestedItem) => (
-                  <button
-                    key={nestedItem.label}
-                    onClick={nestedItem.onClick}
-                    className={SidebarStyles.nestedItem}
-                  >
-                    {nestedItem.label}
-                  </button>
-                ))}
-              </div>
-            )}
-          </div>
-        ))}
+              {/* Nested Items */}
+              {item.items && expandedItems.has(item.label) && (
+                <div className={SidebarStyles.nestedItems}>
+                  {item.items.map((nestedItem) => (
+                    <button
+                      key={nestedItem.label}
+                      onClick={nestedItem.onClick}
+                      className={SidebarStyles.nestedItem}
+                    >
+                      {nestedItem.label}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          ))
+        )}
       </div>
     </div>
   );

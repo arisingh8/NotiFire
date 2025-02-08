@@ -4,6 +4,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import { MapContainer, TileLayer, Circle, Marker, Popup, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
+import { MapStyles } from './styles';
 
 interface MapPoint {
   id: string;
@@ -78,67 +79,74 @@ const Map: React.FC<MapProps> = ({
     });
   };
 
-  if (!isLoaded) return <div>Loading map...</div>;
+  if (!isLoaded) return <div className={MapStyles.loading}>Loading map...</div>;
 
   return (
-    <MapContainer center={center} zoom={10} style={{ height: '500px', width: '100%' }} ref={mapRef}>
-      <ChangeView center={center} />
+    <div className={MapStyles.container}>
+      <MapContainer 
+        center={center} 
+        zoom={10} 
+        className={MapStyles.map}
+        ref={mapRef}
+      >
+        <ChangeView center={center} />
 
-      <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-      />
+        <TileLayer
+          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        />
 
-      {/* Radius Circle */}
-      <Circle
-        center={center}
-        radius={radiusInMeters}
-        pathOptions={{
-          color: '#ffdbbb',
-          fillColor: '#ffdbbb',
-          fillOpacity: 0.1,
-        }}
-      />
-
-      {/* Map Points */}
-      {points.map((point) => (
-        <Marker
-          key={point.id}
-          position={[point.lat, point.lng]}
-          icon={createCustomIcon(point.type, point.details?.severity)}
-          eventHandlers={{
-            click: () => onMarkerClick?.(point),
+        {/* Radius Circle */}
+        <Circle
+          center={center}
+          radius={radiusInMeters}
+          pathOptions={{
+            color: '#ffdbbb',
+            fillColor: '#ffdbbb',
+            fillOpacity: 0.1,
           }}
-        >
-          {point.details && (
-            <Popup>
-              <div>
-                <h3 style={{ margin: '0', fontWeight: 'bold' }}>{point.details.title}</h3>
-                <p style={{ margin: '5px 0' }}>{point.details.description}</p>
-                {point.details.severity && (
-                  <span
-                    style={{
-                      display: 'inline-block',
-                      padding: '2px 6px',
-                      borderRadius: '5px',
-                      backgroundColor:
-                        point.details.severity === 'high' ? '#ef4444' :
-                        point.details.severity === 'medium' ? '#f97316' :
-                        '#eab308',
-                      color: '#fff',
-                      fontSize: '12px',
-                      fontWeight: 'bold',
-                    }}
-                  >
-                    {point.details.severity.toUpperCase()}
-                  </span>
-                )}
-              </div>
-            </Popup>
-          )}
-        </Marker>
-      ))}
-    </MapContainer>
+        />
+
+        {/* Map Points */}
+        {points.map((point) => (
+          <Marker
+            key={point.id}
+            position={[point.lat, point.lng]}
+            icon={createCustomIcon(point.type, point.details?.severity)}
+            eventHandlers={{
+              click: () => onMarkerClick?.(point),
+            }}
+          >
+            {point.details && (
+              <Popup>
+                <div>
+                  <h3 style={{ margin: '0', fontWeight: 'bold' }}>{point.details.title}</h3>
+                  <p style={{ margin: '5px 0' }}>{point.details.description}</p>
+                  {point.details.severity && (
+                    <span
+                      style={{
+                        display: 'inline-block',
+                        padding: '2px 6px',
+                        borderRadius: '5px',
+                        backgroundColor:
+                          point.details.severity === 'high' ? '#ef4444' :
+                          point.details.severity === 'medium' ? '#f97316' :
+                          '#eab308',
+                        color: '#fff',
+                        fontSize: '12px',
+                        fontWeight: 'bold',
+                      }}
+                    >
+                      {point.details.severity.toUpperCase()}
+                    </span>
+                  )}
+                </div>
+              </Popup>
+            )}
+          </Marker>
+        ))}
+      </MapContainer>
+    </div>
   );
 };
 

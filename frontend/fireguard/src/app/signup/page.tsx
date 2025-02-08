@@ -54,17 +54,26 @@ export default function SignUpPage() {
     setError(null);
 
     try {
-      // TODO: Add your registration logic here
-      // const response = await registerUser(formData);
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
-      // Temporary: just redirect
+      const mockResponse = {
+          ok: true,
+          data: { message: 'Form submitted successfully' }
+      };
+
+      if (!mockResponse.ok) {
+          throw new Error('Submission failed');
+      }
+
       router.push('/role');
-    } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : 'Failed to create account';
+  } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to submit form';
+      console.error('Submission error:', errorMessage);
       setError(errorMessage);
-    } finally {
+  } finally {
       setIsLoading(false);
-    }
+  }
+
   };
 
   return (

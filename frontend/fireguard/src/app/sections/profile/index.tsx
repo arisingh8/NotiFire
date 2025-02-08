@@ -1,4 +1,3 @@
-import { Button } from 'antd';
 import { useState, useEffect } from 'react';
 
 interface UserProfile {
@@ -11,6 +10,7 @@ interface UserProfile {
   zipCode: string;
   hasDisability: boolean;
   disability: string;
+  role: string;
 }
 
 export const Profile = () => {
@@ -31,6 +31,7 @@ export const Profile = () => {
           zipCode: '12345',
           hasDisability: false,
           disability: '',
+          role: 'User',
         };
         setProfile(userData);
         setFormData(userData);
@@ -80,170 +81,168 @@ export const Profile = () => {
   }
 
   return (
-    <div className="max-w-2xl mx-auto p-6">
-      <div className="bg-grey-800 rounded-lg shadow-lg p-6">
-        <div className="flex items-center space-x-4 mb-6">
+    <div className="max-w-2xl mx-auto p-6 bg-gray-100">
+      <div className="bg-white rounded-lg shadow-lg p-6">
+        <div className="flex items-center gap-4 mb-6">
           <div className="w-16 h-16 bg-gray-200 rounded-full flex items-center justify-center">
             <span className="text-2xl">👤</span>
           </div>
           <div>
-            <h2 className="text-xl font-bold text-white">{profile.name}</h2>
-            
+            <h2 className="text-xl font-bold text-gray-900">{profile.name}</h2>
+            <p className="text-gray-600">{profile.role}</p>
           </div>
         </div>
         
         {isEditing ? (
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <div>
-              <label className="block text-sm font-medium text-white-700 mb-1">Name</label>
-              <input
-                type="text"
-                name="name"
-                value={formData?.name || ''}
-                placeholder={formData?.name}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md placeholder-black-500"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-white-700 mb-1">Email</label>
-              <input
-                type="email"
-                name="email"
-                value={formData?.email || ''}
-                placeholder={formData?.email}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md placeholder-black-500"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-white-700 mb-1">Phone</label>
-              <input
-                type="tel"
-                name="phone"
-                value={formData?.phone || ''}
-                placeholder={formData?.phone}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md placeholder-black-500"
-                required
-              />
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-white-700 mb-1">Street</label>
-              <input
-                type="text"
-                name="street"
-                value={formData?.street || ''}
-                placeholder={formData?.street}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md placeholder-black-500"
-                required
-              />
-            </div>
+          <form onSubmit={handleSubmit}>
             <div className="grid grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-white-700 mb-1">City</label>
+              <div className="form-group">
+                <label htmlFor="name" className="block text-sm font-medium text-gray-700">Name</label>
                 <input
                   type="text"
+                  id="name"
+                  name="name"
+                  value={formData?.name || ''}
+                  placeholder={formData?.name}
+                  onChange={handleInputChange}
+                  required
+                  className="mt-1 block w-full rounded-md border-gray-300"
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700">Email</label>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  value={formData?.email || ''}
+                  placeholder={formData?.email}
+                  onChange={handleInputChange}
+                  required
+                  className="mt-1 block w-full rounded-md border-gray-300"
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="phone" className="block text-sm font-medium text-gray-700">Phone</label>
+                <input
+                  type="tel"
+                  id="phone"
+                  name="phone"
+                  value={formData?.phone || ''}
+                  placeholder={formData?.phone}
+                  onChange={handleInputChange}
+                  required
+                  className="mt-1 block w-full rounded-md border-gray-300"
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="street" className="block text-sm font-medium text-gray-700">Street</label>
+                <input
+                  type="text"
+                  id="street"
+                  name="street"
+                  value={formData?.street || ''}
+                  placeholder={formData?.street}
+                  onChange={handleInputChange}
+                  required
+                  className="mt-1 block w-full rounded-md border-gray-300"
+                />
+              </div>
+              <div className="form-group">
+                <label htmlFor="city" className="block text-sm font-medium text-gray-700">City</label>
+                <input
+                  type="text"
+                  id="city"
                   name="city"
                   value={formData?.city || ''}
                   placeholder={formData?.city}
                   onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md placeholder-black-500"
                   required
+                  className="mt-1 block w-full rounded-md border-gray-300"
                 />
               </div>
-              <div>
-                <label className="block text-sm font-medium text-white-700 mb-1">State</label>
+              <div className="form-group">
+                <label htmlFor="state" className="block text-sm font-medium text-gray-700">State</label>
                 <input
                   type="text"
+                  id="state"
                   name="state"
                   value={formData?.state || ''}
                   placeholder={formData?.state}
                   onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md placeholder-black-500"
                   required
+                  className="mt-1 block w-full rounded-md border-gray-300"
                 />
               </div>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-white-700 mb-1">Zip Code</label>
-              <input
-                type="text"
-                name="zipCode"
-                value={formData?.zipCode || ''}
-                placeholder={formData?.zipCode}
-                onChange={handleInputChange}
-                className="w-full px-3 py-2 border border-gray-300 rounded-md placeholder-black"
-                required
-              />
-            </div>
-            <div>
-              <label className="flex items-center space-x-2">
+              <div className="form-group">
+                <label htmlFor="zipCode" className="block text-sm font-medium text-gray-700">Zip Code</label>
                 <input
-                  type="checkbox"
-                  name="hasDisability"
-                  checked={formData?.hasDisability || false}
+                  type="text"
+                  id="zipCode"
+                  name="zipCode"
+                  value={formData?.zipCode || ''}
+                  placeholder={formData?.zipCode}
                   onChange={handleInputChange}
-                  className="rounded border-gray-300"
-                />
-                <span className="text-sm font-medium text-white-700">Do you have a disability?</span>
-              </label>
-            </div>
-            {formData?.hasDisability && (
-              <div>
-                <label className="block text-sm font-medium text-white-700 mb-1">Type of Disability</label>
-                <select
-                  name="disability"
-                  value={formData?.disability || ''}
-                  onChange={handleInputChange}
-                  className="w-full px-3 py-2 border border-gray-300 rounded-md"
                   required
-                >
-                  <option value="">Select a disability</option>
-                  <option value="mobility">Mobility Impairment</option>
-                  <option value="visual">Visual Impairment</option>
-                  <option value="hearing">Hearing Impairment</option>
-                  <option value="cognitive">Cognitive Disability</option>
-                  <option value="other">Other</option>
-                </select>
+                  className="mt-1 block w-full rounded-md border-gray-300"
+                />
               </div>
-            )}
-            <div className="flex space-x-2">
-              <button
-                type="submit"
-                className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-              >
+              <div className="form-group">
+                <label htmlFor="hasDisability" className="block text-sm font-medium text-gray-700">
+                  <input
+                    type="checkbox"
+                    id="hasDisability"
+                    name="hasDisability"
+                    checked={formData?.hasDisability || false}
+                    onChange={handleInputChange}
+                    className="mr-2"
+                  />
+                  <span>Do you have a disability?</span>
+                </label>
+              </div>
+              {formData?.hasDisability && (
+                <div className="form-group">
+                  <label htmlFor="disability" className="block text-sm font-medium text-gray-700">Type of Disability</label>
+                  <select
+                    id="disability"
+                    name="disability"
+                    value={formData?.disability || ''}
+                    onChange={handleInputChange}
+                    className="mt-1 block w-full rounded-md border-gray-300"
+                    required
+                  >
+                    <option value="">Select a disability</option>
+                    <option value="mobility">Mobility Impairment</option>
+                    <option value="visual">Visual Impairment</option>
+                    <option value="hearing">Hearing Impairment</option>
+                    <option value="cognitive">Cognitive Disability</option>
+                    <option value="other">Other</option>
+                  </select>
+                </div>
+              )}
+            </div>
+            <div className="mt-4">
+              <button type="submit" className="px-4 py-2 bg-blue-500 text-white rounded-md">
                 Save Changes
               </button>
-              <button
-                type="button"
-                onClick={() => setIsEditing(false)}
-                className="bg-gray-200 text-gray-700 px-4 py-2 rounded-md hover:bg-gray-300"
-              >
+              <button type="button" onClick={() => setIsEditing(false)} className="px-4 py-2 bg-gray-500 text-white rounded-md ml-2">
                 Cancel
               </button>
             </div>
           </form>
         ) : (
-          <div className="space-y-4">
-            <div><span className="font-medium text-white-900">Email:   </span><span className="text-white-800">{profile.email}</span></div>
-            <div><span className="font-medium text-white-900">Phone:   </span><span className="text-white-800">{profile.phone}</span></div>
-            <div><span className="font-medium text-white-900">Address:   </span>
-              <div className="ml-4 text-white-800"> {profile.street} &nbsp; {profile.city}, &nbsp; {profile.state} &nbsp; {profile.zipCode}
-              </div>
-            </div>
+          <div>
+            <div className="text-gray-700">Email: {profile.email}</div>
+            <div className="text-gray-700">Phone: {profile.phone}</div>
+            <div className="text-gray-700">Address: {profile.street}, {profile.city}, {profile.state} {profile.zipCode}</div>
             {profile.hasDisability && (
-              <div><span className="font-medium text-gray-900">Disability: </span><span className="text-gray-800">{profile.disability}</span></div>
+              <div className="text-gray-700">Disability: {profile.disability}</div>
             )}
-            <button
-              onClick={() => setIsEditing(true)}
-              className="bg-blue-500 text-white px-4 py-2 rounded-md hover:bg-blue-600"
-            >
-              Edit Profile
-            </button>
+            <div className="mt-4">
+              <button type="button" onClick={() => setIsEditing(true)} className="px-4 py-2 bg-blue-500 text-white rounded-md">
+                Edit Profile
+              </button>
+            </div>
           </div>
         )}
       </div>

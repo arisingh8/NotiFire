@@ -7,7 +7,7 @@ export const Container = styled.div`
 `;
 
 export const Card = styled.div`
-  background-color: var(--your-bg-color); /* Replace with your project's background color */
+  background-color: bg-gray-200; 
   border-radius: 0.5rem; /* rounded-lg */
   box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1); /* shadow-lg */
   padding: 1.5rem; /* p-6 */

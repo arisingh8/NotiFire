@@ -1,34 +1,23 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import { SelectStyles } from './styles';
-import Dropdown from '@/app/components/dropdown';
 
 interface Option {
   value: string;
   label: string;
 }
 
-// Create a type for our synthetic event that matches the shape we need
-type SelectChangeEvent = {
-  target: {
-    name: string;
-    value: string;
-    type?: string;
-  };
-};
-
 interface SelectProps {
   label: string;
   options: Option[];
   value: string;
-  onChange: (e: SelectChangeEvent) => void;
+  onChange: (e: { target: { name: string; value: string } }) => void;
   name: string;
   error?: string;
   helperText?: string;
   required?: boolean;
   placeholder?: string;
-  className?: string;
 }
 
 const Select: React.FC<SelectProps> = ({
@@ -40,25 +29,67 @@ const Select: React.FC<SelectProps> = ({
   error,
   helperText,
   required = false,
-  placeholder = 'Select an option',
-  className = ''
+  placeholder = 'Select an option'
 }) => {
   const id = React.useId();
+  const [searchTerm, setSearchTerm] = useState('');
+  const [isOpen, setIsOpen] = useState(false);
+
+  const filteredOptions = options.filter(option =>
+    option.label.toLowerCase().includes(searchTerm.toLowerCase())
+  );
 
   const handleSelect = (selectedValue: string) => {
-    // Create a synthetic event object
-    const syntheticEvent: SelectChangeEvent = {
+    onChange({
       target: {
         name,
-        value: selectedValue,
-        type: 'select'
+        value: selectedValue
       }
-    };
-
-    onChange(syntheticEvent);
+    });
+    setSearchTerm('');
+    setIsOpen(false);
   };
 
-  const selectedLabel = options.find(opt => opt.value === value)?.label || placeholder;
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newValue = e.target.value;
+    setSearchTerm(newValue);
+    setIsOpen(true);
+    
+    // Clear the selected value whenever the input changes
+    onChange({
+      target: {
+        name,
+        value: ''
+      }
+    });
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === 'Backspace' && value) {
+      // Clear both the search term and the selected value
+      setSearchTerm('');
+      onChange({
+        target: {
+          name,
+          value: ''
+        }
+      });
+    }
+  };
+
+  const handleBlur = () => {
+    setTimeout(() => {
+      setIsOpen(false);
+      if (!value) {
+        setSearchTerm('');
+      }
+    }, 200);
+  };
+
+  // Get the display value
+  const displayValue = value 
+    ? options.find(opt => opt.value === value)?.label 
+    : searchTerm;
 
   return (
     <div className={SelectStyles.container}>
@@ -70,22 +101,33 @@ const Select: React.FC<SelectProps> = ({
         {required && <span className={SelectStyles.required}>*</span>}
       </label>
 
-      <Dropdown
-        trigger={
-          <div className={`${SelectStyles.select} ${error ? SelectStyles.error : ''}`}>
-            <span className={value ? '' : SelectStyles.placeholder}>
-              {selectedLabel}
-            </span>
-            <span className={SelectStyles.arrow}>▼</span>
+      <div className="relative">
+        <input
+          type="text"
+          value={displayValue || ''}
+          onChange={handleInputChange}
+          onKeyDown={handleKeyDown}
+          onFocus={() => setIsOpen(true)}
+          onBlur={handleBlur}
+          placeholder={placeholder}
+          className={`${SelectStyles.input} ${error ? SelectStyles.error : ''}`}
+        />
+        
+        {isOpen && filteredOptions.length > 0 && (
+          <div className={SelectStyles.dropdown}>
+            {filteredOptions.map(option => (
+              <button
+                key={option.value}
+                type="button"
+                onClick={() => handleSelect(option.value)}
+                className={SelectStyles.option}
+              >
+                {option.label}
+              </button>
+            ))}
           </div>
-        }
-        items={options.map(option => ({
-          label: option.label,
-          value: option.value,
-          onClick: () => handleSelect(option.value)
-        }))}
-        className={className}
-      />
+        )}
+      </div>
 
       {error && (
         <span 

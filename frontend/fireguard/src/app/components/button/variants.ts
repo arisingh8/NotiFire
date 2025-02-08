@@ -13,10 +13,11 @@ export const buttonVariants = ({ variant, size }: ButtonVariantProps): string =>
     secondary: 'bg-gray-200 hover:bg-gray-300 text-gray-800 focus:ring-gray-500',
     outline: 'border-2 border-[#ffdbbb] text-[#ffdbbb] hover:bg-[#ffdbbb] hover:text-gray-800 focus:ring-orange-500',
     ghost: 'text-[#ffdbbb] hover:bg-[#ffdbbb]/10 focus:ring-orange-500',
-    'role-resident': 'bg-blue-500 hover:bg-blue-600 text-white focus:ring-blue-500',
-    'role-manager': 'bg-green-500 hover:bg-green-600 text-white focus:ring-green-500',
-    'role-firefighter': 'bg-red-500 hover:bg-red-600 text-white focus:ring-red-500',
+    'role-atrisk': 'bg-red-500 hover:bg-red-600 text-white focus:ring-red-500',
+    'role-dispatcher': 'bg-orange-500 hover:bg-orange-600 text-white focus:ring-orange-500',
+    'role-firstresponder': 'bg-yellow-700 hover:bg-yellow-800 text-white focus:ring-yellow-700',
   };
+
 
   const sizes = {
     small: 'px-3 py-1.5 text-sm',

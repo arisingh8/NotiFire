@@ -5,9 +5,9 @@ export type ButtonVariant =
   | 'secondary' 
   | 'outline' 
   | 'ghost'
-  | 'role-resident'    // New role variants
-  | 'role-manager'
-  | 'role-firefighter';
+  | 'role-atrisk'    // New role variants
+  | 'role-dispatcher'
+  | 'role-firstresponder';
 
 export type ButtonSize = 'small' | 'medium' | 'large';
 

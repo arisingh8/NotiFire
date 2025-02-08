@@ -40,21 +40,20 @@ export default function LoginPage() {
     setError(null);
 
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // TODO: Add your authentication logic here
+      // const response = await loginUser(formData);
+      console.log(JSON.stringify(formData))
+      const response = await fetch("http://127.0.0.1:8000/auth/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "text/plain",
+        },
+        body: JSON.stringify(formData)
+      })
       
-      const mockResponse = {
-          ok: true,
-          data: { message: 'Form submitted successfully' }
-      };
-
-      if (!mockResponse.ok) {
-          throw new Error('Submission failed');
-      }
-
       router.push('/dispatcher/dashboard');
-  } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to submit form';
-      console.error('Submission error:', errorMessage);
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Invalid email or password';
       setError(errorMessage);
   } finally {
       setIsLoading(false);

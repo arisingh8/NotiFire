@@ -138,16 +138,13 @@ export default function FirstResponderForm() {
     setSubmitError(null);
 
     try {
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        
-        const mockResponse = {
-            ok: true,
-            data: { message: 'Form submitted successfully' }
-        };
-
-        if (!mockResponse.ok) {
-            throw new Error('Submission failed');
-        }
+      const response = await fetch('/onboard/responder', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(formData)
+      });
 
         setSubmitStatus('success');
         router.push('/firstresponder/dashboard');

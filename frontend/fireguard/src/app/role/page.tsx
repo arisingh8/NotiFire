@@ -1,17 +1,27 @@
 'use client';
 
 import { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Modal from '@/app/components/modal';
 import Button from '@/app/components/button';
 import Header from '@/app/sections/header';
 
 export default function RolePage() {
+  const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(true);
 
   const handleRoleSelect = (role: string) => {
     console.log(`Selected role: ${role}`);
+    if (role === 'atrisk') {
+      router.push('/resident');
+    } else if (role === 'dispatcher') {
+      router.push('/dispatcher');
+    } else if (role === 'firstresponder') {
+      router.push('/firstresponder');
+    }
     setIsModalOpen(false);
   };
+
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-900">

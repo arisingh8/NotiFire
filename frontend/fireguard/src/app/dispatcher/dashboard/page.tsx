@@ -2,6 +2,7 @@
 
 import React from 'react';
 import Map from '@/app/components/map';
+import Collapser from '@/app/components/collapser';
 import { useRouter } from 'next/navigation';
 
 // Define the MapPoint type to match the one in Map component
@@ -76,6 +77,45 @@ export default function DispatcherDashboard() {
                         />
                     </div>
                 </div>
+                <div className="space-y-4">
+                    <Collapser title="Active Alerts">
+                        <div className="space-y-4">
+                            <div className="p-4 bg-red-900/20 rounded-lg">
+                                <h3 className="text-red-400 font-bold mb-2">High Priority</h3>
+                                <p className="text-[#ffdbbb] font-[family-name:var(--font-eb-garamond)]">
+                                    Active fire reported in your area. Please stay alert and follow evacuation orders if issued.
+                                </p>
+                            </div>
+                        </div>
+                    </Collapser>
+
+                    <Collapser title="Recent Notifications">
+                        <div className="space-y-4">
+                            <div className="text-[#ffdbbb] font-[family-name:var(--font-eb-garamond)]">
+                                <p className="mb-2">
+                                    <span className="font-bold">2:15 PM:</span> New fire unit deployed to your area
+                                </p>
+                                <p className="mb-2">
+                                    <span className="font-bold">1:30 PM:</span> Weather warning: High winds expected
+                                </p>
+                                <p>
+                                    <span className="font-bold">12:45 PM:</span> Daily fire risk assessment updated
+                                </p>
+                            </div>
+                        </div>
+                    </Collapser>
+
+                    <Collapser title="Emergency Contacts">
+                        <div className="space-y-4">
+                            <div className="text-[#ffdbbb] font-[family-name:var(--font-eb-garamond)]">
+                                <p className="mb-2">Emergency: 911</p>
+                                <p className="mb-2">Local Fire Department: (555) 123-4567</p>
+                                <p>Community Emergency Line: (555) 987-6543</p>
+                            </div>
+                        </div>
+                    </Collapser>
+                </div>
+
             </div>
         </div>
     )

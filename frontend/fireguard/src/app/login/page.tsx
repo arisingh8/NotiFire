@@ -40,25 +40,49 @@ export default function LoginPage() {
     setError(null);
 
     try {
-      // TODO: Add your authentication logic here
-      // const response = await loginUser(formData);
-      console.log(JSON.stringify(formData))
-      const response = await fetch("http://127.0.0.1:8000/auth/login", {
+      const loginResponse = await fetch("http://127.0.0.1:8000/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "text/plain",
         },
         body: JSON.stringify(formData)
-      })
-      
-      router.push('/dispatcher/dashboard');
+      });
+
+      if (!loginResponse.ok) {
+        throw new Error('Login failed');
+      }
+
+      // Get user role
+      const roleResponse = await fetch("http://127.0.0.1:8000/user/role", {
+        method: "GET",
+      });
+
+      if (!roleResponse.ok) {
+        throw new Error('Failed to fetch user role');
+      }
+
+      const { role } = await roleResponse.json();
+
+      // Redirect based on role
+      switch (role) {
+        case 'dispatcher':
+          router.push('/dispatcher/dashboard');
+          break;
+        case 'at_risk':
+          router.push('/resident/dashboard');
+          break;
+        case 'first_responder':
+          router.push('/firstresponder/dashboard');
+          break;
+        default:
+          throw new Error('Invalid user role');
+      }
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : 'Invalid email or password';
       setError(errorMessage);
-  } finally {
+    } finally {
       setIsLoading(false);
-  }
-
+    }
   };
 
   return (

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Map from '@/app/components/map';
 import Sidebar from '@/app/components/sidebar';
 //import { useRouter } from 'next/navigation';
@@ -18,45 +18,59 @@ interface MapPoint {
     };
 }
 
+interface FireData {
+    id: string;
+    latitude: number;
+    longitude: number;
+    confidence: number;
+  }
+
 export default function DispatcherDashboard() {
     const center: [number, number] = [34.0522, -118.2437]; // Los Angeles coordinates
-    const samplePoints = [
-        {
-            id: '1',
-            lat: 34.0522,
-            lng: -118.2437,
-            type: 'fire' as const,
-            details: {
-                title: 'Active Fire',
-                description: 'Large brush fire in downtown area',
-                severity: 'high' as const
-            }
-        },
-        {
-            id: '2',
-            lat: 34.0622,
-            lng: -118.2537,
-            type: 'unit' as const,
-            details: {
-                title: 'Fire Unit 7',
-                description: 'Responding unit'
-            }
-        },
-        {
-            id: '3',
-            lat: 34.0422,
-            lng: -118.2337,
-            type: 'resident' as const,
-            details: {
-                title: 'Residential Area',
-                description: 'High-density housing'
-            }
-        }
-    ];
-
     const [showAlerts, setShowAlerts] = useState(false);
     const [showNotifications, setShowNotifications] = useState(false);
     const [showContacts, setShowContacts] = useState(false);
+    const [fireData, setFireData] = useState<MapPoint[]>([]);
+
+    useEffect(() => {
+    const fetchFireData = async () => {
+      try {
+        console.log("Fetching fire data...");
+        const response = await fetch("http://127.0.0.1:8000/fires");
+  
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+  
+        const data = await response.json();
+        console.log("Fetched fire data:", data);
+  
+        const formattedFires = data.map((fire: FireData) => ({
+          id: fire.id,
+          lat: fire.latitude,
+          lng: fire.longitude,
+          type: "fire" as const,
+          details: {
+            title: `Fire ${fire.id.substring(0, 4)}`,
+            description: `Confidence: ${fire.confidence}%`,
+            severity: fire.confidence >= 80 
+              ? "high" 
+              : fire.confidence >= 50 
+              ? "medium" 
+              : "low"
+          },
+        }));
+  
+        console.log("Formatted fire data for map:", formattedFires);
+  
+        setFireData(formattedFires);
+      } catch (error) {
+        console.error("Error fetching fire data:", error);
+      }
+    };
+  
+    fetchFireData();
+  }, []);
 
     const handleMarkerClick = (point: MapPoint) => {
         console.log('Marker clicked:', point);
@@ -68,7 +82,7 @@ export default function DispatcherDashboard() {
             <div className="absolute inset-0 w-full h-full">
                 <Map
                     center={center}
-                    points={samplePoints}
+                    points={fireData}
                     radius={50}
                     onMarkerClick={handleMarkerClick}
                 />

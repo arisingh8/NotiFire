@@ -8,6 +8,14 @@ import Map from '@/app/components/map';
 import Alert from '@/app/components/alert';
 import Layout from '@/app/components/layout';
 
+// Add this interface for the API response
+interface FireData {
+  id: string;
+  latitude: number;
+  longitude: number;
+  confidence: number;
+}
+
 // Define the MapPoint type to match the one in Map component
 interface MapPoint {
   id: string;
@@ -48,23 +56,25 @@ export default function TestPage() {
         }
   
         const data = await response.json();
-        console.log("Fetched fire data:", data); // ✅ Log raw API response
+        console.log("Fetched fire data:", data);
   
-        const formattedFires = data.map((fire: any) => ({
+        const formattedFires = data.map((fire: FireData) => ({
           id: fire.id,
           lat: fire.latitude,
           lng: fire.longitude,
-          type: "fire",
+          type: "fire" as const,
           details: {
             title: `Fire ${fire.id.substring(0, 4)}`,
             description: `Confidence: ${fire.confidence}%`,
-            severity:
-              fire.confidence >= 80 ? "high" :
-              fire.confidence >= 50 ? "medium" : "low",
+            severity: fire.confidence >= 80 
+              ? "high" 
+              : fire.confidence >= 50 
+              ? "medium" 
+              : "low"
           },
         }));
   
-        console.log("Formatted fire data for map:", formattedFires); // ✅ Log processed data
+        console.log("Formatted fire data for map:", formattedFires);
   
         setFireData(formattedFires);
       } catch (error) {

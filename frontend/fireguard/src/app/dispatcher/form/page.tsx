@@ -143,7 +143,7 @@ export default function DispatcherForm() {
         setSubmitStatus('idle');
         setSubmitError(null);
         try {
-            const response = await fetch('/onboard/dispatcher', {
+            const response = await fetch('http://127.0.0.1:8000/onboard/dispatcher', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'text/plain'

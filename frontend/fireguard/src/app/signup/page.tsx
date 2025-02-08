@@ -58,7 +58,7 @@ export default function SignUpPage() {
       // const response = await registerUser(formData);
       
       // Temporary: just redirect
-      router.push('/roles');
+      router.push('/role');
     } catch (error: unknown) {
       const errorMessage = error instanceof Error ? error.message : 'Failed to create account';
       setError(errorMessage);

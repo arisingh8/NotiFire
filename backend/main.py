@@ -1,6 +1,6 @@
 # backend/main.py
 
-from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi import FastAPI, Depends, HTTPException, responses
 from supabase_client import supabase
 from typing import List, Optional
 from pydantic import BaseModel
@@ -74,40 +74,31 @@ class FirstResponder(BaseModel):
 # OPTIONAL AUTH ENDPOINTS
 # (SKIP if you have a simpler approach)
 # -------------------------------
+
 @app.post("/auth/register")
 def register(user: RegisterUser):
-    # Check if user already exists
-    existing = supabase.table(USERS_TABLE).select("*").eq("email", user.email).execute()
-    if existing.data:
-        raise HTTPException(status_code=400, detail="Username already taken")
-
-    hashed = hash_password(user.password)
-    inserted = supabase.table(USERS_TABLE).insert({"email": user.email, "password": hashed}).execute()
+    data = supabase.auth.sign_up({
+        'email': user.email,
+        'password': user.password,
+    })
     
     # Return success
-    return {"message": "User registered successfully", "uuid": inserted.data[0]["id"]}
+    return {"message": "User registered successfully", "uuid": data.user.id}
 
 @app.post("/auth/login")
 def login(user: LoginUser):
-    existing = supabase.table(USERS_TABLE).select("*").eq("email", user.email).single().execute()
-    if not existing.data:
-        raise HTTPException(status_code=401, detail="User not found")
+    data = supabase.auth.sign_in_with_password({
+        'email': user.email,
+        'password': user.password,
+    })
 
-    row = existing.data
-    if not verify_password(user.password, row["password"]):
-        raise HTTPException(status_code=401, detail="Incorrect password")
+    return {"message": "User logged in successfully", "uuid": data.user.id}
 
-    token = create_jwt_token(str(row["id"]))
-    return {"access_token": token}
+@app.post("/auth/logout")
+def login():
+    response = supabase.auth.sign_out()
 
-def get_current_user(token: str):
-    if not token:
-        raise HTTPException(status_code=401, detail="No token provided")
-    decoded = decode_jwt_token(token)
-    if not decoded:
-        raise HTTPException(status_code=401, detail="Invalid or expired token")
-    # decoded["user_id"] is the primary key from your users table
-    return decoded["user_id"]
+    return {"message": "User logged out successfully"}
 
 # -------------------------------
 # AT-RISK, DISPATCHER, RESPONDER ENDPOINTS

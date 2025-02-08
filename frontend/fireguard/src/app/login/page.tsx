@@ -62,6 +62,7 @@ export default function LoginPage() {
       }
 
       const { role } = await roleResponse.json();
+      console.log('User role:', role);
 
       // Redirect based on role
       switch (role) {
@@ -73,6 +74,9 @@ export default function LoginPage() {
           break;
         case 'first_responder':
           router.push('/firstresponder/dashboard');
+          break;
+        case 'NA':
+          router.push('/');
           break;
         default:
           throw new Error('Invalid user role');

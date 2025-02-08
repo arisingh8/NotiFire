@@ -55,7 +55,7 @@ const Header: React.FC = () => {
       <div className={HeaderStyles.wrapper}>
         <div className={HeaderStyles.nav}>
           <Link href="/" className={HeaderStyles.logo}>
-            FireGuardAI
+            Notifire
           </Link>
 
           <div className={HeaderStyles.links}>

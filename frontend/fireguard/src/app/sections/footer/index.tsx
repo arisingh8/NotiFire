@@ -11,7 +11,7 @@ const Footer: React.FC = () => {
         <div className={FooterStyles.content}>
           {/* Copyright */}
           <p className={FooterStyles.copyright}>
-            &copy; {new Date().getFullYear()} FireGuardAI
+            &copy; {new Date().getFullYear()} NotifireAI
           </p>
 
           {/* Navigation Links */}

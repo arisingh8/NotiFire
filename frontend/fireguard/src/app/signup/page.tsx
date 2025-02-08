@@ -90,7 +90,7 @@ export default function SignUpPage() {
             Create Account
           </h1>
           <p className="text-gray-400 font-[family-name:var(--font-eb-garamond)]">
-            Join FireGuard today
+            Join Notifire today
           </p>
         </div>
 

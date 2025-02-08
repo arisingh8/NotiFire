@@ -61,7 +61,7 @@ export default function DispatcherDashboard() {
         <div className="min-h-screen bg-gray-900 p-8">
             <div className="max-w-6xl mx-auto space-y-6">
                 <h1 className="flex justify-center text-4xl text-[#ffdbbb] mb-6 font-[family-name:var(--font-eb-garamond)]">
-                    Dispatcher Dashboard
+                    Dashboard
                 </h1>
                 <div className="bg-gray-800 p-6 rounded-lg shadow-xl">
                     <h2 className="text-2xl text-[#ffdbbb] mb-6 font-[family-name:var(--font-eb-garamond)]">

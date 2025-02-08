@@ -13,34 +13,35 @@ export default function RolePage() {
   };
 
   return (
-    <Modal
-      isOpen={isModalOpen}
-      onClose={() => setIsModalOpen(false)}
-      title="Select Your Role"
-    >
-      <div className="flex flex-col gap-4 w-full min-w-[300px] p-4">
-        <Button 
-          variant="role-resident" 
-          size="large"
-          onClick={() => handleRoleSelect('resident')}
-        >
-          Resident
-        </Button>
-        <Button 
-          variant="role-manager" 
-          size="large"
-          onClick={() => handleRoleSelect('manager')}
-        >
-          Property Manager
-        </Button>
-        <Button 
-          variant="role-firefighter" 
-          size="large"
-          onClick={() => handleRoleSelect('firefighter')}
-        >
-          Firefighter
-        </Button>
-      </div>
-    </Modal>
+    <div className="min-h-screen flex items-center justify-center bg-gray-900">
+      <Modal
+        isOpen={isModalOpen}
+        title="Select Your Role"
+      >
+        <div className="flex flex-col gap-6 w-full min-w-[300px] max-w-md p-6">
+          <Button 
+            variant="role-resident" 
+            size="large"
+            onClick={() => handleRoleSelect('resident')}
+          >
+            Resident
+          </Button>
+          <Button 
+            variant="role-manager" 
+            size="large"
+            onClick={() => handleRoleSelect('manager')}
+          >
+            Property Manager
+          </Button>
+          <Button 
+            variant="role-firefighter" 
+            size="large"
+            onClick={() => handleRoleSelect('firefighter')}
+          >
+            Firefighter
+          </Button>
+        </div>
+      </Modal>
+    </div>
   );
 }

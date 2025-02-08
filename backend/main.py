@@ -138,6 +138,34 @@ def login():
     return {"message": "User logged out successfully"}
 
 
+@app.get("/user/role")
+def get_role():
+    data = supabase.auth.get_user()
+    if not data:
+        return {"role": "NA"}
+
+    if (
+        supabase.table("at_risk")
+        .select("*", count="exact")
+        .eq("user_id", data.user.id)
+        .execute()
+        .count
+        > 0
+    ):
+        return {"role": "resident"}
+    elif (
+        supabase.table("dispatchers")
+        .select("*", count="exact")
+        .eq("user_id", data.user.id)
+        .execute()
+        .count
+        > 0
+    ):
+        return {"role": "dispatcher"}
+    else:
+        return {"role": "first_responder"}
+
+
 # -------------------------------
 # AT-RISK, DISPATCHER, RESPONDER ENDPOINTS
 # -------------------------------
@@ -149,7 +177,7 @@ def create_at_risk(at_risk: AtRisk):
     data = supabase.auth.get_user()
     if not data:
         return responses.RedirectResponse(
-            "/auth/login", status_code=status.HTTP_303_SEE_OTHER
+            "/login", status_code=status.HTTP_303_SEE_OTHER
         )
 
     logging.info(at_risk.model_dump_json())
@@ -168,7 +196,7 @@ def create_dispatcher(dispatcher: Dispatcher):
     data = supabase.auth.get_user()
     if not data:
         return responses.RedirectResponse(
-            "/auth/login", status_code=status.HTTP_303_SEE_OTHER
+            "/login", status_code=status.HTTP_303_SEE_OTHER
         )
 
     # Insert into 'at_risk' table
@@ -186,7 +214,7 @@ def create_responder(responder: FirstResponder):
     data = supabase.auth.get_user()
     if not data:
         return responses.RedirectResponse(
-            "/auth/login", status_code=status.HTTP_303_SEE_OTHER
+            "/login", status_code=status.HTTP_303_SEE_OTHER
         )
 
     # Insert into 'at_risk' table

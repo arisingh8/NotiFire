@@ -12,7 +12,7 @@ export default function RolePage() {
 
   const handleRoleSelect = (role: string) => {
     console.log(`Selected role: ${role}`);
-    if (role === 'atrisk') {
+    if (role === 'resident') {
       router.push('/resident');
     } else if (role === 'dispatcher') {
       router.push('/dispatcher');
@@ -35,9 +35,9 @@ export default function RolePage() {
         >
           <div className="flex flex-col gap-6 w-full min-w-[300px] max-w-md p-6">
             <Button 
-              variant="role-atrisk" 
+              variant="role-resident" 
               size="large"
-              onClick={() => handleRoleSelect('atrisk')}
+              onClick={() => handleRoleSelect('resident')}
             >
               Resident
             </Button>

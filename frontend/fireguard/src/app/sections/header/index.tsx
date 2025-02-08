@@ -22,7 +22,7 @@ const Header: React.FC = () => {
             <Link href="/contact" className={HeaderStyles.link}>
               Contact
             </Link>
-            <Link href="/auth" className={HeaderStyles.link}>
+            <Link href="/login" className={HeaderStyles.link}>
               Sign In
             </Link>
           </div>

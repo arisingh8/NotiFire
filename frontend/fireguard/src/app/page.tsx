@@ -12,7 +12,7 @@ export default function Home() {
 
       {/* Get Started Button */}
       <div className="flex justify-center w-full">
-        <Link href="/auth">
+        <Link href="/login">
           <Button 
             variant="primary" 
             size="large"

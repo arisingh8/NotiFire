@@ -2,12 +2,14 @@ export const DropdownStyles = {
     container: "relative inline-block",
     trigger: "cursor-pointer",
     menu: `
+      w-full
       absolute
       z-50
       mt-2
       min-w-[200px]
       bg-gray-800
       border
+
       border-gray-700
       rounded-lg
       shadow-lg

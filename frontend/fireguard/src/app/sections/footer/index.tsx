@@ -2,36 +2,39 @@
 
 import Link from 'next/link';
 import { Facebook, Twitter, Instagram } from 'lucide-react';
+import { FooterStyles } from './styles';
 
 const Footer: React.FC = () => {
   return (
-    <footer className="fixed bottom-0 left-0 w-full bg-gray-800 text-[#ffdbbb] py-4 shadow-md z-50">
-      <div className="container mx-auto">
-        <div className="flex items-center justify-between">
+    <footer className={`${FooterStyles.container} ${FooterStyles.font}`}>
+      <div className={FooterStyles.wrapper}>
+        <div className={FooterStyles.content}>
           {/* Copyright */}
-          <p className="text-sm text-[#ffdbbb]">&copy; {new Date().getFullYear()} FireGuardAI</p>
+          <p className={FooterStyles.copyright}>
+            &copy; {new Date().getFullYear()} FireGuardAI
+          </p>
 
           {/* Navigation Links */}
-          <nav className="flex space-x-4">
-            <Link href="/privacy-policy" className="text-sm text-[#ffdbbb] hover:opacity-80">
+          <nav className={FooterStyles.nav}>
+            <Link href="/privacy-policy" className={FooterStyles.link}>
               Privacy Policy
             </Link>
-            <span className="text-[#ffdbbb]">|</span>
-            <Link href="/terms-of-service" className="text-sm text-[#ffdbbb] hover:opacity-80">
+            <span className={FooterStyles.divider}>|</span>
+            <Link href="/terms-of-service" className={FooterStyles.link}>
               Terms of Service
             </Link>
           </nav>
 
           {/* Social Media Icons */}
-          <div className="flex space-x-4">
+          <div className={FooterStyles.socialIcons}>
             <Link href="https://facebook.com" aria-label="Facebook" target="_blank">
-              <Facebook size={20} className="text-[#ffdbbb] hover:opacity-80" />
+              <Facebook size={20} className={FooterStyles.icon} />
             </Link>
             <Link href="https://twitter.com" aria-label="Twitter" target="_blank">
-              <Twitter size={20} className="text-[#ffdbbb] hover:opacity-80" />
+              <Twitter size={20} className={FooterStyles.icon} />
             </Link>
             <Link href="https://instagram.com" aria-label="Instagram" target="_blank">
-              <Instagram size={20} className="text-[#ffdbbb] hover:opacity-80" />
+              <Instagram size={20} className={FooterStyles.icon} />
             </Link>
           </div>
         </div>

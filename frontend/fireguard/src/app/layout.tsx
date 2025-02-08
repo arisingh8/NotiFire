@@ -3,6 +3,7 @@ import { Geist, Geist_Mono, EB_Garamond } from "next/font/google";
 import "./globals.css";
 import Header from '@/app/sections/header';
 import Footer from '@/app/sections/footer';
+import { UserProvider } from '@/app/context/UserContext'; // Import the UserProvider
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -34,8 +35,10 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${ebGaramond.variable} antialiased flex flex-col min-h-screen pt-16 pb-16`}
       >
-        <Header />
-        <main className="flex-grow">{children}</main> {/* Ensures content fills space */}
+        <UserProvider>
+          <Header /> {/* Pass userRole and setUserRole to Header */}
+          <main className="flex-grow">{children}</main> {/* Ensures content fills space */}
+        </UserProvider>
         <Footer />
       </body>
     </html>

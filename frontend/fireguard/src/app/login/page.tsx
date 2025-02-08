@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Input from "@/app/components/form/input";
 import Button from "@/app/components/button";
-import { useUser } from "@/app/components/UserContext";
+import { useUser } from "@/app/context/UserContext";
 
 interface LoginForm {
   email: string;

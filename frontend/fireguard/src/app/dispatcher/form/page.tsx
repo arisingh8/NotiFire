@@ -142,19 +142,17 @@ export default function DispatcherForm() {
         setIsSubmitting(true);
         setSubmitStatus('idle');
         setSubmitError(null);
-    
         try {
-            await new Promise(resolve => setTimeout(resolve, 1000));
-            
-            const mockResponse = {
-                ok: true,
-                data: { message: 'Form submitted successfully' }
-            };
-    
-            if (!mockResponse.ok) {
-                throw new Error('Submission failed');
-            }
-    
+            const response = await fetch('/onboard/dispatcher', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'text/plain'
+                },
+                body: JSON.stringify(formData)
+            });
+
+            if (!response.ok) throw new Error('Submission failed');
+
             setSubmitStatus('success');
             router.push('/dispatcher/dashboard');
         } catch (err: unknown) {

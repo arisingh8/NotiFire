@@ -154,18 +154,14 @@ export default function AtRiskForm() {
     setError(null);
 
     try {
-      // Mock successful API response
-      await new Promise(resolve => setTimeout(resolve, 1000)); // Simulate network delay
-      
-      // Simulate successful response
-      const mockResponse = {
-        ok: true,
-        data: { message: 'Form submitted successfully' }
-      };
-
-      if (!mockResponse.ok) {
-        throw new Error('Submission failed');
-      }
+      // Mock API endpoint - replace with your actual endpoint
+      const response = await fetch('/onboard/at_risk', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'text/plain',
+        },
+        body: JSON.stringify(formData),
+      });
 
       setSubmitStatus('success');
       router.push('/resident/dashboard');

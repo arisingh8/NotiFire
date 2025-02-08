@@ -49,25 +49,30 @@ export default function SignUpPage() {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     if (!validateForm()) return;
-
+  
     setIsLoading(true);
     setError(null);
-
+  
     try {
-      await new Promise(resolve => setTimeout(resolve, 1000));
-      
-      const mockResponse = {
-          ok: true,
-          data: { message: 'Form submitted successfully' }
-      };
-
-      if (!mockResponse.ok) {
-          throw new Error('Submission failed');
+      const { email, password } = formData; // Extract only the necessary fields
+  
+      const response = await fetch("http://127.0.0.1:8000/auth/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json", // Change to JSON
+        },
+        body: JSON.stringify({ email, password }) // Send only required fields
+      });
+  
+      if (!response.ok) {
+        const responseData = await response.json();
+        throw new Error(responseData.message || "Failed to create account");
       }
-
-      router.push('/role');
-  } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : 'Failed to submit form';
+  
+      router.push('/role'); // Redirect after successful registration
+  
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : "Failed to create account";
       console.error('Submission error:', errorMessage);
       setError(errorMessage);
   } finally {
@@ -75,6 +80,7 @@ export default function SignUpPage() {
   }
 
   };
+  
 
   return (
     <div className="min-h-screen bg-gray-900 flex items-center justify-center px-4 overflow-hidden fixed inset-0">
@@ -138,10 +144,11 @@ export default function SignUpPage() {
               rounded-lg
               font-bold
               transition-opacity
-              ${isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:opacity-90'}
+              ${isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:opacity-90'}'
             `}
           >
             {isLoading ? 'Creating Account...' : 'Create Account'}
+            <Link href={"/role"}></Link>
           </Button>
 
           <div className="text-center mt-4">

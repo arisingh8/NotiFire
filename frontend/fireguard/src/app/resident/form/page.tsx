@@ -155,7 +155,6 @@ export default function AtRiskForm() {
 
     try {
       // Mock API endpoint - replace with your actual endpoint
-      console.log(JSON.stringify(formData));
       const response = await fetch('http://127.0.0.1:8000/onboard/at_risk', {
         method: 'POST',
         headers: {

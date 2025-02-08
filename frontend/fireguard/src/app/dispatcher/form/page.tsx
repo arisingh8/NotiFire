@@ -6,26 +6,22 @@ import Input from '@/app/components/form/input';
 import Select from '@/app/components/form/select';
 
 interface FormData {
-    fullName: string;
-    personalPhone: string;
-    workLocation: string;
+    name: string;
     state: string;
-    zipCode: string;
+    zipcode: string;
     authkey: string;
-    dispatchCenter: string;
-    dispatchCenterPhone: string;
+    dispatch_center: string;
+    dispatch_center_phone: string;
 }
 
 export default function DispatcherForm() {
     const [formData, setFormData] = useState<FormData>({
-        fullName: '',
-        personalPhone: '',
-        workLocation: '',
+        name: '',
         state: '',
-        zipCode: '',
+        zipcode: '',
         authkey: '',
-        dispatchCenter: '',
-        dispatchCenterPhone: ''
+        dispatch_center: '',
+        dispatch_center_phone: ''
     });
 
     const router = useRouter();
@@ -108,28 +104,23 @@ export default function DispatcherForm() {
     const validateForm = (): boolean => {
         const newErrors: Partial<FormData> = {};
 
-        if (!formData.fullName) newErrors.fullName = 'Full name is required';
-        if (!formData.personalPhone) newErrors.personalPhone = 'Personal phone is required';
-        if (!formData.workLocation) newErrors.workLocation = 'Work location is required';
+        if (!formData.name) newErrors.name = 'Full name is required';
         if (!formData.state) newErrors.state = 'State is required';
-        if (!formData.zipCode) newErrors.zipCode = 'Zip code is required';
+        if (!formData.zipcode) newErrors.zipcode = 'Zip code is required';
         if (!formData.authkey) newErrors.authkey = 'Auth key is required';
-        if (!formData.dispatchCenter) newErrors.dispatchCenter = 'Dispatch center is required';
-        if (!formData.dispatchCenterPhone) newErrors.dispatchCenterPhone = 'Dispatch center phone is required';
+        if (!formData.dispatch_center) newErrors.dispatch_center = 'Dispatch center is required';
+        if (!formData.dispatch_center_phone) newErrors.dispatch_center_phone = 'Dispatch center phone is required';
 
         // Phone number validation
         const phoneRegex = /^\d{10}$/;
-        if (!phoneRegex.test(formData.personalPhone.replace(/\D/g, ''))) {
-            newErrors.personalPhone = 'Please enter a valid 10-digit phone number';
-        }
-        if (!phoneRegex.test(formData.dispatchCenterPhone.replace(/\D/g, ''))) {
-            newErrors.dispatchCenterPhone = 'Please enter a valid 10-digit phone number';
+        if (!phoneRegex.test(formData.dispatch_center_phone.replace(/\D/g, ''))) {
+            newErrors.dispatch_center_phone = 'Please enter a valid 10-digit phone number';
         }
 
         // ZIP code validation
         const zipRegex = /^\d{5}$/;
-        if (!zipRegex.test(formData.zipCode)) {
-            newErrors.zipCode = 'Please enter a valid 5-digit ZIP code';
+        if (!zipRegex.test(formData.zipcode)) {
+            newErrors.zipcode = 'Please enter a valid 5-digit ZIP code';
         }
 
         setErrors(newErrors);
@@ -187,28 +178,10 @@ export default function DispatcherForm() {
                 <form onSubmit={handleSubmit} className="space-y-6 bg-gray-800 p-6 rounded-lg shadow-xl">
                     <Input
                         label="Full Name"
-                        name="fullName"
-                        value={formData.fullName}
+                        name="name"
+                        value={formData.name}
                         onChange={handleChange}
-                        error={errors.fullName}
-                        required
-                    />
-
-                    <Input
-                        label="Personal Phone"
-                        name="personalPhone"
-                        value={formData.personalPhone}
-                        onChange={handleChange}
-                        error={errors.personalPhone}
-                        required
-                    />
-
-                    <Input
-                        label="Work Location"
-                        name="workLocation"
-                        value={formData.workLocation}
-                        onChange={handleChange}
-                        error={errors.workLocation}
+                        error={errors.name}
                         required
                     />
 
@@ -226,10 +199,10 @@ export default function DispatcherForm() {
 
                         <Input
                             label="ZIP Code"
-                            name="zipCode"
-                            value={formData.zipCode}
+                            name="zipcode"
+                            value={formData.zipcode}
                             onChange={handleChange}
-                            error={errors.zipCode}
+                            error={errors.zipcode}
                             required
                         />
                     </div>
@@ -246,19 +219,19 @@ export default function DispatcherForm() {
 
                     <Input
                         label="Dispatch Center"
-                        name="dispatchCenter"
-                        value={formData.dispatchCenter}
+                        name="dispatch_center"
+                        value={formData.dispatch_center}
                         onChange={handleChange}
-                        error={errors.dispatchCenter}
+                        error={errors.dispatch_center}
                         required
                     />
 
                     <Input
                         label="Dispatch Center Phone"
-                        name="dispatchCenterPhone"
-                        value={formData.dispatchCenterPhone}
+                        name="dispatch_center_phone"
+                        value={formData.dispatch_center_phone}
                         onChange={handleChange}
-                        error={errors.dispatchCenterPhone}
+                        error={errors.dispatch_center_phone}
                         required
                     />
 

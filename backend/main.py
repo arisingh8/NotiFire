@@ -86,7 +86,6 @@ class Dispatch(BaseModel):
     fire_id: str
     responder_id: str
 
-"""
 # Configure logging
 logging.basicConfig(
     level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
@@ -94,6 +93,7 @@ logging.basicConfig(
 logger = logging.getLogger(__name__)
 
 
+"""
 # @app.middleware("http")
 async def log_requests(request: Request, call_next):
     logger.info(f"Request: {request.method} {request.url}")
@@ -184,9 +184,9 @@ def create_at_risk(at_risk: AtRisk):
             "/login", status_code=status.HTTP_303_SEE_OTHER
         )
 
-    latitude, longitude = get_lat_lng_zipc(at_risk.state, at_risk.zipcode)
+    latitude, longitude = get_lat_lng_full(at_risk.street, at_risk.city, at_risk.state, at_risk.zipcode)
 
-    logging.info(at_risk.model_dump_json())
+    logger.info(at_risk.model_dump_json())
     # Insert into 'at_risk' table
     result = (
         supabase.table("at_risk")
@@ -225,7 +225,7 @@ def create_responder(responder: FirstResponder):
             "/login", status_code=status.HTTP_303_SEE_OTHER
         )
 
-    latitude, longitude = get_lat_lng_zipc(responder.state, responder.zipcode)
+    latitude, longitude = get_lat_lng_full(responder.street, responder.city, responder.state, responder.zipcode)
 
     # Insert into 'at_risk' table
     result = (
@@ -381,7 +381,7 @@ def get_lat_lng_full(street: str, city: str, state: str, zip_code: str):
         if location:
             return location.latitude, location.longitude
     except Exception as e:
-        print(f"Geocoding failed for {address}: {e}")
+        logger.info(f"Geocoding failed for {address}: {e}")
 
     return None, None  # If geolocation fails
 
@@ -427,7 +427,7 @@ def generate_summary(fire_id: str):
     for person in at_risk_res.data:
         # If lat/lng is missing, use geocoding
         if person.get("lat") is None or person.get("lng") is None:
-            lat, lng = get_lat_lng_zipc(
+            lat, lng = get_lat_lng_full(
                 person["state"], person["zip"]
             )
             if lat is None or lng is None:

@@ -7,6 +7,7 @@ from typing import List, Optional
 from pydantic import BaseModel
 from geopy.distance import geodesic
 import pandas as pd
+import numpy as np
 import os
 import logging
 from starlette.concurrency import iterate_in_threadpool
@@ -237,7 +238,7 @@ def get_fires():
     Retrieve stored fires from 'fires' table or fetch from NASA, up to you.
     For brevity, let's read from the DB.
     """
-    response = supabase.table("fires").select("*").execute()
+    response = supabase.table("fires").select("*").gt("confidence", 50).execute()
     return response.data
 
 
@@ -248,9 +249,9 @@ def import_fires():
     In production, you'd do something like below:
     """
     SOURCE = "MODIS_NRT"
-    AREA_COORDINATES = "world"  # "-124.409591,32.534156,-114.131211,42.009518"
+    AREA_COORDINATES = "-171.791110603,18.91619,-66.96466,71.3577635769"  # "-124.409591,32.534156,-114.131211,42.009518"
     DAY_RANGE = 5
-    DATE = "2025-02-01"
+    DATE = "2025-01-10"
 
     url = f"https://firms.modaps.eosdis.nasa.gov/api/area/csv/{os.getenv('MAP_KEY')}/{SOURCE}/{AREA_COORDINATES}/{DAY_RANGE}/{DATE}"
     fires = pd.read_csv(url)[
@@ -267,7 +268,6 @@ def import_fires():
 # -------------------------------
 # DISPATCH LOGIC
 # -------------------------------
-
 
 @app.get("/responders-within")
 def responders_within(fire_id: str, radius_miles: float):

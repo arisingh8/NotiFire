@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Input from '@/app/components/form/input';
 import Select from '@/app/components/form/select';
 
@@ -27,9 +28,11 @@ export default function DispatcherForm() {
         dispatchCenterPhone: ''
     });
 
+    const router = useRouter();
     const [errors, setErrors] = useState<Partial<FormData>>({});
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+    const [submitError, setSubmitError] = useState<string | null>(null);
 
     const stateOptions = [
         { value: 'AL', label: 'Alabama' },
@@ -136,27 +139,29 @@ export default function DispatcherForm() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         if (!validateForm()) return;
-
         setIsSubmitting(true);
         setSubmitStatus('idle');
-
+        setSubmitError(null);
+    
         try {
-            const response = await fetch('/api/dispatcher', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(formData)
-            });
-
-            if (!response.ok) throw new Error('Submission failed');
-
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            
+            const mockResponse = {
+                ok: true,
+                data: { message: 'Form submitted successfully' }
+            };
+    
+            if (!mockResponse.ok) {
+                throw new Error('Submission failed');
+            }
+    
             setSubmitStatus('success');
-            // Optional: Reset form
-            // setFormData({ ... initial state ... });
-        } catch (error) {
-            console.error('Submission error:', error);
+            router.push('/dispatcher/dashboard');
+        } catch (err: unknown) {
+            const errorMessage = err instanceof Error ? err.message : 'Failed to submit form';
+            console.error('Submission error:', errorMessage);
             setSubmitStatus('error');
+            setSubmitError(errorMessage);
         } finally {
             setIsSubmitting(false);
         }
@@ -175,9 +180,9 @@ export default function DispatcherForm() {
                     </div>
                 )}
 
-                {submitStatus === 'error' && (
+                {submitError && (
                     <div className="mb-6 p-4 bg-red-800/50 text-red-100 rounded-lg">
-                        There was an error submitting your registration. Please try again.
+                        {submitError}
                     </div>
                 )}
 

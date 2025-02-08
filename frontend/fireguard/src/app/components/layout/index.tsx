@@ -35,7 +35,13 @@ const Layout: React.FC<LayoutProps> = ({ children, sidebarItems }) => {
         aria-label={isSidebarOpen ? 'Close sidebar' : 'Open sidebar'}
       >
         <svg
-          className="w-6 h-6"
+          className={`
+            w-6 
+            h-6 
+            transition-transform 
+            duration-650
+            ${isSidebarOpen ? 'rotate-180' : ''}
+          `}
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"

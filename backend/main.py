@@ -278,31 +278,41 @@ def import_fires():
 # DISPATCH LOGIC
 # -------------------------------
 
-@app.get("/responders-within")
-def responders_within(fire_id: str, radius_miles: float):
+def responders_within(fire_id: str, radius_miles: float = 10.0):
     """
-    1) Get the fire's lat/lng
-    2) Grab all first_responders
-    3) Calculate distance, return those within the radius
+    Get all first responders within the given radius (default 10 miles) of the fire.
     """
+
+    # Retrieve fire location
     fire_res = supabase.table("fires").select("*").eq("id", fire_id).single().execute()
-    if fire_res.error or not fire_res.data:
+    
+    # Ensure fire data was retrieved successfully
+    if not fire_res or not fire_res.get("data"):
         raise HTTPException(status_code=404, detail="Fire not found")
-    fire_data = fire_res.data
+
+    fire_data = fire_res["data"]
     fire_lat, fire_lng = fire_data["latitude"], fire_data["longitude"]
 
-    resp_res = supabase.table("first_responders").select("*").execute()
-    if resp_res.error:
-        raise HTTPException(status_code=400, detail=resp_res.error.message)
+    # Retrieve first responders
+    resp_res = supabase.table("first_responders").select("id, unit_name, role, lat, lng").execute()
 
+    # Ensure responders were retrieved successfully
+    if not resp_res or not resp_res.get("data"):
+        raise HTTPException(status_code=400, detail="Error fetching responders")
+
+    responders = resp_res["data"]
     within = []
-    for r in resp_res.data:
-        if r["lat"] is not None and r["lng"] is not None:
-            dist_mi = geodesic((fire_lat, fire_lng), (r["lat"], r["lng"])).miles
-            if dist_mi <= radius_miles:
-                r["distance"] = round(dist_mi, 2)
-                within.append(r)
+
+    for responder in responders:
+        if responder.get("lat") is not None and responder.get("lng") is not None:
+            distance_miles = geodesic((fire_lat, fire_lng), (responder["lat"], responder["lng"])).miles
+            if distance_miles <= radius_miles:
+                responder["distance"] = round(distance_miles, 2)
+                within.append(responder)
+
     return within
+
+
 
 
 @app.post("/dispatch")

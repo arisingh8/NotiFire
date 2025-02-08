@@ -1,5 +1,7 @@
 import Image from "next/image";
 import Hero from "./sections/hero"; // Import Hero
+import Button from "./components/button";
+import Link from "next/link";
 
 export default function Home() {
   return (
@@ -7,6 +9,19 @@ export default function Home() {
       
       {/* Hero Section */}
       <Hero />
+
+      {/* Get Started Button */}
+      <div className="flex justify-center w-full">
+        <Link href="/auth">
+          <Button 
+            variant="primary" 
+            size="large"
+            className="font-bold"
+          >
+            Get Started
+          </Button>
+        </Link>
+      </div>
 
       {/* Main Content */}
       <main className="flex flex-col gap-8 items-center sm:items-start">

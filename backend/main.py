@@ -393,34 +393,31 @@ def get_lat_lng_zipc(state: str, zip_code: str):
     return None, None  # If geolocation fails
 
 
-@app.post("/generate-summary")
-def generate_summary(fire_id: str):
+from fastapi import BackgroundTasks
+
+@app.get("/generate-summary")
+def generate_summary(fire_id: str = Query(...)):
     """
     Generate structured AI-generated summaries for Firefighters, EMTs, and Police
     based on at-risk individuals near the fire location.
     """
-    
     # 1) Retrieve Fire Location
     fire_res = supabase.table("fires").select("*").eq("id", fire_id).single().execute()
-    if fire_res.error or not fire_res.data:
+    if not fire_res.data:
         raise HTTPException(status_code=404, detail="Fire not found")
-
     fire_data = fire_res.data
     fire_lat, fire_lng = fire_data["latitude"], fire_data["longitude"]
 
     # 2) Retrieve At-Risk Residents
     at_risk_res = supabase.table("at_risk").select("*").execute()
-    if at_risk_res.error:
-        raise HTTPException(status_code=400, detail=at_risk_res.error.message)
+    if not at_risk_res.data:
+        raise HTTPException(status_code=400, detail="Error fetching at-risk residents.")
 
     nearby_individuals = []
-
     for person in at_risk_res.data:
-        # If lat/lng is missing, use geocoding
+        # If lat/lng is missing, use get_lat_lng_zipc (which only uses state and zipcode)
         if person.get("lat") is None or person.get("lng") is None:
-            lat, lng = get_lat_lng_full(
-                person["street"], person["city"], person["state"], person["zipcode"]
-            )
+            lat, lng = get_lat_lng_zipc(person["state"], person["zipcode"])
             if lat is None or lng is None:
                 continue  # Skip if geocoding fails
             person["lat"], person["lng"] = lat, lng
@@ -435,33 +432,34 @@ def generate_summary(fire_id: str):
             person["distance_miles"] = round(distance_miles, 2)
             nearby_individuals.append(person)
 
-    # If no one is nearby, return empty summaries
+    # If no one is nearby, return default summaries
     if not nearby_individuals:
-        return {"firefighter": "No immediate firefighter concerns.",
-                "emt": "No EMT assistance required.",
-                "police": "No law enforcement action needed."}
+        return {
+            "firefighter": "No immediate firefighter concerns.",
+            "emt": "No EMT assistance required.",
+            "police": "No law enforcement action needed."
+        }
 
-    # 3) Structure Data for AI
+    # 3) Structure Data for AI prompt
     resident_text = "\n".join([
         f"- {p['name']} ({p['street']}, {p['city']}, {p['state']}) - "
         f"Disability: {p.get('disability', 'None')}, Info: {p.get('additional_info', 'N/A')}"
         for p in sorted(nearby_individuals, key=lambda x: x["distance_miles"])
     ])
 
-    system_prompt = """You are an emergency response assistant. 
-    Generate separate response summaries for Firefighters, EMTs, and Police 
-    based on the at-risk residents in the fire-affected area. 
-    Each summary should be concise and relevant to their role.
-    
-    Return ONLY a valid JSON object with:
-    - firefighter (string)
-    - emt (string)
-    - police (string)"""
+    system_prompt = (
+        "You are an emergency response assistant. Generate separate response summaries for Firefighters, EMTs, and Police "
+        "based on the at-risk residents in the fire-affected area. Each summary should be concise and relevant to their role. "
+        "Return ONLY a valid JSON object with:\n"
+        "- firefighter (string)\n"
+        "- emt (string)\n"
+        "- police (string)"
+    )
 
-    user_message = f"""Generate emergency response summaries for first responders. 
-    The following at-risk residents are near the fire:
-    
-    {resident_text}"""
+    user_message = (
+        "Generate emergency response summaries for first responders. The following at-risk residents are near the fire:\n\n"
+        + resident_text
+    )
 
     try:
         response = anthropic_client.messages.create(
@@ -470,10 +468,8 @@ def generate_summary(fire_id: str):
             system=system_prompt,
             messages=[{"role": "user", "content": user_message}],
         )
-
-        # Parse JSON output
+        # Parse Claude's response into JSON
         structured_summary = json.loads(response.content[0].text)
-
     except Exception as e:
         return {"error": f"Error calling Claude API: {str(e)}"}
 

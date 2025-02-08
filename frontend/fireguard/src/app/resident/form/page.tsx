@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import { useRouter } from 'next/navigation';
 import Input from '@/app/components/form/input';
 import Select from '@/app/components/form/select';
 import Textarea from '@/app/components/form/textarea';
@@ -34,8 +35,10 @@ export default function AtRiskForm() {
     additionalInfo: ''
   });
 
+  const router = useRouter();
   const [errors, setErrors] = useState<Partial<FormData>>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
 
   const stateOptions = [
@@ -145,14 +148,12 @@ export default function AtRiskForm() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
     if (!validateForm()) return;
-
     setIsSubmitting(true);
     setSubmitStatus('idle');
+    setError(null); // Clear any previous errors
 
     try {
-      // Mock API endpoint - replace with your actual endpoint
       const response = await fetch('/api/atrisk', {
         method: 'POST',
         headers: {
@@ -161,14 +162,18 @@ export default function AtRiskForm() {
         body: JSON.stringify(formData),
       });
 
-      if (!response.ok) throw new Error('Submission failed');
+      if (!response.ok) {
+        const data = await response.json();
+        throw new Error(data.message || 'Submission failed');
+      }
 
       setSubmitStatus('success');
-      // Optional: Reset form
-      // setFormData({ ... initial state ... });
-    } catch (error) {
-      console.error('Submission error:', error);
+      router.push('/resident/dashboard');
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to submit form';
+      console.error('Submission error:', errorMessage);
       setSubmitStatus('error');
+      setError(errorMessage);
     } finally {
       setIsSubmitting(false);
     }
@@ -190,6 +195,12 @@ export default function AtRiskForm() {
         {submitStatus === 'error' && (
           <div className="mb-6 p-4 bg-red-800/50 text-red-100 rounded-lg">
             There was an error submitting your registration. Please try again.
+          </div>
+        )}
+
+        {error && (
+          <div className="mb-6 p-4 bg-red-800/50 text-red-100 rounded-lg text-center">
+            {error}
           </div>
         )}
 
@@ -302,6 +313,7 @@ export default function AtRiskForm() {
           <button
             type="submit"
             disabled={isSubmitting}
+            onClick={handleSubmit}
             className={`
               w-full
               px-6
@@ -314,7 +326,7 @@ export default function AtRiskForm() {
               ${isSubmitting ? 'opacity-50 cursor-not-allowed' : 'hover:opacity-90'}
             `}
           >
-            {isSubmitting ? 'Submitting...' : 'Submit Registration'}
+            {isSubmitting ? 'Submitting...' : 'Submit'}
           </button>
         </form>
       </div>

@@ -1,14 +1,28 @@
+'use client'
+
+import React, { useContext } from "react";
 import Image from "next/image";
 import Hero from "./sections/hero"; // Import Hero
 import Button from "./components/button";
 import Link from "next/link";
+import { AuthContext } from "./context/AuthContext"; // Adjust the path as necessary
+
 
 export default function Home() {
+  const { userRole } = useContext(AuthContext);
+
   return (
     <div className="flex flex-col items-center min-h-screen p-8 pt-24 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-eb-garamond)]">
       
       {/* Hero Section */}
       <Hero />
+
+      {/* Conditional Rendering Example */}
+      {userRole ? (
+        <p>Welcome back!</p>
+      ) : (
+        <p>You are not logged in.</p>
+      )}
 
       {/* Get Started Button */}
       <div className="flex justify-center w-full">

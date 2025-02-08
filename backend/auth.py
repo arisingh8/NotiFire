@@ -51,3 +51,4 @@ def login_user(creds: UserLogin):
         raise HTTPException(status_code=401, detail="Invalid credentials.")
 
     return {"user": res.data[0]}
+

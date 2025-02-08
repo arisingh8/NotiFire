@@ -1,6 +1,6 @@
 # backend/main.py
 
-from fastapi import FastAPI, Depends, HTTPException, responses, status
+from fastapi import FastAPI, Depends, HTTPException, responses, status, Request
 from fastapi.middleware.cors import CORSMiddleware
 from supabase_client import supabase
 from typing import List, Optional
@@ -8,6 +8,8 @@ from pydantic import BaseModel
 from geopy.distance import geodesic
 import pandas as pd
 import os
+import logging
+from starlette.concurrency import iterate_in_threadpool
 
 from anthropic import Anthropic
 
@@ -49,14 +51,15 @@ USERS_TABLE = "users"
 # -------------------------------
 class AtRisk(BaseModel):
     name: str
-    phone: Optional[str]
     street: Optional[str]
     city: Optional[str]
     state: Optional[str]
     zipcode: Optional[str]
-    lat: Optional[float]
-    lng: Optional[float]
-    disability: Optional[str]
+    phone: Optional[str]
+    mobility_status: Optional[str]
+    medical_needs: Optional[str]
+    emergency_contact: Optional[str]
+    emergency_phone: Optional[str]
     additional_info: Optional[str]
 
 
@@ -82,6 +85,19 @@ class FirstResponder(BaseModel):
     lng: Optional[float]
     unit_size: Optional[int]
 
+
+# Configure logging
+logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+logger = logging.getLogger(__name__)
+
+#@app.middleware("http")
+async def log_requests(request: Request, call_next):
+    logger.info(f"Request: {request.method} {request.url}")
+    response = await call_next(request)
+    response_body = [chunk async for chunk in response.body_iterator]
+    response.body_iterator = iterate_in_threadpool(iter(response_body))
+    logging.info(f"response_body={response_body[0].decode()}")
+    return response
 
 # -------------------------------
 # OPTIONAL AUTH ENDPOINTS
@@ -135,6 +151,7 @@ def create_at_risk(at_risk: AtRisk):
             "/auth/login", status_code=status.HTTP_303_SEE_OTHER
         )
 
+    logging.info(at_risk.model_dump_json())
     # Insert into 'at_risk' table
     result = (
         supabase.table("at_risk")

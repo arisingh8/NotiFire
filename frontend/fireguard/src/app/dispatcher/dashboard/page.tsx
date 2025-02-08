@@ -3,7 +3,7 @@
 import React from 'react';
 import Map from '@/app/components/map';
 import Collapser from '@/app/components/collapser';
-import { useRouter } from 'next/navigation';
+//import { useRouter } from 'next/navigation';
 
 // Define the MapPoint type to match the one in Map component
 interface MapPoint {

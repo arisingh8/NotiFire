@@ -7,7 +7,7 @@ export const Container = styled.div`
 `;
 
 export const Card = styled.div`
-  background-color: white;
+  background-color: var(--your-bg-color); /* Replace with your project's background color */
   border-radius: 0.5rem; /* rounded-lg */
   box-shadow: 0 10px 15px -3px rgb(0 0 0 / 0.1); /* shadow-lg */
   padding: 1.5rem; /* p-6 */
@@ -60,8 +60,13 @@ export const Label = styled.label`
 export const Input = styled.input`
   width: 100%;
   padding: 0.5rem 0.75rem; /* px-3 py-2 */
-  border: 1px solid #d1d5db; /* border border-gray-300 */
+  border: 1px solid var(--your-border-color);
   border-radius: 0.375rem; /* rounded-md */
+  background-color: var(--your-input-bg);
+  color: var(--your-text-color);
+  &::placeholder {
+    color: var(--your-placeholder-color);
+  }
 `;
 
 export const ButtonGroup = styled.div`
@@ -74,18 +79,18 @@ export const Button = styled.button<{ variant?: 'primary' | 'secondary' }>`
   border-radius: 0.375rem; /* rounded-md */
   
   ${props => props.variant === 'primary' && `
-    background-color: #3b82f6; /* bg-blue-500 */
-    color: white;
+    background-color: var(--your-primary-color);
+    color: var(--your-primary-text-color);
     &:hover {
-      background-color: #2563eb; /* hover:bg-blue-600 */
+      background-color: var(--your-primary-hover-color);
     }
   `}
   
   ${props => props.variant === 'secondary' && `
-    background-color: #e5e7eb; /* bg-gray-200 */
-    color: #374151; /* text-gray-700 */
+    background-color: var(--your-secondary-color);
+    color: var(--your-secondary-text-color);
     &:hover {
-      background-color: #d1d5db; /* hover:bg-gray-300 */
+      background-color: var(--your-secondary-hover-color);
     }
   `}
 `;

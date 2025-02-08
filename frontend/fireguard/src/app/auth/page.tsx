@@ -38,7 +38,12 @@ const LoginPage = () => {
     return (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', width: '300px' }}>
-                <h2>Login</h2>
+                <h2 style={{ 
+                    marginBottom: '20px',
+                    fontSize: '24px',
+                    fontWeight: 'bold',
+                    textAlign: 'center' 
+                }}>Login</h2>
                 <label htmlFor="email">Email</label>
                 <input
                     type="email"
@@ -48,6 +53,7 @@ const LoginPage = () => {
                     required
                 />
                 <label htmlFor="password">Password</label>
+                <></>
                 <input
                     type="password"
                     id="password"

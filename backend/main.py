@@ -277,7 +277,7 @@ def import_fires():
 # -------------------------------
 # DISPATCH LOGIC
 # -------------------------------
-
+@app.get("/responders_within")
 def responders_within(fire_id: str, radius_miles: float = 10.0):
     """
     Get all first responders within the given radius (default 10 miles) of the fire.

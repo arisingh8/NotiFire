@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { HeaderStyles } from './styles';
 import { useRouter } from 'next/navigation';
-import { useUser } from '@/app/components/UserContext'; // Import the useUser hook
+import { useUser } from '@/app/context/UserContext'; // Import the useUser hook
 
 const Header: React.FC = () => {
   const { userRole, setUserRole } = useUser(); // Get userRole and setUserRole from context

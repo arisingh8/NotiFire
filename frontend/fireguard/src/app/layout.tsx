@@ -3,7 +3,7 @@ import { Geist, Geist_Mono, EB_Garamond } from "next/font/google";
 import "./globals.css";
 import Header from '@/app/sections/header';
 import Footer from '@/app/sections/footer';
-import { UserProvider } from '@/app/components/UserContext'; // Import the UserProvider
+import { UserProvider } from '@/app/context/UserContext'; // Import the UserProvider
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

@@ -23,5 +23,11 @@ export const MapStyles = {
   severity: "px-2 py-1 rounded-full text-xs font-bold",
   severity_low: "bg-yellow-100 text-yellow-800",
   severity_medium: "bg-orange-100 text-orange-800",
-  severity_high: "bg-red-100 text-red-800"
+  severity_high: "bg-red-100 text-red-800",
+  '.leaflet-right.leaflet-center': `
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+  `,
 };

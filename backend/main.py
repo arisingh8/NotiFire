@@ -82,6 +82,9 @@ class FirstResponder(BaseModel):
     zipcode: Optional[str]
     unit_size: Optional[str]
 
+class Dispatch(BaseModel):
+    fire_id: str
+    responder_id: str
 
 """
 # Configure logging
@@ -297,16 +300,23 @@ def responders_within(fire_id: str, radius_miles: float):
 
 
 @app.post("/dispatch")
-def dispatch_responder(fire_id: str, responder_id: str):
+def dispatch_responder(dispatch: Dispatch):
     """
     Insert a record into 'dispatches'.
     """
-    data = {"fire_id": fire_id, "responder_id": responder_id}
+    data = {"fire_id": dispatch.fire_id, "responder_id": dispatch.responder_id}
     res = supabase.table("dispatches").insert(data).execute()
-    if res.error:
-        raise HTTPException(status_code=400, detail=res.error.message)
     return {"message": "Dispatched successfully"}
 
+
+@app.get("/responder/dispatches")
+def get_dispatches(responder_id: str = None):
+    if not responder_id:
+        data = supabase.auth.get_user()
+        result = supabase.table("dispatches").select("*").eq("responder_id", data.user.id).execute()
+    else:
+        result = supabase.table("dispatches").select("*").eq("responder_id", responder_id).execute()
+    return {"data": result.data}
 
 # -------------------------------
 # ALERTS & SUMMARIES

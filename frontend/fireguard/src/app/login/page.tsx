@@ -78,6 +78,7 @@ export default function LoginPage() {
             onChange={handleChange}
             required
             placeholder="you@example.com"
+            labelClassName="text-lg"
           />
 
           <Input
@@ -88,6 +89,7 @@ export default function LoginPage() {
             onChange={handleChange}
             required
             placeholder="••••••••"
+            labelClassName="text-lg"
           />
 
           <Button

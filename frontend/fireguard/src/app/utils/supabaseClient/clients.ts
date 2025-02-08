@@ -7,7 +7,7 @@ const SUPABASE_ANON_KEY = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
 // A do-nothing storage object disables session persistence.
 const noStorage = {
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
   getItem: (_key: string): string | null => null,
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   setItem: (_key: string, _value: string) => {},

@@ -106,16 +106,17 @@ export default function Profile() {
     try {
       // Simulated API call
       const userData = {
-        name: 'John Doe',
-        email: 'john.doe@example.com',
-        phone: '555-555-5555',
-        street: '123 Main St',
-        city: 'Anytown',
+        name: 'Aayush Shahjee',
+        email: 'aayush.shahjee@yahoo.com',
+        phone: '440-655-5012',
+        street: '3642 Percy St',
+        city: 'Los Angles',
         state: 'CA',
-        zipCode: '12345',
-        hasDisability: false,
-        disability: '',
+        zipCode: '90023',
+        hasDisability: true,
+        disability: 'Mobility Impairment',
         role: 'User',
+
       };
       setProfile(userData);
       setError(null);

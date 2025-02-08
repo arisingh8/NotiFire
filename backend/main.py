@@ -285,26 +285,18 @@ def responders_within(fire_id: str, radius_miles: float = 10.0):
 
     # Retrieve fire location
     fire_res = supabase.table("fires").select("*").eq("id", fire_id).single().execute()
-    
-    # Ensure fire data was retrieved successfully
-    if not fire_res or not fire_res.get("data"):
-        raise HTTPException(status_code=404, detail="Fire not found")
 
-    fire_data = fire_res["data"]
+    fire_data = fire_res.data
     fire_lat, fire_lng = fire_data["latitude"], fire_data["longitude"]
 
     # Retrieve first responders
-    resp_res = supabase.table("first_responders").select("id, unit_name, role, lat, lng").execute()
+    resp_res = supabase.table("first_responders").select("user_id, unit_name, role, lat, lng").execute()
 
-    # Ensure responders were retrieved successfully
-    if not resp_res or not resp_res.get("data"):
-        raise HTTPException(status_code=400, detail="Error fetching responders")
-
-    responders = resp_res["data"]
+    responders = resp_res.data
     within = []
 
     for responder in responders:
-        if responder.get("lat") is not None and responder.get("lng") is not None:
+        if responder["lat"] is not None and responder["lng"] is not None:
             distance_miles = geodesic((fire_lat, fire_lng), (responder["lat"], responder["lng"])).miles
             if distance_miles <= radius_miles:
                 responder["distance"] = round(distance_miles, 2)

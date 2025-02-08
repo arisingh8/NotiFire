@@ -6,6 +6,7 @@ import Select from '@/app/components/form/select';
 import Textarea from '@/app/components/form/textarea';
 import Map from '@/app/components/map';
 import Alert from '@/app/components/alert';
+import Layout from '@/app/components/layout';
 
 // Define the MapPoint type to match the one in Map component
 interface MapPoint {
@@ -111,8 +112,45 @@ export default function TestPage() {
     console.log('Marker clicked:', point);
   };
 
+  const sidebarItems = [
+    {
+      label: 'Dashboard',
+      onClick: () => console.log('Dashboard clicked')
+    },
+    {
+      label: 'Fire Alerts',
+      items: [
+        {
+          label: 'Active Fires',
+          onClick: () => console.log('Active fires clicked')
+        },
+        {
+          label: 'Historical Data',
+          onClick: () => console.log('Historical data clicked')
+        }
+      ]
+    },
+    {
+      label: 'Units',
+      items: [
+        {
+          label: 'Available Units',
+          onClick: () => console.log('Available units clicked')
+        },
+        {
+          label: 'Dispatched Units',
+          onClick: () => console.log('Dispatched units clicked')
+        }
+      ]
+    },
+    {
+      label: 'Settings',
+      onClick: () => console.log('Settings clicked')
+    }
+  ];
+
   return (
-    <div className="min-h-screen bg-gray-900 p-8 pb-24">
+    <Layout sidebarItems={sidebarItems}>
       <div className="max-w-4xl mx-auto space-y-8">
         {/* Form Section */}
         <div className="bg-gray-800 p-6 rounded-lg shadow-xl">
@@ -163,7 +201,7 @@ export default function TestPage() {
         </div>
 
         {/* Map Section */}
-        <div className="bg-gray-800 p-6 rounded-lg shadow-xl relative">
+        <div className="bg-gray-800 p-6 rounded-lg shadow-xl">
           <h2 className="text-2xl text-[#ffdbbb] mb-6 font-[family-name:var(--font-eb-garamond)]">
             Test Map
           </h2>
@@ -215,6 +253,6 @@ export default function TestPage() {
           </div>
         </div>
       </div>
-    </div>
+    </Layout>
   );
 }

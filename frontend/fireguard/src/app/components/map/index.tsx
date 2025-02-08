@@ -44,6 +44,12 @@ const Map: React.FC<MapProps> = ({
   // Convert miles to meters for the circle radius
   const radiusInMeters = radius * 1609.34;
 
+  // Define world bounds that exclude the poles
+  const worldBounds = L.latLngBounds(
+    L.latLng(-85, -180), // South West (adjusted to avoid Antarctic)
+    L.latLng(85, 180)    // North East (adjusted to avoid Arctic)
+  );
+
   useEffect(() => {
     setIsLoaded(true);
   }, []);
@@ -88,12 +94,18 @@ const Map: React.FC<MapProps> = ({
         zoom={10} 
         className={MapStyles.map}
         ref={mapRef}
+        minZoom={3}     // Increased to prevent seeing gray areas
+        maxZoom={18}
+        maxBounds={worldBounds}
+        maxBoundsViscosity={1.0}
       >
         <ChangeView center={center} />
 
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+          noWrap={true}
+          bounds={worldBounds}
         />
 
         {/* Radius Circle */}

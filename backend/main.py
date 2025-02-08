@@ -278,7 +278,7 @@ def import_fires():
 # DISPATCH LOGIC
 # -------------------------------
 @app.get("/responders_within")
-def responders_within(fire_id: str, radius_miles: float = 10.0):
+def responders_within(fire_id: str, radius_miles: float = 50.0):
     """
     Get all first responders within the given radius (default 10 miles) of the fire.
     """
@@ -396,31 +396,30 @@ def get_lat_lng_zipc(state: str, zip_code: str):
 @app.post("/generate-summary")
 def generate_summary(fire_id: str):
     """
-    Generate a structured summary of at-risk individuals near a fire using Claude.
-    Addresses are converted to lat/lng before distance calculation.
+    Generate structured AI-generated summaries for Firefighters, EMTs, and Police
+    based on at-risk individuals near the fire location.
     """
-
-    # 1) Retrieve Fire Location from Supabase
+    
+    # 1) Retrieve Fire Location
     fire_res = supabase.table("fires").select("*").eq("id", fire_id).single().execute()
     if fire_res.error or not fire_res.data:
         raise HTTPException(status_code=404, detail="Fire not found")
 
     fire_data = fire_res.data
-    f_lat, f_lng = fire_data["latitude"], fire_data["longitude"]
+    fire_lat, fire_lng = fire_data["latitude"], fire_data["longitude"]
 
-    # 2) Retrieve At-Risk Individuals from Supabase
+    # 2) Retrieve At-Risk Residents
     at_risk_res = supabase.table("at_risk").select("*").execute()
     if at_risk_res.error:
         raise HTTPException(status_code=400, detail=at_risk_res.error.message)
 
-    # 3) Geocode Missing Lat/Lng and Calculate Distance
     nearby_individuals = []
 
     for person in at_risk_res.data:
         # If lat/lng is missing, use geocoding
         if person.get("lat") is None or person.get("lng") is None:
             lat, lng = get_lat_lng_full(
-                person["state"], person["zip"]
+                person["street"], person["city"], person["state"], person["zipcode"]
             )
             if lat is None or lng is None:
                 continue  # Skip if geocoding fails
@@ -428,7 +427,7 @@ def generate_summary(fire_id: str):
 
         # Calculate distance from fire
         person_coords = (person["lat"], person["lng"])
-        fire_coords = (f_lat, f_lng)
+        fire_coords = (fire_lat, fire_lng)
         distance_miles = distance.distance(person_coords, fire_coords).miles
 
         # Include only if within 5 miles
@@ -436,35 +435,33 @@ def generate_summary(fire_id: str):
             person["distance_miles"] = round(distance_miles, 2)
             nearby_individuals.append(person)
 
-        # Respect API rate limits
-        time.sleep(1)  # Avoid excessive geocoding requests
-
-    # If no one is within 5 miles, return early
+    # If no one is nearby, return empty summaries
     if not nearby_individuals:
-        return {"summary": "No at-risk individuals within a 5-mile radius."}
+        return {"firefighter": "No immediate firefighter concerns.",
+                "emt": "No EMT assistance required.",
+                "police": "No law enforcement action needed."}
 
-    # 4) Prepare Data for Claude
-    person_text = "\n".join(
-        [
-            f"- {p['name']} at {p['street']}, {p['city']}, {p['state']} ({p['distance_miles']} miles away). "
-            f"Disability: {p.get('disability', 'None')}. Info: {p.get('additional_info', 'N/A')}"
-            for p in sorted(nearby_individuals, key=lambda x: x["distance_miles"])
-        ]
-    )
+    # 3) Structure Data for AI
+    resident_text = "\n".join([
+        f"- {p['name']} ({p['street']}, {p['city']}, {p['state']}) - "
+        f"Disability: {p.get('disability', 'None')}, Info: {p.get('additional_info', 'N/A')}"
+        for p in sorted(nearby_individuals, key=lambda x: x["distance_miles"])
+    ])
 
-    system_prompt = """You are an emergency response assistant. You must return a structured JSON array of at-risk individuals sorted by distance from a fire.
-    Each object in the JSON array must contain:
-    - name (string)
-    - address (string)
-    - distance_miles (float)
-    - disability (string)
-    - critical_info (string)
+    system_prompt = """You are an emergency response assistant. 
+    Generate separate response summaries for Firefighters, EMTs, and Police 
+    based on the at-risk residents in the fire-affected area. 
+    Each summary should be concise and relevant to their role.
     
-    Return ONLY a valid JSON response and nothing else."""
+    Return ONLY a valid JSON object with:
+    - firefighter (string)
+    - emt (string)
+    - police (string)"""
 
-    user_message = f"""Generate a JSON response summarizing at-risk individuals near the fire.
-
-    {person_text}"""
+    user_message = f"""Generate emergency response summaries for first responders. 
+    The following at-risk residents are near the fire:
+    
+    {resident_text}"""
 
     try:
         response = anthropic_client.messages.create(
@@ -474,23 +471,13 @@ def generate_summary(fire_id: str):
             messages=[{"role": "user", "content": user_message}],
         )
 
-        # Ensure response is formatted correctly
-        if not response.content or not response.content[0].text.strip():
-            return {"error": "Claude returned an empty response."}
-
-        # Try parsing Claude's response into JSON
-        try:
-            structured_summary = json.loads(response.content[0].text)
-        except json.JSONDecodeError:
-            return {
-                "error": "Claude's response was not valid JSON.",
-                "raw_response": response.content[0].text,
-            }
+        # Parse JSON output
+        structured_summary = json.loads(response.content[0].text)
 
     except Exception as e:
         return {"error": f"Error calling Claude API: {str(e)}"}
 
-    return {"summary": structured_summary}
+    return structured_summary
 
 
 '''

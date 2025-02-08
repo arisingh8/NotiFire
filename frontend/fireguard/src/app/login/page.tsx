@@ -34,21 +34,32 @@ export default function LoginPage() {
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
+    //if (!validateForm()) return;
+
     setIsLoading(true);
     setError(null);
 
     try {
-      // TODO: Add your authentication logic here
-      // const response = await loginUser(formData);
+      await new Promise(resolve => setTimeout(resolve, 1000));
       
-      // Temporary: just redirect
-      router.push('/dashboard');
-    } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : 'Invalid email or password';
+      const mockResponse = {
+          ok: true,
+          data: { message: 'Form submitted successfully' }
+      };
+
+      if (!mockResponse.ok) {
+          throw new Error('Submission failed');
+      }
+
+      router.push('/dispatcher/dashboard');
+  } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : 'Failed to submit form';
+      console.error('Submission error:', errorMessage);
       setError(errorMessage);
-    } finally {
+  } finally {
       setIsLoading(false);
-    }
+  }
+
   };
 
   return (

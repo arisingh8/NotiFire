@@ -23,7 +23,7 @@ export default function Contact() {
                   Get in Touch
                 </h2>
                 <p className="text-[#ffdbbb] font-[family-name:var(--font-eb-garamond)]">
-                  Email: contact@fireguard.com
+                  Email: contact@notifire.com
                 </p>
                 <p className="text-[#ffdbbb] font-[family-name:var(--font-eb-garamond)]">
                   Phone: (555) 123-4567
@@ -69,7 +69,7 @@ export default function Contact() {
 
           <div className="pt-6 border-t border-gray-700">
             <p className="text-gray-400 text-center font-[family-name:var(--font-eb-garamond)]">
-              For technical support, please email: support@fireguard.com
+              For technical support, please email: support@notifire.com
             </p>
           </div>
         </div>

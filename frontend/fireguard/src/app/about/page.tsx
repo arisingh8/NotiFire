@@ -18,7 +18,7 @@ export default function About() {
         <div className="bg-gray-800 rounded-lg shadow-xl p-8 space-y-6">
           <div className="space-y-4">
             <p className="text-[#ffdbbb] font-[family-name:var(--font-eb-garamond)] text-lg">
-              FireGuard is a comprehensive fire safety management system designed to
+              Notifire is a comprehensive fire safety management system designed to
               protect communities and save lives.
             </p>
             

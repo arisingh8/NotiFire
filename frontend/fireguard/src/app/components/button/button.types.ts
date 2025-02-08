@@ -5,7 +5,7 @@ export type ButtonVariant =
   | 'secondary' 
   | 'outline' 
   | 'ghost'
-  | 'role-atrisk'    // New role variants
+  | 'role-resident'    // New role variants
   | 'role-dispatcher'
   | 'role-firstresponder';
 

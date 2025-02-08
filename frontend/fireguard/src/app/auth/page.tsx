@@ -36,13 +36,25 @@ const LoginPage = () => {
     // }, []);
 
     return (
-        <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <div style={{ 
+            display: 'flex', 
+            justifyContent: 'center', 
+            alignItems: 'center', 
+            height: '95vh',
+            backgroundColor: 'black',
+            overflow: 'hidden',
+            position: 'fixed',
+            width: '100%',
+            top: 0,
+            left: 0
+        }}>
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', width: '300px' }}>
                 <h2 style={{ 
                     marginBottom: '20px',
                     fontSize: '24px',
                     fontWeight: 'bold',
-                    textAlign: 'center' 
+                    textAlign: 'center', 
+                    color: 'white'
                 }}>Login</h2>
                 <label htmlFor="email">Email</label>
                 <input
@@ -51,15 +63,29 @@ const LoginPage = () => {
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     required
+                    style={{
+                        marginTop: '3px',
+                        marginBottom: '10px',
+                        padding: '10px',
+                        borderRadius: '5px',
+                        border: '1px solid #ccc'
+                    }}
                 />
                 <label htmlFor="password">Password</label>
-                <></>
+            
                 <input
                     type="password"
                     id="password"
                     value={password}
                     onChange={(e) => setPassword(e.target.value)}
                     required
+                    style={{
+                        marginTop: '3px',
+                        marginBottom: '10px',
+                        padding: '10px',
+                        borderRadius: '5px',
+                        border: '1px solid #ccc'
+                    }}
                 />
                 <Button type="submit" style={{ marginTop: '20px' }}>Login</Button>
             </form>

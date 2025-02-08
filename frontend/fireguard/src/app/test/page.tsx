@@ -5,6 +5,7 @@ import Input from '@/app/components/form/input';
 import Select from '@/app/components/form/select';
 import Textarea from '@/app/components/form/textarea';
 import Map from '@/app/components/map';
+import Alert from '@/app/components/alert';
 
 // Define the MapPoint type to match the one in Map component
 interface MapPoint {
@@ -108,7 +109,7 @@ export default function TestPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-900 p-8">
+    <div className="min-h-screen bg-gray-900 p-8 pb-24">
       <div className="max-w-4xl mx-auto space-y-8">
         {/* Form Section */}
         <div className="bg-gray-800 p-6 rounded-lg shadow-xl">
@@ -159,16 +160,54 @@ export default function TestPage() {
         </div>
 
         {/* Map Section */}
-        <div className="bg-gray-800 p-6 rounded-lg shadow-xl">
+        <div className="bg-gray-800 p-6 rounded-lg shadow-xl relative">
           <h2 className="text-2xl text-[#ffdbbb] mb-6 font-[family-name:var(--font-eb-garamond)]">
             Test Map
           </h2>
-          <div className="h-[500px]">
+          <div className="h-[500px] relative">
             <Map
               center={center}
               points={samplePoints}
               radius={50}
               onMarkerClick={handleMarkerClick}
+            />
+          </div>
+        </div>
+
+        {/* Alerts Section */}
+        <div className="bg-gray-800 p-6 rounded-lg shadow-xl">
+          <h2 className="text-2xl text-[#ffdbbb] mb-6 font-[family-name:var(--font-eb-garamond)]">
+            Test Alerts
+          </h2>
+          <div className="space-y-4">
+            <Alert
+              title="Emergency Dispatch"
+              message="Fire reported at 123 Main St. Multiple units required."
+              severity="error"
+              actionLabel="Respond"
+              onAction={() => console.log('Responded to alert')}
+              onRead={() => console.log('Marked as read')}
+            />
+            
+            <Alert
+              title="Unit Update"
+              message="Unit 7 is en route to the scene."
+              severity="info"
+              isRead={true}
+            />
+            
+            <Alert
+              title="Weather Warning"
+              message="High winds expected in the area. Exercise caution."
+              severity="warning"
+              onDismiss={() => console.log('Alert dismissed')}
+            />
+            
+            <Alert
+              title="Mission Complete"
+              message="All units have returned to station."
+              severity="success"
+              isRead={true}
             />
           </div>
         </div>

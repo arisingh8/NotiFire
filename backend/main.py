@@ -64,33 +64,33 @@ class AtRisk(BaseModel):
 
 
 class Dispatcher(BaseModel):
-    user_id: str
     name: str
-    place_of_work: Optional[str]
+    state: Optional[str]
     zipcode: Optional[str]
-    auth_key: Optional[str]
-    lat: Optional[float]
-    lng: Optional[float]
+    authkey: Optional[str]
+    dispatch_center: Optional[str]
+    dispatch_center_phone: Optional[str]
 
 
 class FirstResponder(BaseModel):
-    user_id: str
-    role: str
+    role: Optional[str]
     unit_name: str
     street: Optional[str]
     city: Optional[str]
     state: Optional[str]
     zipcode: Optional[str]
-    lat: Optional[float]
-    lng: Optional[float]
-    unit_size: Optional[int]
+    unit_size: Optional[str]
 
 
+"""
 # Configure logging
-logging.basicConfig(level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s")
+logging.basicConfig(
+    level=logging.INFO, format="%(asctime)s - %(levelname)s - %(message)s"
+)
 logger = logging.getLogger(__name__)
 
-#@app.middleware("http")
+
+# @app.middleware("http")
 async def log_requests(request: Request, call_next):
     logger.info(f"Request: {request.method} {request.url}")
     response = await call_next(request)
@@ -98,6 +98,7 @@ async def log_requests(request: Request, call_next):
     response.body_iterator = iterate_in_threadpool(iter(response_body))
     logging.info(f"response_body={response_body[0].decode()}")
     return response
+"""
 
 # -------------------------------
 # OPTIONAL AUTH ENDPOINTS

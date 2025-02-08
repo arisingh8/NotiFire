@@ -7,23 +7,23 @@ import { useRouter } from 'next/navigation';
 
 interface FormData {
   role: string;
-  unitName: string;
+  unit_name: string;
   street: string;
   city: string;
   state: string;
-  zipCode: string;
-  unitSize: string;
+  zipcode: string;
+  unit_size: string;
 }
 
 export default function FirstResponderForm() {
   const [formData, setFormData] = useState<FormData>({
     role: '',
-    unitName: '',
+    unit_name: '',
     street: '',
     city: '',
     state: '',
-    zipCode: '',
-    unitSize: ''
+    zipcode: '',
+    unit_size: ''
   });
 
   const [errors, setErrors] = useState<Partial<FormData>>({});
@@ -113,17 +113,17 @@ export default function FirstResponderForm() {
     const newErrors: Partial<FormData> = {};
 
     if (!formData.role) newErrors.role = 'Role is required';
-    if (!formData.unitName) newErrors.unitName = 'Unit name is required';
+    if (!formData.unit_name) newErrors.unit_name = 'Unit name is required';
     if (!formData.street) newErrors.street = 'Street address is required';
     if (!formData.city) newErrors.city = 'City is required';
     if (!formData.state) newErrors.state = 'State is required';
-    if (!formData.zipCode) newErrors.zipCode = 'ZIP code is required';
-    if (!formData.unitSize) newErrors.unitSize = 'Unit size is required';
+    if (!formData.zipcode) newErrors.zipcode = 'ZIP code is required';
+    if (!formData.unit_size) newErrors.unit_size = 'Unit size is required';
 
     // ZIP code validation
     const zipRegex = /^\d{5}$/;
-    if (!zipRegex.test(formData.zipCode)) {
-      newErrors.zipCode = 'Please enter a valid 5-digit ZIP code';
+    if (!zipRegex.test(formData.zipcode)) {
+      newErrors.zipcode = 'Please enter a valid 5-digit ZIP code';
     }
 
     setErrors(newErrors);
@@ -191,10 +191,10 @@ export default function FirstResponderForm() {
 
           <Input
             label="Unit Name"
-            name="unitName"
-            value={formData.unitName}
+            name="unit_name"
+            value={formData.unit_name}
             onChange={handleChange}
-            error={errors.unitName}
+            error={errors.unit_name}
             required
           />
 
@@ -232,20 +232,20 @@ export default function FirstResponderForm() {
           <div className="grid grid-cols-2 gap-4">
             <Input
               label="ZIP Code"
-              name="zipCode"
-              value={formData.zipCode}
+              name="zipcode"
+              value={formData.zipcode}
               onChange={handleChange}
-              error={errors.zipCode}
+              error={errors.zipcode}
               required
             />
 
             <Input
               label="Unit Size"
-              name="unitSize"
+              name="unit_size"
               type="number"
-              value={formData.unitSize}
+              value={formData.unit_size}
               onChange={handleChange}
-              error={errors.unitSize}
+              error={errors.unit_size}
               required
               placeholder="Number of personnel"
             />

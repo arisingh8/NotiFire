@@ -15,7 +15,7 @@ export default function RolePage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-gray-900">
-      <Header />
+      <Header />   
       
       {/* Modal */}
       <div className="flex-1 flex items-center justify-center">

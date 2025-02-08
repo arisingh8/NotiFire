@@ -8,6 +8,7 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   error?: string;
   helperText?: string;
   required?: boolean;
+  labelClassName?: string;
 }
 
 const Input: React.FC<InputProps> = ({
@@ -17,6 +18,7 @@ const Input: React.FC<InputProps> = ({
   required = false,
   type = 'text',
   className,
+  labelClassName,
   ...props
 }) => {
   const id = React.useId();
@@ -25,7 +27,7 @@ const Input: React.FC<InputProps> = ({
     <div className={InputStyles.container}>
       <label 
         htmlFor={id} 
-        className={InputStyles.label}
+        className={`${InputStyles.label} ${labelClassName || ''}`}
       >
         {label}
         {required && <span className={InputStyles.required}>*</span>}

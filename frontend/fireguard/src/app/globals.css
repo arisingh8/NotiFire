@@ -80,7 +80,7 @@ a {
 
 /* 📌 Header & Footer (Now Skinnier) */
 header {
-  @apply fixed top-0 left-0 w-full h-12 bg-white dark:bg-gray-950 shadow-md z-50 flex items-center justify-between px-6;
+  @apply fixed top-0 left-0 w-full h-16 bg-white dark:bg-gray-950 shadow-md z-50 flex items-center justify-between px-6;
 }
 
 footer {

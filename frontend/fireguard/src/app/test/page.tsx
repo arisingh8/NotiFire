@@ -20,6 +20,12 @@ interface MapPoint {
   };
 }
 
+// Create a union type for all possible form events
+type FormChangeEvent = 
+  | React.ChangeEvent<HTMLInputElement>
+  | React.ChangeEvent<HTMLTextAreaElement>
+  | { target: { name: string; value: string; type?: string } };
+
 export default function TestPage() {
   const [formData, setFormData] = useState({
     name: '',
@@ -70,15 +76,12 @@ export default function TestPage() {
     { value: 'TX', label: 'Texas' }
   ];
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
-  ) => {
+  const handleChange = (e: FormChangeEvent) => {
     const { name, value } = e.target;
     setFormData(prev => ({
       ...prev,
       [name]: value
     }));
-    // Clear error when user types
     if (errors[name]) {
       setErrors(prev => ({
         ...prev,

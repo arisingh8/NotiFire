@@ -2,32 +2,63 @@
 
 import React from 'react';
 import { SelectStyles } from './styles';
+import Dropdown from '@/app/components/dropdown';
 
 interface Option {
   value: string;
   label: string;
 }
 
-interface SelectProps extends Omit<React.SelectHTMLAttributes<HTMLSelectElement>, 'children'> {
+// Create a type for our synthetic event that matches the shape we need
+type SelectChangeEvent = {
+  target: {
+    name: string;
+    value: string;
+    type?: string;
+  };
+};
+
+interface SelectProps {
   label: string;
   options: Option[];
+  value: string;
+  onChange: (e: SelectChangeEvent) => void;
+  name: string;
   error?: string;
   helperText?: string;
   required?: boolean;
   placeholder?: string;
+  className?: string;
 }
 
 const Select: React.FC<SelectProps> = ({
   label,
   options,
+  value,
+  onChange,
+  name,
   error,
   helperText,
   required = false,
   placeholder = 'Select an option',
-  className,
-  ...props
+  className = ''
 }) => {
   const id = React.useId();
+
+  const handleSelect = (selectedValue: string) => {
+    // Create a synthetic event object
+    const syntheticEvent: SelectChangeEvent = {
+      target: {
+        name,
+        value: selectedValue,
+        type: 'select'
+      }
+    };
+
+    onChange(syntheticEvent);
+  };
+
+  const selectedLabel = options.find(opt => opt.value === value)?.label || placeholder;
 
   return (
     <div className={SelectStyles.container}>
@@ -38,44 +69,24 @@ const Select: React.FC<SelectProps> = ({
         {label}
         {required && <span className={SelectStyles.required}>*</span>}
       </label>
-      
-      <div className={SelectStyles.selectWrapper}>
-        <select
-          id={id}
-          className={`${SelectStyles.select} ${error ? SelectStyles.error : ''} ${className || ''}`}
-          aria-invalid={!!error}
-          aria-describedby={error ? `${id}-error` : helperText ? `${id}-helper` : undefined}
-          required={required}
-          {...props}
-        >
-          <option value="" disabled>
-            {placeholder}
-          </option>
-          {options.map((option) => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
-        
-        {/* Custom arrow icon */}
-        <div className={SelectStyles.arrow}>
-          <svg
-            className="w-5 h-5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M19 9l-7 7-7-7"
-            />
-          </svg>
-        </div>
-      </div>
-      
+
+      <Dropdown
+        trigger={
+          <div className={`${SelectStyles.select} ${error ? SelectStyles.error : ''}`}>
+            <span className={value ? '' : SelectStyles.placeholder}>
+              {selectedLabel}
+            </span>
+            <span className={SelectStyles.arrow}>▼</span>
+          </div>
+        }
+        items={options.map(option => ({
+          label: option.label,
+          value: option.value,
+          onClick: () => handleSelect(option.value)
+        }))}
+        className={className}
+      />
+
       {error && (
         <span 
           id={`${id}-error`} 

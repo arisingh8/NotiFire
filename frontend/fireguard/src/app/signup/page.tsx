@@ -1,80 +1,153 @@
-'use client'
-import { useState } from 'react'
-import Link from 'next/link'
+"use client";
 
-export default function SignUp() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [confirmPassword, setConfirmPassword] = useState('')
+import { useState } from 'react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import Input from '@/app/components/form/input';
+import Button from '@/app/components/button';
 
-  const handleSignUp = async (e: React.FormEvent) => {
-    e.preventDefault()
-    
-    if (password !== confirmPassword) {
-      alert('Passwords do not match')
-      return
+interface SignUpForm {
+  email: string;
+  password: string;
+  confirmPassword: string;
+}
+
+export default function SignUpPage() {
+  const [formData, setFormData] = useState<SignUpForm>({
+    email: '',
+    password: '',
+    confirmPassword: ''
+  });
+  const [error, setError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+    // Clear error when user starts typing
+    if (error) setError(null);
+  };
+
+  const validateForm = (): boolean => {
+    if (formData.password !== formData.confirmPassword) {
+      setError('Passwords do not match');
+      return false;
     }
-    console.log('Sign up with:', { email, password })
-  }
+    if (formData.password.length < 8) {
+      setError('Password must be at least 8 characters long');
+      return false;
+    }
+    return true;
+  };
+
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!validateForm()) return;
+
+    setIsLoading(true);
+    setError(null);
+
+    try {
+      // TODO: Add your registration logic here
+      // const response = await registerUser(formData);
+      
+      // Temporary: just redirect
+      router.push('/roles');
+    } catch (error: unknown) {
+      const errorMessage = error instanceof Error ? error.message : 'Failed to create account';
+      setError(errorMessage);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   return (
-    <div className="h-[calc(100vh-4rem)] fixed w-full flex items-center justify-center bg-[#1a1a1a]">
-      <div className="bg-[#2a2a2a] p-8 rounded-lg shadow-xl w-96 border border-[#3a3a3a]">
-        <h2 className="text-2xl font-bold mb-6 text-center text-white">Sign Up</h2>
-        <form onSubmit={handleSignUp} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">
-              Email
-            </label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-3 py-2 bg-[#3a3a3a] border border-[#4a4a4a] rounded-md text-white placeholder-gray-400 focus:outline-none focus:border-blue-500"
-              placeholder="Enter your email"
-              required
-            />
+    <div className="min-h-screen bg-gray-900 flex items-center justify-center px-4">
+      <div className="w-full max-w-md">
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold text-[#ffdbbb] mb-2 font-[family-name:var(--font-eb-garamond)]">
+            Create Account
+          </h1>
+          <p className="text-gray-400 font-[family-name:var(--font-eb-garamond)]">
+            Join FireGuard today
+          </p>
+        </div>
+
+        {error && (
+          <div className="mb-6 p-4 bg-red-800/50 text-red-100 rounded-lg text-center">
+            {error}
           </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">
-              Password
-            </label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-3 py-2 bg-[#3a3a3a] border border-[#4a4a4a] rounded-md text-white placeholder-gray-400 focus:outline-none focus:border-blue-500"
-              placeholder="Create a password"
-              required
-            />
-          </div>
-          <div>
-            <label className="block text-sm font-medium text-gray-300 mb-1">
-              Confirm Password
-            </label>
-            <input
-              type="password"
-              value={confirmPassword}
-              onChange={(e) => setConfirmPassword(e.target.value)}
-              className="w-full px-3 py-2 bg-[#3a3a3a] border border-[#4a4a4a] rounded-md text-white placeholder-gray-400 focus:outline-none focus:border-blue-500"
-              placeholder="Confirm your password"
-              required
-            />
-          </div>
-          <button
+        )}
+
+        <form onSubmit={handleSubmit} className="bg-gray-800 rounded-lg shadow-xl p-8 space-y-6">
+          <Input
+            label="Email Address"
+            name="email"
+            type="email"
+            value={formData.email}
+            onChange={handleChange}
+            required
+            placeholder="you@example.com"
+          />
+
+          <Input
+            label="Password"
+            name="password"
+            type="password"
+            value={formData.password}
+            onChange={handleChange}
+            required
+            placeholder="••••••••"
+            helperText="Must be at least 8 characters"
+          />
+
+          <Input
+            label="Confirm Password"
+            name="confirmPassword"
+            type="password"
+            value={formData.confirmPassword}
+            onChange={handleChange}
+            required
+            placeholder="••••••••"
+          />
+
+          <Button
             type="submit"
-            className="w-full bg-blue-600 text-white py-2 rounded-md hover:bg-blue-700 transition-colors"
+            disabled={isLoading}
+            className={`
+              w-full
+              px-6
+              py-3
+              bg-[#ffdbbb]
+              text-gray-900
+              rounded-lg
+              font-bold
+              transition-opacity
+              ${isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:opacity-90'}
+            `}
           >
-            Sign Up
-          </button>
+            {isLoading ? 'Creating Account...' : 'Create Account'}
+          </Button>
+
+          <div className="text-center mt-4">
+            <p className="text-gray-400 font-[family-name:var(--font-eb-garamond)]">
+              Already have an account?{' '}
+              <Link 
+                href="/login" 
+                className="text-[#ffdbbb] hover:underline font-[family-name:var(--font-eb-garamond)]"
+              >
+                Sign in here
+              </Link>
+            </p>
+          </div>
         </form>
-        <p className="mt-4 text-center text-gray-400">
-          Already have an account?{' '}
-          <Link href="/login" className="text-blue-400 hover:text-blue-300">
-            Log in
-          </Link>
-        </p>
       </div>
     </div>
-  )
+  );
 }

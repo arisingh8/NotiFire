@@ -86,3 +86,14 @@ header {
 footer {
   @apply fixed bottom-0 left-0 w-full h-16 bg-white dark:bg-gray-950 border-t border-[var(--border)] flex items-center justify-center text-sm;
 }
+
+/* Hide scrollbar for Chrome, Safari and Opera */
+::-webkit-scrollbar {
+  display: none;
+}
+
+/* Hide scrollbar for IE, Edge and Firefox */
+* {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+}

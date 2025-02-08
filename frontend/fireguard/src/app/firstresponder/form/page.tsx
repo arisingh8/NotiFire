@@ -138,7 +138,7 @@ export default function FirstResponderForm() {
     setSubmitError(null);
 
     try {
-      const response = await fetch('/onboard/responder', {
+      const response = await fetch('http://127.0.0.1:8000/onboard/responder', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

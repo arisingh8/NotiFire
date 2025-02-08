@@ -7,32 +7,32 @@ import Select from '@/app/components/form/select';
 import Textarea from '@/app/components/form/textarea';
 
 interface FormData {
-  fullName: string;
-  address: string;
+  name: string;
+  street: string;
   city: string;
   state: string;
-  zipCode: string;
+  zipcode: string;
   phone: string;
-  mobilityStatus: string;
-  medicalNeeds: string;
-  emergencyContact: string;
-  emergencyPhone: string;
-  additionalInfo: string;
+  mobility_status: string;
+  medical_needs: string;
+  emergency_contact: string;
+  emergency_phone: string;
+  additional_info: string;
 }
 
 export default function AtRiskForm() {
   const [formData, setFormData] = useState<FormData>({
-    fullName: '',
-    address: '',
+    name: '',
+    street: '',
     city: '',
     state: '',
-    zipCode: '',
+    zipcode: '',
     phone: '',
-    mobilityStatus: '',
-    medicalNeeds: '',
-    emergencyContact: '',
-    emergencyPhone: '',
-    additionalInfo: ''
+    mobility_status: '',
+    medical_needs: '',
+    emergency_contact: '',
+    emergency_phone: '',
+    additional_info: ''
   });
 
   const router = useRouter();
@@ -123,23 +123,23 @@ export default function AtRiskForm() {
     const newErrors: Partial<FormData> = {};
 
     // Required fields validation
-    if (!formData.fullName) newErrors.fullName = 'Full name is required';
-    if (!formData.address) newErrors.address = 'Address is required';
+    if (!formData.name) newErrors.name = 'Full name is required';
+    if (!formData.street) newErrors.street = 'Address is required';
     if (!formData.city) newErrors.city = 'City is required';
     if (!formData.state) newErrors.state = 'State is required';
-    if (!formData.zipCode) newErrors.zipCode = 'ZIP code is required';
+    if (!formData.zipcode) newErrors.zipcode = 'ZIP code is required';
     if (!formData.phone) newErrors.phone = 'Phone number is required';
-    if (!formData.mobilityStatus) newErrors.mobilityStatus = 'Mobility status is required';
-    if (!formData.emergencyContact) newErrors.emergencyContact = 'Emergency contact is required';
-    if (!formData.emergencyPhone) newErrors.emergencyPhone = 'Emergency contact phone is required';
+    if (!formData.mobility_status) newErrors.mobility_status = 'Mobility status is required';
+    if (!formData.emergency_contact) newErrors.emergency_contact = 'Emergency contact is required';
+    if (!formData.emergency_phone) newErrors.emergency_phone = 'Emergency contact phone is required';
 
     // Phone number validation
     const phoneRegex = /^\d{10}$/;
     if (!phoneRegex.test(formData.phone.replace(/\D/g, ''))) {
       newErrors.phone = 'Please enter a valid 10-digit phone number';
     }
-    if (!phoneRegex.test(formData.emergencyPhone.replace(/\D/g, ''))) {
-      newErrors.emergencyPhone = 'Please enter a valid 10-digit phone number';
+    if (!phoneRegex.test(formData.emergency_phone.replace(/\D/g, ''))) {
+      newErrors.emergency_phone = 'Please enter a valid 10-digit phone number';
     }
 
     setErrors(newErrors);
@@ -155,10 +155,11 @@ export default function AtRiskForm() {
 
     try {
       // Mock API endpoint - replace with your actual endpoint
-      const response = await fetch('/onboard/at_risk', {
+      console.log(JSON.stringify(formData));
+      const response = await fetch('http://127.0.0.1:8000/onboard/at_risk', {
         method: 'POST',
         headers: {
-          'Content-Type': 'text/plain',
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify(formData),
       });
@@ -203,19 +204,19 @@ export default function AtRiskForm() {
         <form onSubmit={handleSubmit} className="space-y-6 bg-gray-800 p-6 rounded-lg shadow-xl">
           <Input
             label="Full Name"
-            name="fullName"
-            value={formData.fullName}
+            name="name"
+            value={formData.name}
             onChange={handleChange}
-            error={errors.fullName}
+            error={errors.name}
             required
           />
 
           <Input
             label="Street Address"
-            name="address"
-            value={formData.address}
+            name="street"
+            value={formData.street}
             onChange={handleChange}
-            error={errors.address}
+            error={errors.street}
             required
           />
 
@@ -242,10 +243,10 @@ export default function AtRiskForm() {
 
           <Input
             label="ZIP Code"
-            name="zipCode"
-            value={formData.zipCode}
+            name="zipcode"
+            value={formData.zipcode}
             onChange={handleChange}
-            error={errors.zipCode}
+            error={errors.zipcode}
             required
           />
 
@@ -260,49 +261,49 @@ export default function AtRiskForm() {
 
           <Select
             label="Mobility Status"
-            name="mobilityStatus"
+            name="mobility_status"
             options={mobilityOptions}
-            value={formData.mobilityStatus}
+            value={formData.mobility_status}
             onChange={handleChange}
-            error={errors.mobilityStatus}
+            error={errors.mobility_status}
             required
           />
 
           <Textarea
             label="Medical Needs"
-            name="medicalNeeds"
-            value={formData.medicalNeeds}
+            name="medical_needs"
+            value={formData.medical_needs}
             onChange={handleChange}
-            error={errors.medicalNeeds}
+            error={errors.medical_needs}
             placeholder="Please list any medical conditions, equipment, or special needs"
           />
 
           <div className="grid grid-cols-2 gap-4">
             <Input
               label="Emergency Contact Name"
-              name="emergencyContact"
-              value={formData.emergencyContact}
+              name="emergency_contact"
+              value={formData.emergency_contact}
               onChange={handleChange}
-              error={errors.emergencyContact}
+              error={errors.emergency_contact}
               required
             />
 
             <Input
               label="Emergency Contact Phone"
-              name="emergencyPhone"
-              value={formData.emergencyPhone}
+              name="emergency_phone"
+              value={formData.emergency_phone}
               onChange={handleChange}
-              error={errors.emergencyPhone}
+              error={errors.emergency_phone}
               required
             />
           </div>
 
           <Textarea
             label="Additional Information"
-            name="additionalInfo"
-            value={formData.additionalInfo}
+            name="additional_info"
+            value={formData.additional_info}
             onChange={handleChange}
-            error={errors.additionalInfo}
+            error={errors.additional_info}
             placeholder="Any additional information that emergency responders should know"
           />
 

@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Input from '@/app/components/form/input';
 import Select from '@/app/components/form/select';
+import { useRouter } from 'next/navigation';
 
 interface FormData {
   role: string;
@@ -26,8 +27,11 @@ export default function FirstResponderForm() {
   });
 
   const [errors, setErrors] = useState<Partial<FormData>>({});
+  const router = useRouter();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState<'idle' | 'success' | 'error'>('idle');
+  const [submitError, setSubmitError] = useState<string | null>(null);
+
 
   const roleOptions = [
     { value: 'EMT', label: 'EMT' },
@@ -129,29 +133,33 @@ export default function FirstResponderForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!validateForm()) return;
-
     setIsSubmitting(true);
     setSubmitStatus('idle');
+    setSubmitError(null);
 
     try {
-      const response = await fetch('/api/firstresponder', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(formData)
-      });
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        
+        const mockResponse = {
+            ok: true,
+            data: { message: 'Form submitted successfully' }
+        };
 
-      if (!response.ok) throw new Error('Submission failed');
+        if (!mockResponse.ok) {
+            throw new Error('Submission failed');
+        }
 
-      setSubmitStatus('success');
-    } catch (error) {
-      console.error('Submission error:', error);
-      setSubmitStatus('error');
+        setSubmitStatus('success');
+        router.push('/firstresponder/dashboard');
+    } catch (err: unknown) {
+        const errorMessage = err instanceof Error ? err.message : 'Failed to submit form';
+        console.error('Submission error:', errorMessage);
+        setSubmitStatus('error');
+        setSubmitError(errorMessage);
     } finally {
-      setIsSubmitting(false);
+        setIsSubmitting(false);
     }
-  };
+};
 
   return (
     <div className="min-h-screen bg-gray-900 p-8">
@@ -166,11 +174,11 @@ export default function FirstResponderForm() {
           </div>
         )}
 
-        {submitStatus === 'error' && (
-          <div className="mb-6 p-4 bg-red-800/50 text-red-100 rounded-lg">
-            There was an error submitting your registration. Please try again.
-          </div>
-        )}
+        {submitError && (
+                    <div className="mb-6 p-4 bg-red-800/50 text-red-100 rounded-lg">
+                        {submitError}
+                    </div>
+                )}
 
         <form onSubmit={handleSubmit} className="space-y-6 bg-gray-800 p-6 rounded-lg shadow-xl">
           <Select

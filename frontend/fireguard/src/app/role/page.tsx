@@ -5,20 +5,26 @@ import { useRouter } from 'next/navigation';
 import Modal from '@/app/components/modal';
 import Button from '@/app/components/button';
 import Header from '@/app/sections/header';
+import { useUser } from '@/app/context/UserContext';
 
 export default function RolePage() {
   const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(true);
+  const { setUserRole } = useUser();
 
   const handleRoleSelect = (role: string) => {
     console.log(`Selected role: ${role}`);
     if (role === 'resident') {
+      setUserRole(role);
       router.push('/resident/form');
     } else if (role === 'dispatcher') {
+      setUserRole(role);
       router.push('/dispatcher/form');
     } else if (role === 'firstresponder') {
+      setUserRole(role);
       router.push('/firstresponder/form');
     }
+
     setIsModalOpen(false);
   };
 

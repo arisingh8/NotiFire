@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { fetchWithAuth } from '@/utils/api';
 
 const LoginPage = () => {
     const [email, setEmail] = useState('');
@@ -15,6 +16,23 @@ const LoginPage = () => {
         // If authentication is successful, redirect to the dashboard
         router.push('/dashboard');
     };
+
+    // useEffect(() => {
+    //     // Example of fetching protected data
+    //     const fetchData = async () => {
+    //         try {
+    //             const response = await fetchWithAuth('http://localhost:8000/auth/me');
+    //             if (response.ok) {
+    //                 const data = await response.json();
+    //                 console.log('User data:', data);
+    //             }
+    //         } catch (error) {
+    //             console.error('Error:', error);
+    //         }
+    //     };
+
+    //     fetchData();
+    // }, []);
 
     return (
         <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>

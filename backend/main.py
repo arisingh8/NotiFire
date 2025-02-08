@@ -131,7 +131,7 @@ def login(user: LoginUser):
     return {"message": "User logged in successfully", "uuid": data.user.id}
 
 
-@app.post("/auth/logout")
+@app.get("/auth/logout")
 def login():
     response = supabase.auth.sign_out()
 

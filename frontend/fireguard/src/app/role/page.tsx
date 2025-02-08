@@ -25,25 +25,26 @@ export default function RolePage() {
         >
           <div className="flex flex-col gap-6 w-full min-w-[300px] max-w-md p-6">
             <Button 
-              variant="role-resident" 
+              variant="role-atrisk" 
               size="large"
-              onClick={() => handleRoleSelect('resident')}
+              onClick={() => handleRoleSelect('atrisk')}
             >
               Resident
             </Button>
+
             <Button 
-              variant="role-manager" 
+              variant="role-dispatcher" 
               size="large"
-              onClick={() => handleRoleSelect('manager')}
+              onClick={() => handleRoleSelect('dispatcher')}
             >
-              Property Manager
+              Dispatcher
             </Button>
             <Button 
-              variant="role-firefighter" 
+              variant="role-firstresponder" 
               size="large"
-              onClick={() => handleRoleSelect('firefighter')}
+              onClick={() => handleRoleSelect('firstresponder')}
             >
-              Firefighter
+              First Responder
             </Button>
           </div>
         </Modal>

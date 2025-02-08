@@ -139,8 +139,6 @@ def get_fires():
     For brevity, let's read from the DB. 
     """
     response = supabase.table("fires").select("*").execute()
-    if response.error:
-        raise HTTPException(status_code=400, detail=response.error.message)
     return response.data
 
 @app.post("/fires/import")
@@ -223,64 +221,257 @@ from anthropic import Anthropic
 from fastapi import HTTPException
 from geopy.distance import geodesic
 
+from typing import Optional
+from fastapi import Query
+from geopy.distance import geodesic
+from geopy.geocoders import Nominatim
+import json
+import time
+
+# Initialize Geocoder
+geolocator = Nominatim(user_agent="fire_safety_app")
+
+def get_lat_lng(street: str, city: str, state: str, zip_code: str):
+    """
+    Converts an address to latitude and longitude using Nominatim Geocoder.
+    """
+    address = f"{street}, {city}, {state} {zip_code}"
+    
+    try:
+        location = geolocator.geocode(address, timeout=10)
+        if location:
+            return location.latitude, location.longitude
+    except Exception as e:
+        print(f"Geocoding failed for {address}: {e}")
+    
+    return None, None  # If geolocation fails
+
 @app.post("/generate-summary")
 def generate_summary(fire_id: str):
     """
-    Summarize at-risk individuals within 5 miles of the fire using Claude 3.5 Sonnet.
-    Steps:
-      1) Find the fire lat/lng
-      2) Query 'at_risk' for those within 5 miles
-      3) Summarize via Anthropic's Claude
+    Generate a structured summary of at-risk individuals near a fire using Claude.
+    Addresses are converted to lat/lng before distance calculation.
     """
+
+    # 1) Retrieve Fire Location from Supabase
     fire_res = supabase.table("fires").select("*").eq("id", fire_id).single().execute()
     if fire_res.error or not fire_res.data:
         raise HTTPException(status_code=404, detail="Fire not found")
-    fire_data = fire_res.data
 
-    # 1) get lat/lng
+    fire_data = fire_res.data
     f_lat, f_lng = fire_data["latitude"], fire_data["longitude"]
 
-    # 2) find at-risk
+    # 2) Retrieve At-Risk Individuals from Supabase
     at_risk_res = supabase.table("at_risk").select("*").execute()
     if at_risk_res.error:
         raise HTTPException(status_code=400, detail=at_risk_res.error.message)
 
-    near_ones = []
+    # 3) Geocode Missing Lat/Lng and Calculate Distance
+    nearby_individuals = []
+    
     for person in at_risk_res.data:
-        if person["lat"] and person["lng"]:
-            dist_mi = geodesic((f_lat, f_lng), (person["lat"], person["lng"])).miles
-            if dist_mi <= 5:
-                person["distance"] = round(dist_mi, 2)
-                near_ones.append(person)
+        # If lat/lng is missing, use geocoding
+        if person.get("lat") is None or person.get("lng") is None:
+            lat, lng = get_lat_lng(person["street"], person["city"], person["state"], person["zip"])
+            if lat is None or lng is None:
+                continue  # Skip if geocoding fails
+            person["lat"], person["lng"] = lat, lng
+        
+        # Calculate distance from fire
+        person_coords = (person["lat"], person["lng"])
+        fire_coords = (f_lat, f_lng)
+        distance_miles = geodesic(person_coords, fire_coords).miles
 
-    # 3) Summarize with Claude
-    if not anthropic_client:
-        return {"error": "Anthropic API key not configured"}
+        # Include only if within 5 miles
+        if distance_miles <= 5:
+            person["distance_miles"] = round(distance_miles, 2)
+            nearby_individuals.append(person)
 
-    # Build the message for Claude
+        # Respect API rate limits
+        time.sleep(1)  # Avoid excessive geocoding requests
+
+    # If no one is within 5 miles, return early
+    if not nearby_individuals:
+        return {"summary": "No at-risk individuals within a 5-mile radius."}
+
+    # 4) Prepare Data for Claude
     person_text = "\n".join([
-        f"- {p['name']} at {p['street']}, {p['city']}, Dist: {p['distance']} miles. Disability: {p.get('disability','N/A')}, Info: {p.get('additional_info','')}"
-        for p in sorted(near_ones, key=lambda x: x["distance"])
+        f"- {p['name']} at {p['street']}, {p['city']}, {p['state']} ({p['distance_miles']} miles away). "
+        f"Disability: {p.get('disability', 'None')}. Info: {p.get('additional_info', 'N/A')}"
+        for p in sorted(nearby_individuals, key=lambda x: x["distance_miles"])
     ])
-    
-    system_prompt = """You are an emergency response assistant. Summarize the list of at-risk individuals near a fire. 
-    Focus on key details that emergency responders need to know. Order by distance from fire."""
-    
-    user_message = f"""Summarize these at-risk individuals near the fire in a concise bullet list. Include their distance, mobility status, and any critical information:
 
-{person_text}"""
+    system_prompt = """You are an emergency response assistant. You must return a structured JSON array of at-risk individuals sorted by distance from a fire.
+    Each object in the JSON array must contain:
+    - name (string)
+    - address (string)
+    - distance_miles (float)
+    - disability (string)
+    - critical_info (string)
+    
+    Return ONLY a valid JSON response and nothing else."""
+
+    user_message = f"""Generate a JSON response summarizing at-risk individuals near the fire.
+
+    {person_text}"""
 
     try:
         response = anthropic_client.messages.create(
             model="claude-3-5-sonnet-20241022",
-            max_tokens=200,
+            max_tokens=500,
             system=system_prompt,
             messages=[
                 {"role": "user", "content": user_message}
             ]
         )
-        summary = response.content[0].text
-    except Exception as e:
-        summary = f"Error calling Anthropic API: {str(e)}"
 
-    return {"summary": summary}
+        # Ensure response is formatted correctly
+        if not response.content or not response.content[0].text.strip():
+            return {"error": "Claude returned an empty response."}
+
+        # Try parsing Claude's response into JSON
+        try:
+            structured_summary = json.loads(response.content[0].text)
+        except json.JSONDecodeError:
+            return {"error": "Claude's response was not valid JSON.", "raw_response": response.content[0].text}
+
+    except Exception as e:
+        return {"error": f"Error calling Claude API: {str(e)}"}
+
+    return {"summary": structured_summary}
+
+'''
+geolocator = Nominatim(user_agent="fire_safety_app")
+
+def get_lat_lng(street: str, city: str, state: str, zip_code: str):
+    """
+    Converts an address to latitude and longitude using Nominatim Geocoder.
+    """
+    address = f"{street}, {city}, {state} {zip_code}"
+    
+    try:
+        location = geolocator.geocode(address, timeout=10)
+        if location:
+            return location.latitude, location.longitude
+    except Exception as e:
+        print(f"Geocoding failed for {address}: {e}")
+    
+    return None, None  # If geolocation fails
+
+@app.post("/generate-summary")
+def generate_summary(fire_id: Optional[str] = Query(None)):
+    """
+    Generate a structured summary of at-risk individuals near a fire using Claude.
+    Addresses are converted to lat/lng before distance calculation.
+    """
+
+    # Mock fire location (Replace with real NASA FIRMS data later)
+    fire_location = {
+        "latitude": 40.7128,   # Example: New York City
+        "longitude": -74.0060
+    }
+
+    # Mock at-risk individuals (Replace with Supabase query in production)
+    mock_at_risk_data = [
+        {
+            "name": "John Doe",
+            "street": "20 Cooper Square",
+            "city": "New York",
+            "state": "NY",
+            "zip": "10003",
+            "disability": "Wheelchair user",
+            "critical_info": "Requires assistance with evacuation."
+        },
+        {
+            "name": "Jane Smith",
+            "street": "5002 Mesa Verde Rd",
+            "city": "Charlotte",
+            "state": "NC",
+            "zip": "28277",
+            "disability": "Hearing impairment",
+            "critical_info": "Has service dog."
+        },
+        {
+            "name": "Mike Brown",
+            "street": "47 W 13th St",
+            "city": "New York",
+            "state": "NY",
+            "zip": "10011",
+            "disability": "Blind",
+            "critical_info": "Lives alone."
+        }
+    ]
+
+    # Geocode each address and calculate distance
+    nearby_individuals = []
+    
+    for person in mock_at_risk_data:
+        lat, lng = get_lat_lng(person["street"], person["city"], person["state"], person["zip"])
+        
+        if lat is None or lng is None:
+            continue  # Skip if geolocation fails
+        
+        # Calculate distance from fire
+        person_coords = (lat, lng)
+        fire_coords = (fire_location["latitude"], fire_location["longitude"])
+        distance_miles = geodesic(person_coords, fire_coords).miles
+
+        # Include only if within 5 miles
+        if distance_miles <= 5:
+            person["distance_miles"] = round(distance_miles, 2)
+            nearby_individuals.append(person)
+
+        # Respect API rate limits (if using external services)
+        time.sleep(1)  # Avoid excessive geocoding requests
+
+    # If no one is within 5 miles, return early
+    if not nearby_individuals:
+        return {"summary": "No at-risk individuals within a 5-mile radius."}
+
+    # Create structured input for Claude
+    person_text = "\n".join([
+        f"- {p['name']} at {p['street']}, {p['city']}, {p['state']} ({p['distance_miles']} miles away). "
+        f"Disability: {p.get('disability', 'None')}. Info: {p.get('critical_info', 'N/A')}"
+        for p in sorted(nearby_individuals, key=lambda x: x["distance_miles"])
+    ])
+
+    system_prompt = """You are an emergency response assistant. You must return a structured JSON array of at-risk individuals sorted by distance from a fire.
+    Each object in the JSON array must contain:
+    - name (string)
+    - address (string)
+    - distance_miles (float)
+    - disability (string)
+    - critical_info (string)
+    
+    Return ONLY a valid JSON response and nothing else."""
+
+    user_message = f"""Generate a JSON response summarizing at-risk individuals near the fire.
+
+    {person_text}"""
+
+    try:
+        response = anthropic_client.messages.create(
+            model="claude-3-5-sonnet-20241022",
+            max_tokens=500,
+            system=system_prompt,
+            messages=[
+                {"role": "user", "content": user_message}
+            ]
+        )
+
+        # Ensure response is formatted correctly
+        if not response.content or not response.content[0].text.strip():
+            return {"error": "Claude returned an empty response."}
+
+        # Try parsing Claude's response into JSON
+        try:
+            structured_summary = json.loads(response.content[0].text)
+        except json.JSONDecodeError:
+            return {"error": "Claude's response was not valid JSON.", "raw_response": response.content[0].text}
+
+    except Exception as e:
+        return {"error": f"Error calling Claude API: {str(e)}"}
+
+    return {"summary": structured_summary}
+
+    '''

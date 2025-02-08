@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Input from '@/app/components/form/input';
 import Select from '@/app/components/form/select';
 import Textarea from '@/app/components/form/textarea';
@@ -34,42 +34,48 @@ export default function TestPage() {
     details: ''
   });
   const [errors, setErrors] = useState<Record<string, string>>({});
+  const [fireData, setFireData] = useState<MapPoint[]>([]);
 
-  // Sample map data
-  const center: [number, number] = [34.0522, -118.2437]; // Los Angeles coordinates
-  const samplePoints = [
-    {
-      id: '1',
-      lat: 34.0522,
-      lng: -118.2437,
-      type: 'fire' as const,
-      details: {
-        title: 'Active Fire',
-        description: 'Large brush fire in downtown area',
-        severity: 'high' as const
+  // Fetch fire data from the API
+  useEffect(() => {
+    const fetchFireData = async () => {
+      try {
+        console.log("Fetching fire data...");
+        const response = await fetch("http://127.0.0.1:8000/fires");
+  
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+  
+        const data = await response.json();
+        console.log("Fetched fire data:", data); // ✅ Log raw API response
+  
+        const formattedFires = data.map((fire: any) => ({
+          id: fire.id,
+          lat: fire.latitude,
+          lng: fire.longitude,
+          type: "fire",
+          details: {
+            title: `Fire ${fire.id.substring(0, 4)}`,
+            description: `Confidence: ${fire.confidence}%`,
+            severity:
+              fire.confidence >= 80 ? "high" :
+              fire.confidence >= 50 ? "medium" : "low",
+          },
+        }));
+  
+        console.log("Formatted fire data for map:", formattedFires); // ✅ Log processed data
+  
+        setFireData(formattedFires);
+      } catch (error) {
+        console.error("Error fetching fire data:", error);
       }
-    },
-    {
-      id: '2',
-      lat: 34.0622,
-      lng: -118.2537,
-      type: 'unit' as const,
-      details: {
-        title: 'Fire Unit 7',
-        description: 'Responding unit'
-      }
-    },
-    {
-      id: '3',
-      lat: 34.0422,
-      lng: -118.2337,
-      type: 'resident' as const,
-      details: {
-        title: 'Residential Area',
-        description: 'High-density housing'
-      }
-    }
-  ];
+    };
+  
+    fetchFireData();
+  }, []);
+  
+  
 
   const stateOptions = [
     { value: 'CA', label: 'California' },
@@ -206,12 +212,14 @@ export default function TestPage() {
             Test Map
           </h2>
           <div className="h-[500px] relative">
-            <Map
-              center={center}
-              points={samplePoints}
-              radius={50}
-              onMarkerClick={handleMarkerClick}
-            />
+          <Map
+          center={[34.0522, -118.2437]} // Los Angeles as default center
+          points={fireData} // Use fetched fire data
+          radius={50} // Pass radius properly
+          onMarkerClick={handleMarkerClick}
+          
+          />
+
           </div>
         </div>
 

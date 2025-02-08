@@ -3,7 +3,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { MapContainer, TileLayer, Circle, Marker, Popup, useMap } from 'react-leaflet';
 import 'leaflet/dist/leaflet.css';
-import { MapStyles } from './styles';
 import L from 'leaflet';
 
 interface MapPoint {
@@ -23,7 +22,6 @@ interface MapProps {
   points?: MapPoint[];
   radius?: number; // in miles
   onMarkerClick?: (point: MapPoint) => void;
-  className?: string;
 }
 
 // Component to handle map center changes
@@ -38,7 +36,6 @@ const Map: React.FC<MapProps> = ({
   points = [],
   radius = 50,
   onMarkerClick,
-  className
 }) => {
   const mapRef = useRef(null);
   const [isLoaded, setIsLoaded] = useState(false);
@@ -50,86 +47,98 @@ const Map: React.FC<MapProps> = ({
     setIsLoaded(true);
   }, []);
 
+  // Function to create custom icons dynamically
   const createCustomIcon = (type: MapPoint['type'], severity?: string) => {
-    const color = type === 'fire' 
-      ? (severity === 'high' ? '#ef4444' : severity === 'medium' ? '#f97316' : '#eab308')
-      : type === 'unit' 
-      ? '#3b82f6' 
-      : '#22c55e';
+    const color =
+      type === 'fire'
+        ? severity === 'high'
+          ? '#ef4444'
+          : severity === 'medium'
+          ? '#f97316'
+          : '#eab308'
+        : type === 'unit'
+        ? '#3b82f6'
+        : '#22c55e';
 
     return L.divIcon({
       className: 'custom-marker',
       html: `
         <div style="
           background-color: ${color};
-          width: 24px;
-          height: 24px;
+          width: 20px;
+          height: 20px;
           border-radius: 50%;
           border: 2px solid white;
           box-shadow: 0 2px 4px rgba(0,0,0,0.3);
         "></div>
       `,
-      iconSize: [24, 24],
-      iconAnchor: [12, 12],
-      popupAnchor: [0, -12],
+      iconSize: [20, 20],
+      iconAnchor: [10, 10],
+      popupAnchor: [0, -10],
     });
   };
 
-  if (!isLoaded) return <div className={MapStyles.loading}>Loading map...</div>;
+  if (!isLoaded) return <div>Loading map...</div>;
 
   return (
-    <div className={`${MapStyles.container} ${className || ''}`}>
-      <MapContainer
+    <MapContainer center={center} zoom={10} style={{ height: '500px', width: '100%' }} ref={mapRef}>
+      <ChangeView center={center} />
+
+      <TileLayer
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
+        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+      />
+
+      {/* Radius Circle */}
+      <Circle
         center={center}
-        zoom={10}
-        className={MapStyles.map}
-        ref={mapRef}
-      >
-        <ChangeView center={center} />
-        
-        <TileLayer
-          attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-          url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-        />
+        radius={radiusInMeters}
+        pathOptions={{
+          color: '#ffdbbb',
+          fillColor: '#ffdbbb',
+          fillOpacity: 0.1,
+        }}
+      />
 
-        {/* Radius Circle */}
-        <Circle
-          center={center}
-          radius={radiusInMeters}
-          pathOptions={{ 
-            color: '#ffdbbb',
-            fillColor: '#ffdbbb',
-            fillOpacity: 0.1
+      {/* Map Points */}
+      {points.map((point) => (
+        <Marker
+          key={point.id}
+          position={[point.lat, point.lng]}
+          icon={createCustomIcon(point.type, point.details?.severity)}
+          eventHandlers={{
+            click: () => onMarkerClick?.(point),
           }}
-        />
-
-        {/* Map Points */}
-        {points.map((point) => (
-          <Marker
-            key={point.id}
-            position={[point.lat, point.lng]}
-            icon={createCustomIcon(point.type, point.details?.severity)}
-            eventHandlers={{
-              click: () => onMarkerClick?.(point)
-            }}
-          >
-            {point.details && (
-              <Popup>
-                <div className={MapStyles.popup}>
-                  <h3 className={MapStyles.popupTitle}>{point.details.title}</h3>
-                  <p className={MapStyles.popupDescription}>{point.details.description}</p>
-                  {point.details.severity && (
-                    <span className={`${MapStyles.severity} ${MapStyles[`severity_${point.details.severity}`]}`}>
-                      {point.details.severity.toUpperCase()}
-                    </span>
-                  )}
-                </div>
-              </Popup>
-            )}
-          </Marker>
-        ))}
-      </MapContainer>
-    </div>
+        >
+          {point.details && (
+            <Popup>
+              <div>
+                <h3 style={{ margin: '0', fontWeight: 'bold' }}>{point.details.title}</h3>
+                <p style={{ margin: '5px 0' }}>{point.details.description}</p>
+                {point.details.severity && (
+                  <span
+                    style={{
+                      display: 'inline-block',
+                      padding: '2px 6px',
+                      borderRadius: '5px',
+                      backgroundColor:
+                        point.details.severity === 'high' ? '#ef4444' :
+                        point.details.severity === 'medium' ? '#f97316' :
+                        '#eab308',
+                      color: '#fff',
+                      fontSize: '12px',
+                      fontWeight: 'bold',
+                    }}
+                  >
+                    {point.details.severity.toUpperCase()}
+                  </span>
+                )}
+              </div>
+            </Popup>
+          )}
+        </Marker>
+      ))}
+    </MapContainer>
   );
 };
 

@@ -22,11 +22,11 @@ app = FastAPI()
 # AUTH SCHEMAS (if custom)
 # -------------------------------
 class RegisterUser(BaseModel):
-    username: str
+    email: str
     password: str
 
 class LoginUser(BaseModel):
-    username: str
+    email: str
     password: str
 
 # Optional users table name
@@ -36,6 +36,7 @@ USERS_TABLE = "users"
 # ROLE SCHEMAS
 # -------------------------------
 class AtRisk(BaseModel):
+    user_id: str
     name: str
     email: Optional[str]
     phone: Optional[str]
@@ -49,6 +50,7 @@ class AtRisk(BaseModel):
     additional_info: Optional[str]
 
 class Dispatcher(BaseModel):
+    user_id: str
     name: str
     place_of_work: Optional[str]
     zip: Optional[str]
@@ -57,6 +59,7 @@ class Dispatcher(BaseModel):
     lng: Optional[float]
 
 class FirstResponder(BaseModel):
+    user_id: str
     role: str
     unit_name: str
     street: Optional[str]
@@ -74,26 +77,24 @@ class FirstResponder(BaseModel):
 @app.post("/auth/register")
 def register(user: RegisterUser):
     # Check if user already exists
-    existing = supabase.table(USERS_TABLE).select("*").eq("username", user.username).execute()
+    existing = supabase.table(USERS_TABLE).select("*").eq("email", user.email).execute()
     if existing.data:
         raise HTTPException(status_code=400, detail="Username already taken")
 
     hashed = hash_password(user.password)
-    inserted = supabase.table(USERS_TABLE).insert({"username": user.username, "hashed_password": hashed}).execute()
-    if inserted.error:
-        raise HTTPException(status_code=500, detail=inserted.error.message)
-
+    inserted = supabase.table(USERS_TABLE).insert({"email": user.email, "password": hashed}).execute()
+    
     # Return success
-    return {"message": "User registered successfully"}
+    return {"message": "User registered successfully", "uuid": inserted.data[0]["id"]}
 
 @app.post("/auth/login")
 def login(user: LoginUser):
-    existing = supabase.table(USERS_TABLE).select("*").eq("username", user.username).single().execute()
-    if existing.error or not existing.data:
+    existing = supabase.table(USERS_TABLE).select("*").eq("email", user.email).single().execute()
+    if not existing.data:
         raise HTTPException(status_code=401, detail="User not found")
 
     row = existing.data
-    if not verify_password(user.password, row["hashed_password"]):
+    if not verify_password(user.password, row["password"]):
         raise HTTPException(status_code=401, detail="Incorrect password")
 
     token = create_jwt_token(str(row["id"]))
@@ -162,14 +163,15 @@ def import_fires():
     DAY_RANGE = 5
     DATE = '2025-02-01'
 
-    url = f"https://firms.modaps.eosdis.nasa.gov/api/area/csv/{os.getenv("MAP_KEY")}/{SOURCE}/{AREA_COORDINATES}/{DAY_RANGE}/{DATE}"
+    url = f"https://firms.modaps.eosdis.nasa.gov/api/area/csv/{os.getenv('MAP_KEY')}/{SOURCE}/{AREA_COORDINATES}/{DAY_RANGE}/{DATE}"
     fires = pd.read_csv(url)[["latitude", "longitude", "confidence", "acq_date"]].to_dict(orient="records")
-
+    truncate_response = supabase.rpc("truncate_fires").execute()
+    print("Truncate response:", truncate_response)
     # Insert into Supabase
     result = supabase.table("fires").insert(fires).execute()
-    if result.error:
-        raise HTTPException(status_code=400, detail=result.error.message)
+
     return {"message": "Fires imported", "inserted": len(result.data)}
+
 
 # -------------------------------
 # DISPATCH LOGIC

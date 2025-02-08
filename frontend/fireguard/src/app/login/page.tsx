@@ -43,7 +43,7 @@ export default function LoginPage() {
       const loginResponse = await fetch("http://127.0.0.1:8000/auth/login", {
         method: "POST",
         headers: {
-          "Content-Type": "text/plain",
+          "Content-Type": "application/json",
         },
         body: JSON.stringify(formData)
       });
@@ -68,7 +68,7 @@ export default function LoginPage() {
         case 'dispatcher':
           router.push('/dispatcher/dashboard');
           break;
-        case 'at_risk':
+        case 'resident':
           router.push('/resident/dashboard');
           break;
         case 'first_responder':

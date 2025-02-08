@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Map from "@/app/components/map";
 import Sidebar from "@/app/components/sidebar";
+import Button from "@/app/components/button"; // Adjust the path if necessary
 
 // Define the MapPoint type
 interface MapPoint {
@@ -27,6 +28,7 @@ interface FireData {
 
 // Define the FirstResponder type
 interface FirstResponder {
+    user_id: string;
     role: string;
     unit_name: string;
     distance: number;
@@ -80,7 +82,7 @@ export default function DispatcherDashboard() {
         setShowSidebar(true);
 
         try {
-            const response = await fetch(`http://127.0.0.1:8000/responders-within?fire_id=${point.id}&radius_miles=10`);
+            const response = await fetch(`http://127.0.0.1:8000/responders_within?fire_id=${point.id}&radius_miles=10`);
             if (!response.ok) {
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
@@ -91,6 +93,29 @@ export default function DispatcherDashboard() {
         } catch (error) {
             console.error("Error fetching responders:", error);
             setNearbyResponders([]);
+        }
+    };
+
+    const handleDispatch = async (fire_id: string, responder_id: string) => {
+        try {
+            console.log(`Dispatching responder: ${responder_id}`);
+            const response = await fetch("http://127.0.0.1:8000/dispatch", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    "fire_id": fire_id,
+                    "responder_id": responder_id
+                })
+            });
+            if (!response.ok) {
+                throw new Error(`Failed to dispatch responder. Status: ${response.status}`);
+            }
+
+            console.log(`Responder ${responder_id} dispatched successfully.`);
+        } catch (error) {
+            console.error("Error dispatching responder:", error);
         }
     };
 
@@ -112,12 +137,23 @@ export default function DispatcherDashboard() {
 
                             <h4 className="text-yellow-300 font-bold mt-4">Nearby Responders</h4>
                             {nearbyResponders.length > 0 ? (
-                                <ul className="mt-2">
-                                    {nearbyResponders.map((responder) => (
-                                        <li key={responder.unit_name} className="mt-1 p-2 bg-gray-700 rounded">
-                                            <span className="font-bold">{responder.unit_name}</span>
-                                            <p className="text-sm">Role: {responder.role || "N/A"}</p>
-                                            <p className="text-sm">Distance: {responder.distance} miles</p>
+                                <ul className="mt-2 space-y-2">
+                                    {nearbyResponders.map((responder, index) => (
+                                        <li key={`${responder.unit_name}-${index}`} className="p-3 bg-gray-700 rounded flex flex-col">
+                                            <div>
+                                                <span className="font-bold">{responder.unit_name}</span>
+                                                <p className="text-sm">Role: {responder.role || "N/A"}</p>
+                                                <p className="text-sm">Distance: {responder.distance} miles</p>
+                                            </div>
+                                            <div className="mt-2">
+                                                <Button
+                                                    variant="primary"
+                                                    size="medium"
+                                                    onClick={() => handleDispatch(selectedMarker.id, responder.user_id)}
+                                                >
+                                                    Dispatch
+                                                </Button>
+                                            </div>
                                         </li>
                                     ))}
                                 </ul>

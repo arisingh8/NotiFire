@@ -3,7 +3,7 @@ export const SidebarStyles = {
       fixed
       top-0
       h-full
-      w-250
+      w-96
       bg-gray-800
       border-gray-700
       shadow-xl

@@ -1,6 +1,21 @@
 export const MapStyles = {
-  container: "w-full h-full min-h-[400px] rounded-lg overflow-hidden border border-gray-700 relative z-0", // Added z-0
-  map: "w-full h-full",
+  container: `
+    w-full 
+    h-full 
+    min-h-[400px] 
+    rounded-lg 
+    overflow-hidden 
+    border 
+    border-gray-700 
+    relative 
+    isolate
+  `,
+  map: `
+    w-full 
+    h-full 
+    relative 
+    z-[1]
+  `,
   loading: "w-full h-full flex items-center justify-center bg-gray-800 text-[#ffdbbb] font-[family-name:var(--font-eb-garamond)]",
   popup: "p-3 max-w-xs",
   popupTitle: "text-lg font-bold mb-2 font-[family-name:var(--font-eb-garamond)]",

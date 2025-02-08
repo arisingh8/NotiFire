@@ -5,6 +5,7 @@ from supabase_client import supabase
 from typing import List, Optional
 from pydantic import BaseModel
 from geopy.distance import geodesic
+import pandas as pd
 import os
 
 from anthropic import Anthropic
@@ -156,12 +157,16 @@ def import_fires():
     Example: call NASA FIRMS API, store new records in the 'fires' table.
     In production, you'd do something like below:
     """
-    # Mock data
-    sample_fires = [
-        {"latitude": 34.1, "longitude": -118.2, "confidence": 80, "date_detected": "2025-02-01"},
-        {"latitude": 33.9, "longitude": -117.8, "confidence": 60, "date_detected": "2025-02-05"}
-    ]
-    result = supabase.table("fires").insert(sample_fires).execute()
+    SOURCE = 'MODIS_NRT'
+    AREA_COORDINATES = "world" # "-124.409591,32.534156,-114.131211,42.009518"
+    DAY_RANGE = 5
+    DATE = '2025-02-01'
+
+    url = f"https://firms.modaps.eosdis.nasa.gov/api/area/csv/{os.getenv("MAP_KEY")}/{SOURCE}/{AREA_COORDINATES}/{DAY_RANGE}/{DATE}"
+    fires = pd.read_csv(url)[["latitude", "longitude", "confidence", "acq_date"]].to_dict(orient="records")
+
+    # Insert into Supabase
+    result = supabase.table("fires").insert(fires).execute()
     if result.error:
         raise HTTPException(status_code=400, detail=result.error.message)
     return {"message": "Fires imported", "inserted": len(result.data)}

@@ -2,11 +2,11 @@
 
 import Link from 'next/link';
 import { HeaderStyles } from './styles';
-import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import { useUser } from '@/app/context/UserContext'; // Import the useUser hook
 
 const Header: React.FC = () => {
-  const [userRole, setUserRole] = useState<string | null>(null);
+  const { userRole, setUserRole } = useUser(); // Get userRole and setUserRole from context
   const router = useRouter();
 
   const handleLogout = async () => {
@@ -19,8 +19,8 @@ const Header: React.FC = () => {
       });
 
       if (response.ok) {
-        setUserRole(null);
-        router.push('/login');
+        setUserRole(null); // Clear user role on logout
+        router.push('/login'); // Redirect to login page
       } else {
         console.error('Logout failed');
       }
@@ -28,27 +28,6 @@ const Header: React.FC = () => {
       console.error('Error during logout:', error);
     }
   };
-
-  useEffect(() => {
-    const checkUserRole = async () => {
-      try {
-        const roleResponse = await fetch("http://127.0.0.1:8000/user/role", {
-          method: "GET",
-        });
-
-        if (roleResponse.ok) {
-          const { role } = await roleResponse.json();
-          setUserRole(role);
-        } else {
-          setUserRole(null);
-        }
-      } catch {
-        setUserRole(null);
-      }
-    };
-
-    checkUserRole();
-  }, []);
 
   return (
     <header className={`${HeaderStyles.container} ${HeaderStyles.font}`}>
@@ -61,18 +40,24 @@ const Header: React.FC = () => {
           <div className={HeaderStyles.links}>
             <Link href="/" className={HeaderStyles.link}>
               Home
-            </Link>
-            <Link href="/about" className={HeaderStyles.link}>
-              About
-            </Link>
-            <Link href="/contact" className={HeaderStyles.link}>
-              Contact
-            </Link>
-            {userRole ? (
-              <>
+            </Link>{userRole ? (
+              <>{(() => {
+                  switch (userRole) {
+                    case "resident":
+                      return <Link href="/resident/dashboard" className={HeaderStyles.link}>Dashboard</Link>;
+                    case "dispatcher":
+                      return <Link href="/dispatcher/dashboard" className={HeaderStyles.link}>Dashboard</Link>;
+                    case "first_responder":
+                      return <Link href="/firstresponder/dashboard" className={HeaderStyles.link}>Dashboard</Link>;
+                    default:
+                      return <Link href="/" className={HeaderStyles.link}>Dashboard</Link>;
+                  }
+                })()}
+
                 <Link href="/profile" className={HeaderStyles.link}>
                   Profile
                 </Link>
+                
                 <button onClick={handleLogout} className={HeaderStyles.link}>
                   Log Out
                 </button>
@@ -82,6 +67,13 @@ const Header: React.FC = () => {
                 Log In
               </Link>
             )}
+            <Link href="/about" className={HeaderStyles.link}>
+              About
+            </Link>
+            <Link href="/contact" className={HeaderStyles.link}>
+              Contact
+            </Link>
+            
           </div>
         </div>
       </div>

@@ -3,6 +3,7 @@
 import { useState } from 'react';
 import Modal from '@/app/components/modal';
 import Button from '@/app/components/button';
+import Header from '@/app/sections/header';
 
 export default function RolePage() {
   const [isModalOpen, setIsModalOpen] = useState(true);
@@ -13,35 +14,40 @@ export default function RolePage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-900">
-      <Modal
-        isOpen={isModalOpen}
-        title="Select Your Role"
-      >
-        <div className="flex flex-col gap-6 w-full min-w-[300px] max-w-md p-6">
-          <Button 
-            variant="role-resident" 
-            size="large"
-            onClick={() => handleRoleSelect('resident')}
-          >
-            Resident
-          </Button>
-          <Button 
-            variant="role-manager" 
-            size="large"
-            onClick={() => handleRoleSelect('manager')}
-          >
-            Property Manager
-          </Button>
-          <Button 
-            variant="role-firefighter" 
-            size="large"
-            onClick={() => handleRoleSelect('firefighter')}
-          >
-            Firefighter
-          </Button>
-        </div>
-      </Modal>
+    <div className="min-h-screen flex flex-col bg-gray-900">
+      <Header />
+      
+      {/* Modal */}
+      <div className="flex-1 flex items-center justify-center">
+        <Modal
+          isOpen={isModalOpen}
+          title="Select Your Role"
+        >
+          <div className="flex flex-col gap-6 w-full min-w-[300px] max-w-md p-6">
+            <Button 
+              variant="role-resident" 
+              size="large"
+              onClick={() => handleRoleSelect('resident')}
+            >
+              Resident
+            </Button>
+            <Button 
+              variant="role-manager" 
+              size="large"
+              onClick={() => handleRoleSelect('manager')}
+            >
+              Property Manager
+            </Button>
+            <Button 
+              variant="role-firefighter" 
+              size="large"
+              onClick={() => handleRoleSelect('firefighter')}
+            >
+              Firefighter
+            </Button>
+          </div>
+        </Modal>
+      </div>
     </div>
   );
 }

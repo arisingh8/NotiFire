@@ -13,11 +13,11 @@ export default function RolePage() {
   const handleRoleSelect = (role: string) => {
     console.log(`Selected role: ${role}`);
     if (role === 'resident') {
-      router.push('/resident');
+      router.push('/resident/form');
     } else if (role === 'dispatcher') {
-      router.push('/dispatcher');
+      router.push('/dispatcher/form');
     } else if (role === 'firstresponder') {
-      router.push('/firstresponder');
+      router.push('/firstresponder/form');
     }
     setIsModalOpen(false);
   };

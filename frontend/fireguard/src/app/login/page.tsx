@@ -1,10 +1,11 @@
 "use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import Link from 'next/link';
-import Input from '@/app/components/form/input';
-import Button from '@/app/components/button';
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import Input from "@/app/components/form/input";
+import Button from "@/app/components/button";
+import { useUser } from "@/app/components/UserContext";
 
 interface LoginForm {
   email: string;
@@ -13,77 +14,81 @@ interface LoginForm {
 
 export default function LoginPage() {
   const [formData, setFormData] = useState<LoginForm>({
-    email: '',
-    password: ''
+    email: "",
+    password: "",
   });
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const router = useRouter();
+  const { setUserRole } = useUser();
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
-    // Clear error when user starts typing
     if (error) setError(null);
   };
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    //if (!validateForm()) return;
 
     setIsLoading(true);
     setError(null);
 
     try {
+      // Attempt login
       const loginResponse = await fetch("http://127.0.0.1:8000/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData)
+        body: JSON.stringify(formData),
       });
 
       if (!loginResponse.ok) {
-        throw new Error('Login failed');
+        throw new Error("Login failed");
       }
 
-      // Get user role
+      // After successful login, fetch the user role
       const roleResponse = await fetch("http://127.0.0.1:8000/user/role", {
         method: "GET",
       });
 
       if (!roleResponse.ok) {
-        throw new Error('Failed to fetch user role');
+        throw new Error("Failed to fetch user role");
       }
 
       const { role } = await roleResponse.json();
-      console.log('User role:', role);
+      console.log("User role:", role);
 
-      // Redirect based on role
+      // Update the user role in context so that Header updates immediately
+      setUserRole(role);
+
+      // Redirect based on the role
       switch (role) {
-        case 'dispatcher':
-          router.push('/dispatcher/dashboard');
+        case "dispatcher":
+          router.push("/dispatcher/dashboard");
           break;
-        case 'resident':
-          router.push('/resident/dashboard');
+        case "resident":
+          router.push("/resident/dashboard");
           break;
-        case 'first_responder':
-          router.push('/firstresponder/dashboard');
+        case "first_responder":
+          router.push("/firstresponder/dashboard");
           break;
-        case 'NA':
-          router.push('/');
+        case "NA":
+          router.push("/");
           break;
         default:
-          throw new Error('Invalid user role');
+          throw new Error("Invalid user role");
       }
-    } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : 'Invalid email or password';
-      setError(errorMessage);
+    } catch (err: unknown) { // Use unknown instead of any
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("An unknown error occurred");
+      }
     } finally {
       setIsLoading(false);
     }
@@ -142,17 +147,17 @@ export default function LoginPage() {
               rounded-lg
               font-bold
               transition-opacity
-              ${isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:opacity-90'}
+              ${isLoading ? "opacity-50 cursor-not-allowed" : "hover:opacity-90"}
             `}
           >
-            {isLoading ? 'Signing in...' : 'Sign In'}
+            {isLoading ? "Signing in..." : "Sign In"}
           </Button>
 
           <div className="text-center mt-4">
             <p className="text-gray-400 font-[family-name:var(--font-eb-garamond)]">
-              Don&apos;t have an account?{' '}
-              <Link 
-                href="/signup" 
+              Don&apos;t have an account?{" "}
+              <Link
+                href="/signup"
                 className="text-[#ffdbbb] hover:underline font-[family-name:var(--font-eb-garamond)]"
               >
                 Sign up here

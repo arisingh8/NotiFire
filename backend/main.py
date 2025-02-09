@@ -428,10 +428,12 @@ def generate_summary(fire_id: str = Query(...)):
         distance_miles = distance.distance(person_coords, fire_coords).miles
 
         # Include only if within 5 miles
-        if distance_miles <= 5:
+        if distance_miles <= 20:
+            logger.info(distance_miles)
             person["distance_miles"] = round(distance_miles, 2)
             nearby_individuals.append(person)
 
+    logger.info(nearby_individuals)
     # If no one is nearby, return default summaries
     if not nearby_individuals:
         return {
@@ -462,6 +464,7 @@ def generate_summary(fire_id: str = Query(...)):
     )
 
     try:
+        logger.info(os.getenv("ANTHROPIC_API_KEY"))
         response = anthropic_client.messages.create(
             model="claude-3-5-sonnet-20241022",
             max_tokens=500,

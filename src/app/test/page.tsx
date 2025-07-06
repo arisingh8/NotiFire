@@ -170,7 +170,7 @@ export default function TestPage() {
       <div className="max-w-4xl mx-auto space-y-8">
         {/* Form Section */}
         <div className="bg-gray-800 p-6 rounded-lg shadow-xl">
-          <h2 className="text-2xl text-[#ffdbbb] mb-6 font-[family-name:var(--font-eb-garamond)]">
+          <h2 className="text-2xl text-[#ffdbbb] mb-6 font-(family-name:--font-eb-garamond)">
             Test Form
           </h2>
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -209,7 +209,7 @@ export default function TestPage() {
 
             <button
               type="submit"
-              className="bg-[#ffdbbb] text-gray-900 px-6 py-2 rounded-lg hover:opacity-90 transition-opacity font-[family-name:var(--font-eb-garamond)]"
+              className="bg-[#ffdbbb] text-gray-900 px-6 py-2 rounded-lg hover:opacity-90 transition-opacity font-(family-name:--font-eb-garamond)"
             >
               Submit
             </button>
@@ -218,7 +218,7 @@ export default function TestPage() {
 
         {/* Map Section */}
         <div className="bg-gray-800 p-6 rounded-lg shadow-xl">
-          <h2 className="text-2xl text-[#ffdbbb] mb-6 font-[family-name:var(--font-eb-garamond)]">
+          <h2 className="text-2xl text-[#ffdbbb] mb-6 font-(family-name:--font-eb-garamond)">
             Test Map
           </h2>
           <div className="h-[500px] relative">
@@ -235,7 +235,7 @@ export default function TestPage() {
 
         {/* Alerts Section */}
         <div className="bg-gray-800 p-6 rounded-lg shadow-xl">
-          <h2 className="text-2xl text-[#ffdbbb] mb-6 font-[family-name:var(--font-eb-garamond)]">
+          <h2 className="text-2xl text-[#ffdbbb] mb-6 font-(family-name:--font-eb-garamond)">
             Test Alerts
           </h2>
           <div className="space-y-4">

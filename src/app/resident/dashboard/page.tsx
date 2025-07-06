@@ -98,7 +98,7 @@ export default function ResidentDashboard() {
                     <h3 className="text-red-400 font-bold mb-4">Active Alerts</h3>
                     <div className="p-4 bg-red-900/20 rounded-lg">
                         <h4 className="text-red-400 font-bold mb-2">High Priority</h4>
-                        <p className="font-[family-name:var(--font-eb-garamond)]">
+                        <p className="font-(family-name:--font-eb-garamond)">
                             Active fire reported in your area. Please stay alert and follow evacuation orders if issued.
                         </p>
                     </div>
@@ -112,7 +112,7 @@ export default function ResidentDashboard() {
             >
                 <div className="h-full bg-gray-800 p-6 text-[#ffdbbb]">
                     <h3 className="font-bold mb-4">Recent Notifications</h3>
-                    <div className="font-[family-name:var(--font-eb-garamond)]">
+                    <div className="font-(family-name:--font-eb-garamond)">
                         <p className="mb-2"><span className="font-bold">2:15 PM:</span> New fire unit deployed to your area</p>
                         <p className="mb-2"><span className="font-bold">1:30 PM:</span> Weather warning: High winds expected</p>
                         <p><span className="font-bold">12:45 PM:</span> Daily fire risk assessment updated</p>
@@ -127,7 +127,7 @@ export default function ResidentDashboard() {
             >
                 <div className="h-full bg-gray-800 p-6 text-[#ffdbbb]">
                     <h3 className="font-bold mb-4">Emergency Contacts</h3>
-                    <div className="font-[family-name:var(--font-eb-garamond)]">
+                    <div className="font-(family-name:--font-eb-garamond)">
                         <p className="mb-2">Emergency: 911</p>
                         <p className="mb-2">Local Fire Department: (555) 123-4567</p>
                         <p>Community Emergency Line: (555) 987-6543</p>

@@ -14,7 +14,7 @@ export const DropdownStyles = {
       rounded-lg
       shadow-lg
       py-1
-      font-[family-name:var(--font-eb-garamond)]
+      font-(family-name:--font-eb-garamond)
     `,
     align_left: "left-0",
     align_right: "right-0",

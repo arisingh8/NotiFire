@@ -161,7 +161,7 @@ export default function FirstResponderForm() {
   return (
     <div className="min-h-screen bg-gray-900 p-8">
       <div className="max-w-2xl mx-auto">
-        <h1 className="text-3xl font-bold text-[#ffdbbb] mb-8 font-[family-name:var(--font-eb-garamond)]">
+        <h1 className="text-3xl font-bold text-[#ffdbbb] mb-8 font-(family-name:--font-eb-garamond)">
           First Responder Registration
         </h1>
 

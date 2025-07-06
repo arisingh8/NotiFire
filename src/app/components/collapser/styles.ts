@@ -17,7 +17,7 @@ export const CollapserStyles = {
       hover:bg-gray-700
       transition-colors
       text-[#ffdbbb]
-      font-[family-name:var(--font-eb-garamond)]
+      font-(family-name:--font-eb-garamond)
     `,
   
     title: "text-lg font-semibold",

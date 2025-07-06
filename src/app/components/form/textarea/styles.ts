@@ -1,6 +1,6 @@
 export const TextareaStyles = {
     container: "flex flex-col gap-1.5 w-full",
-    label: "text-[#ffdbbb] font-medium text-sm font-[family-name:var(--font-eb-garamond)]",
+    label: "text-[#ffdbbb] font-medium text-sm font-(family-name:--font-eb-garamond)",
     required: "text-red-500 ml-1",
     textarea: `
       w-full
@@ -20,11 +20,11 @@ export const TextareaStyles = {
       transition-colors
       duration-200
       resize-y
-      font-[family-name:var(--font-eb-garamond)]
+      font-(family-name:--font-eb-garamond)
     `,
     footer: "flex justify-between items-center mt-1",
     error: "border-red-500 focus:ring-red-500",
-    errorText: "text-red-500 text-sm font-[family-name:var(--font-eb-garamond)]",
-    helperText: "text-gray-400 text-sm font-[family-name:var(--font-eb-garamond)]",
-    characterCount: "text-gray-400 text-sm ml-auto font-[family-name:var(--font-eb-garamond)]"
+    errorText: "text-red-500 text-sm font-(family-name:--font-eb-garamond)",
+    helperText: "text-gray-400 text-sm font-(family-name:--font-eb-garamond)",
+    characterCount: "text-gray-400 text-sm ml-auto font-(family-name:--font-eb-garamond)"
   };

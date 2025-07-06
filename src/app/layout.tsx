@@ -39,7 +39,7 @@ export default function RootLayout({
         <UserProvider>
           <AuthProvider>
             <Header />
-            <main className="flex-grow">{children}</main>
+            <main className="grow">{children}</main>
           </AuthProvider>
         </UserProvider>
         <Footer />

@@ -14,12 +14,12 @@ export const MapStyles = {
     w-full 
     h-full 
     relative 
-    z-[1]
+    z-1
   `,
-  loading: "w-full h-full flex items-center justify-center bg-gray-800 text-[#ffdbbb] font-[family-name:var(--font-eb-garamond)]",
+  loading: "w-full h-full flex items-center justify-center bg-gray-800 text-[#ffdbbb] font-(family-name:--font-eb-garamond)",
   popup: "p-3 max-w-xs",
-  popupTitle: "text-lg font-bold mb-2 font-[family-name:var(--font-eb-garamond)]",
-  popupDescription: "text-sm mb-2 font-[family-name:var(--font-eb-garamond)]",
+  popupTitle: "text-lg font-bold mb-2 font-(family-name:--font-eb-garamond)",
+  popupDescription: "text-sm mb-2 font-(family-name:--font-eb-garamond)",
   severity: "px-2 py-1 rounded-full text-xs font-bold",
   severity_low: "bg-yellow-100 text-yellow-800",
   severity_medium: "bg-orange-100 text-orange-800",

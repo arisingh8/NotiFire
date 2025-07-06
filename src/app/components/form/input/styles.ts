@@ -1,6 +1,6 @@
 export const InputStyles = {
     container: "flex flex-col gap-1.5 w-full",
-    label: "text-[#ffdbbb] font-medium text-sm font-[family-name:var(--font-eb-garamond)]",
+    label: "text-[#ffdbbb] font-medium text-sm font-(family-name:--font-eb-garamond)",
     required: "text-red-500 ml-1",
     input: `
       w-full
@@ -18,9 +18,9 @@ export const InputStyles = {
       focus:border-transparent
       transition-colors
       duration-200
-      font-[family-name:var(--font-eb-garamond)]
+      font-(family-name:--font-eb-garamond)
     `,
     error: "border-red-500 focus:ring-red-500",
-    errorText: "text-red-500 text-sm font-[family-name:var(--font-eb-garamond)]",
-    helperText: "text-gray-400 text-sm font-[family-name:var(--font-eb-garamond)]"
+    errorText: "text-red-500 text-sm font-(family-name:--font-eb-garamond)",
+    helperText: "text-gray-400 text-sm font-(family-name:--font-eb-garamond)"
   };

@@ -16,7 +16,7 @@ export const LayoutStyles = {
       backdrop-blur-sm
     `,
     toggleOpen: "left-80",
-    sidebar: "w-80 !fixed", // Override default width
+    sidebar: "w-80 fixed!", // Override default width
     main: `
       min-h-screen
       transition-all

@@ -12,7 +12,7 @@ export default function Home() {
   const { userRole } = useContext(AuthContext);
 
   return (
-    <div className="flex flex-col items-center min-h-screen p-8 pt-24 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-eb-garamond)]">
+    <div className="flex flex-col items-center min-h-screen p-8 pt-24 pb-20 gap-16 sm:p-20 font-(family-name:--font-eb-garamond)">
       
       {/* Hero Section */}
       <Hero />

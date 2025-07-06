@@ -11,7 +11,7 @@ export const SidebarStyles = {
       duration-300
       ease-in-out
       z-40
-      font-[family-name:var(--font-eb-garamond)]
+      font-(family-name:--font-eb-garamond)
     `,
     open: "transform translate-x-0",
     closed: "transform -translate-x-full",

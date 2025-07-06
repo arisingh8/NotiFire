@@ -9,7 +9,7 @@ export const AlertStyles = {
       border
       transition-all
       duration-200
-      font-[family-name:var(--font-eb-garamond)]
+      font-(family-name:--font-eb-garamond)
     `,
     unreadDot: `
       absolute

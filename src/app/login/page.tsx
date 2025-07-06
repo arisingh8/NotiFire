@@ -98,10 +98,10 @@ export default function LoginPage() {
     <div className="min-h-screen bg-gray-900 flex items-center justify-center px-4 overflow-hidden fixed inset-0">
       <div className="w-full max-w-md">
         <div className="text-center mb-8">
-          <h1 className="text-3xl font-bold text-[#ffdbbb] mb-2 font-[family-name:var(--font-eb-garamond)]">
+          <h1 className="text-3xl font-bold text-[#ffdbbb] mb-2 font-(family-name:--font-eb-garamond)">
             Welcome Back
           </h1>
-          <p className="text-gray-400 font-[family-name:var(--font-eb-garamond)]">
+          <p className="text-gray-400 font-(family-name:--font-eb-garamond)">
             Sign in to your account
           </p>
         </div>
@@ -154,11 +154,11 @@ export default function LoginPage() {
           </Button>
 
           <div className="text-center mt-4">
-            <p className="text-gray-400 font-[family-name:var(--font-eb-garamond)]">
+            <p className="text-gray-400 font-(family-name:--font-eb-garamond)">
               Don&apos;t have an account?{" "}
               <Link
                 href="/signup"
-                className="text-[#ffdbbb] hover:underline font-[family-name:var(--font-eb-garamond)]"
+                className="text-[#ffdbbb] hover:underline font-(family-name:--font-eb-garamond)"
               >
                 Sign up here
               </Link>

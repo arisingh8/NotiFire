@@ -15,7 +15,7 @@ export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children
   useEffect(() => {
     const fetchUserRole = async () => {
       try {
-        const response = await fetch("http://127.0.0.1:8000/user/role", {
+        const response = await fetch("/user/role", {
           method: "GET",
         });
         if (response.ok) {

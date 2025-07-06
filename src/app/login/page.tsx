@@ -6,6 +6,7 @@ import Link from "next/link";
 import Input from "@/app/components/form/input";
 import Button from "@/app/components/button";
 import { useUser } from "@/app/context/UserContext";
+import { createClient } from "@/utils/supabase/client";
 
 interface LoginForm {
   email: string;
@@ -38,21 +39,18 @@ export default function LoginPage() {
     setError(null);
 
     try {
-      // Attempt login
-      const loginResponse = await fetch("http://127.0.0.1:8000/auth/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
+      const supabase = createClient();
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: formData.email,
+        password: formData.password,
       });
-
-      if (!loginResponse.ok) {
-        throw new Error("Login failed");
+      
+      if (error) {
+        throw new Error(error.message);
       }
 
       // After successful login, fetch the user role
-      const roleResponse = await fetch("http://127.0.0.1:8000/user/role", {
+      const roleResponse = await fetch("/user/role", {
         method: "GET",
       });
 

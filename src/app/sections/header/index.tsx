@@ -4,6 +4,7 @@ import Link from 'next/link';
 import { HeaderStyles } from './styles';
 import { useRouter } from 'next/navigation';
 import { useUser } from '@/app/context/UserContext'; // Import the useUser hook
+import { createClient } from '@/utils/supabase/client';
 
 const Header: React.FC = () => {
   const { userRole, setUserRole } = useUser(); // Get userRole and setUserRole from context
@@ -11,19 +12,15 @@ const Header: React.FC = () => {
 
   const handleLogout = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:8000/auth/logout", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
-      if (response.ok) {
-        setUserRole(null); // Clear user role on logout
-        router.push('/login'); // Redirect to login page
-      } else {
-        console.error('Logout failed');
+      const supabase = createClient();
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        throw new Error(error.message);
       }
+
+      setUserRole(null); // Clear user role on logout
+      router.push('/login'); // Redirect to login page
+
     } catch (error) {
       console.error('Error during logout:', error);
     }

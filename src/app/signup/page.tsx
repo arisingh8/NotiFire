@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Input from '@/app/components/form/input';
 import Button from '@/app/components/button';
+import { createClient } from '@/utils/supabase/client';
 
 interface SignUpForm {
   email: string;
@@ -56,17 +57,10 @@ export default function SignUpPage() {
     try {
       const { email, password } = formData; // Extract only the necessary fields
   
-      const response = await fetch("http://127.0.0.1:8000/auth/register", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json", // Change to JSON
-        },
-        body: JSON.stringify({ email, password }) // Send only required fields
-      });
-  
-      if (!response.ok) {
-        const responseData = await response.json();
-        throw new Error(responseData.message || "Failed to create account");
+      const supabase = createClient();
+      const { data, error } = await supabase.auth.signUp({ email, password });
+      if (error) {
+        throw new Error(error.message);
       }
   
       router.push('/role'); // Redirect after successful registration

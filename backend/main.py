@@ -16,9 +16,6 @@ from anthropic import Anthropic
 
 anthropic_client = Anthropic(api_key=os.getenv("ANTHROPIC_API_KEY"))
 
-# If using JWT auth:
-from auth import create_jwt_token, decode_jwt_token, hash_password, verify_password
-
 app = FastAPI()
 
 app.add_middleware(

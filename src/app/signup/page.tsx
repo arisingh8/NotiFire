@@ -1,11 +1,10 @@
 "use client";
 
 import { useState } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import Input from '@/app/components/form/input';
 import Button from '@/app/components/button';
-import { createClient } from '@/utils/supabase/client';
+import { signup } from './actions';
 
 interface SignUpForm {
   email: string;
@@ -21,7 +20,6 @@ export default function SignUpPage() {
   });
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement>
@@ -46,36 +44,7 @@ export default function SignUpPage() {
     }
     return true;
   };
-
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-    if (!validateForm()) return;
   
-    setIsLoading(true);
-    setError(null);
-  
-    try {
-      const { email, password } = formData; // Extract only the necessary fields
-  
-      const supabase = createClient();
-      const { data, error } = await supabase.auth.signUp({ email, password });
-      if (error) {
-        throw new Error(error.message);
-      }
-  
-      router.push('/role'); // Redirect after successful registration
-  
-    } catch (error: unknown) {
-      const errorMessage = error instanceof Error ? error.message : "Failed to create account";
-      console.error('Submission error:', errorMessage);
-      setError(errorMessage);
-  } finally {
-      setIsLoading(false);
-  }
-
-  };
-  
-
   return (
     <div className="min-h-screen bg-gray-900 flex items-center justify-center px-4 overflow-hidden fixed inset-0">
       <div className="w-full max-w-md">
@@ -94,7 +63,7 @@ export default function SignUpPage() {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="bg-gray-800 rounded-lg shadow-xl p-8 space-y-6">
+        <form className="bg-gray-800 rounded-lg shadow-xl p-8 space-y-6" action={signup}>
           <Input
             label="Email Address"
             name="email"
@@ -142,7 +111,6 @@ export default function SignUpPage() {
             `}
           >
             {isLoading ? 'Creating Account...' : 'Create Account'}
-            <Link href={"/role"}></Link>
           </Button>
 
           <div className="text-center mt-4">

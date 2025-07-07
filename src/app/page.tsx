@@ -1,16 +1,16 @@
-'use client'
-
-import React, { useContext } from "react";
+import React from "react";
 import Image from "next/image";
 import Hero from "./sections/hero"; // Import Hero
 import Button from "./components/button";
 import Link from "next/link";
-import { AuthContext } from "./context/AuthContext"; // Adjust the path as necessary
+import { getUser } from "@/utils/getUser";
+import { createClient } from "@/utils/supabase/server";
+import { cookies } from "next/headers";
 
-
-export default function Home() {
-  const { userRole } = useContext(AuthContext);
-
+export default async function Home() {
+  const cookieStore = await cookies();
+  const supabase = createClient(cookieStore);
+  const user = await getUser(supabase);
   return (
     <div className="flex flex-col items-center min-h-screen p-8 pt-24 pb-20 gap-16 sm:p-20 font-(family-name:--font-eb-garamond)">
       
@@ -18,8 +18,8 @@ export default function Home() {
       <Hero />
 
       {/* Conditional Rendering Example */}
-      {userRole ? (
-        <p>Welcome back!</p>
+      {user ? (
+        <p>Welcome back, {user.email}!</p>
       ) : (
         <p>You are not logged in.</p>
       )}

@@ -2,7 +2,6 @@
 
 import React, { useState, useEffect } from "react";
 import Map from "@/app/components/map";
-import Sidebar from "@/app/components/sidebar";
 import ResponderSummarySidebar from "@/app/components/sidebar/ResponderSummarySidebar";
 
 // Define the MapPoint type to match the one in Map component

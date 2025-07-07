@@ -1,12 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Input from "@/app/components/form/input";
 import Button from "@/app/components/button";
-import { useUser } from "@/app/context/UserContext";
-import { createClient } from "@/utils/supabase/client";
+import { login } from "./actions";
 
 interface LoginForm {
   email: string;
@@ -20,8 +18,6 @@ export default function LoginPage() {
   });
   const [error, setError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-  const router = useRouter();
-  const { setUserRole } = useUser();
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -30,66 +26,6 @@ export default function LoginPage() {
       [name]: value,
     }));
     if (error) setError(null);
-  };
-
-  const handleSubmit = async (event: React.FormEvent) => {
-    event.preventDefault();
-
-    setIsLoading(true);
-    setError(null);
-
-    try {
-      const supabase = createClient();
-      const { data, error } = await supabase.auth.signInWithPassword({
-        email: formData.email,
-        password: formData.password,
-      });
-      
-      if (error) {
-        throw new Error(error.message);
-      }
-
-      // After successful login, fetch the user role
-      const roleResponse = await fetch("/user/role", {
-        method: "GET",
-      });
-
-      if (!roleResponse.ok) {
-        throw new Error("Failed to fetch user role");
-      }
-
-      const { role } = await roleResponse.json();
-      console.log("User role:", role);
-
-      // Update the user role in context so that Header updates immediately
-      setUserRole(role);
-
-      // Redirect based on the role
-      switch (role) {
-        case "dispatcher":
-          router.push("/dispatcher/dashboard");
-          break;
-        case "resident":
-          router.push("/resident/dashboard");
-          break;
-        case "first_responder":
-          router.push("/firstresponder/dashboard");
-          break;
-        case "NA":
-          router.push("/");
-          break;
-        default:
-          throw new Error("Invalid user role");
-      }
-    } catch (err: unknown) { // Use unknown instead of any
-      if (err instanceof Error) {
-        setError(err.message);
-      } else {
-        setError("An unknown error occurred");
-      }
-    } finally {
-      setIsLoading(false);
-    }
   };
 
   return (
@@ -110,7 +46,7 @@ export default function LoginPage() {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="bg-gray-800 rounded-lg shadow-xl p-8 space-y-6">
+        <form className="bg-gray-800 rounded-lg shadow-xl p-8 space-y-6" action={login}>
           <Input
             label="Email Address"
             name="email"

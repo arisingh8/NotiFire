@@ -13,8 +13,7 @@ interface FirstResponder {
     distance: number;
 }
 
-export default function DispatcherDashboard({ fires }: { fires: MapPoint[] }) {
-    const center: [number, number] = [34.0522, -118.2437]; // Los Angeles coordinates
+export default function DispatcherDashboard({ fires, center }: { fires: MapPoint[], center: [number, number] }) {
     const [selectedMarker, setSelectedMarker] = useState<MapPoint | null>(null);
     const [showSidebar, setShowSidebar] = useState(false);
     const [nearbyResponders, setNearbyResponders] = useState<FirstResponder[]>([]);

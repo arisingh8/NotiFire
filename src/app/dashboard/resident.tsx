@@ -4,8 +4,7 @@ import React, { useState } from 'react';
 import Map, { MapPoint } from '@/app/components/map';
 import Sidebar from '@/app/components/sidebar';
 
-export default function ResidentDashboard({ fires }: { fires: MapPoint[] }) {
-    const center: [number, number] = [34.0522, -118.2437]; // Los Angeles coordinates
+export default function ResidentDashboard({ fires, center }: { fires: MapPoint[], center: [number, number] }) {
     const [showAlerts, setShowAlerts] = useState(false);
     const [showNotifications, setShowNotifications] = useState(false);
     const [showContacts, setShowContacts] = useState(false);

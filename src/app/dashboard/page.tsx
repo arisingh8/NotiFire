@@ -38,7 +38,7 @@ export default async function Dashboard() {
         redirect("/onboarding");
     }
     const fires = await getFires();
-    const center: [number, number] = [34.0522, -118.2437]; // Los Angeles coordinates
+    const center: [number, number] = [userRole.data.lat ?? 34.0522, userRole.data.lng ?? -118.2437];
     const formattedFires: MapPoint[] = fires.map((fire: Fire, index: number) => ({
         id: index,
         lat: fire.latitude,
@@ -51,11 +51,10 @@ export default async function Dashboard() {
             fire.confidence >= 80 ? "high" : fire.confidence >= 50 ? "medium" : "low",
         },
       }));
-    console.log(formattedFires);
     if (userRole.kind === "resident") {
-        return <ResidentDashboard fires={formattedFires} />;
+        return <ResidentDashboard fires={formattedFires} center={center} />;
     } else if (userRole.kind === "dispatcher") {
-        return <DispatcherDashboard fires={formattedFires} />;
+        return <DispatcherDashboard fires={formattedFires} center={center} />;
     } else {
         return <FirstResponderDashboard fires={formattedFires} center={center} />;
     }

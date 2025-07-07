@@ -4,6 +4,7 @@ import { revalidatePath } from "next/cache"
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation"
 import { createClient } from "@/utils/supabase/server";
+import { Database } from "@/utils/supabase/database.types";
 
 export async function submitOnboardingForm(formData: FormData) {
     const cookieStore = await cookies();
@@ -59,7 +60,7 @@ export async function submitOnboardingForm(formData: FormData) {
 
         } else if (userType === 'first_responder') {
             const data = {
-                role: formData.get('role') as string,
+                role: formData.get('role') as Database['public']['Enums']['first_responder_role'],
                 unit_name: formData.get('unit_name') as string,
                 street: formData.get('street') as string,
                 city: formData.get('city') as string,

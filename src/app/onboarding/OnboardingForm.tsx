@@ -2,6 +2,7 @@
 
 import { useState } from 'react';
 import { submitOnboardingForm } from './actions';
+import { Database } from '@/utils/supabase/database.types';
 
 export default function OnboardingForm() {
     const [selectedType, setSelectedType] = useState<string>('');
@@ -67,10 +68,11 @@ export default function OnboardingForm() {
         { value: 'bedridden', label: 'Bedridden' }
     ];
 
-    const firstResponderRoles = [
-        { value: 'EMT', label: 'EMT' },
-        { value: 'Firefighter', label: 'Firefighter' },
-        { value: 'Police', label: 'Police' }
+    const firstResponderRoles: Database['public']['Enums']['first_responder_role'][] = [
+        'EMT',
+        'Firefighter',
+        'Police',
+        'Rescue'
     ];
 
     // Input component styles
@@ -392,9 +394,9 @@ export default function OnboardingForm() {
                                         </label>
                                         <select name="role" required className={inputClasses}>
                                             <option value="">Select your role</option>
-                                            {firstResponderRoles.map(option => (
-                                                <option key={option.value} value={option.value}>
-                                                    {option.label}
+                                            {firstResponderRoles.map((role) => (
+                                                <option key={role} value={role}>
+                                                    {role}
                                                 </option>
                                             ))}
                                         </select>

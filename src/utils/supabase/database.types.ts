@@ -174,7 +174,7 @@ export type Database = {
           created_at: string | null
           lat: number | null
           lng: number | null
-          role: string
+          role: Database["public"]["Enums"]["first_responder_role"]
           state: string | null
           street: string | null
           unit_name: string | null
@@ -187,7 +187,7 @@ export type Database = {
           created_at?: string | null
           lat?: number | null
           lng?: number | null
-          role: string
+          role: Database["public"]["Enums"]["first_responder_role"]
           state?: string | null
           street?: string | null
           unit_name?: string | null
@@ -200,7 +200,7 @@ export type Database = {
           created_at?: string | null
           lat?: number | null
           lng?: number | null
-          role?: string
+          role?: Database["public"]["Enums"]["first_responder_role"]
           state?: string | null
           street?: string | null
           unit_name?: string | null
@@ -225,7 +225,7 @@ export type Database = {
       }
     }
     Enums: {
-      [_ in never]: never
+      first_responder_role: "EMT" | "Firefighter" | "Police" | "Rescue"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -340,6 +340,8 @@ export type CompositeTypes<
 
 export const Constants = {
   public: {
-    Enums: {},
+    Enums: {
+      first_responder_role: ["EMT", "Firefighter", "Police", "Rescue"],
+    },
   },
 } as const

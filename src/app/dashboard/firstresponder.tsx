@@ -3,19 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Map from "@/app/components/map";
 import ResponderSummarySidebar from "@/app/components/sidebar/ResponderSummarySidebar";
-
-// Define the MapPoint type to match the one in Map component
-interface MapPoint {
-  id: string;
-  lat: number;
-  lng: number;
-  type: "fire" | "unit" | "resident";
-  details?: {
-    title: string;
-    description: string;
-    severity?: "low" | "medium" | "high";
-  };
-}
+import { MapPoint } from "@/app/components/map";
 
 interface SummaryData {
   firefighter: string;
@@ -23,46 +11,9 @@ interface SummaryData {
   police: string;
 }
 
-export default function FirstResponderDashboard() {
-  const center: [number, number] = [34.0522, -118.2437]; // Los Angeles coordinates
+export default function FirstResponderDashboard({ fires, center }: { fires: MapPoint[], center: [number, number] }) {
   const [showSummarySidebar, setShowSummarySidebar] = useState(false);
   const [summaryData, setSummaryData] = useState<SummaryData | null>(null);
-  const [fireData, setFireData] = useState<MapPoint[]>([]);
-
-  useEffect(() => {
-    const fetchFireData = async () => {
-      try {
-        console.log("Fetching fire data...");
-        const response = await fetch("http://127.0.0.1:8000/fires");
-
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status: ${response.status}`);
-        }
-
-        const data = await response.json();
-        console.log("Fetched fire data:", data);
-
-        const formattedFires = data.map((fire: any) => ({
-          id: fire.id,
-          lat: fire.latitude,
-          lng: fire.longitude,
-          type: "fire" as const,
-          details: {
-            title: `Fire ${fire.id.substring(0, 4)}`,
-            description: `Confidence: ${fire.confidence}%`,
-            severity:
-              fire.confidence >= 80 ? "high" : fire.confidence >= 50 ? "medium" : "low",
-          },
-        }));
-
-        setFireData(formattedFires);
-      } catch (error) {
-        console.error("Error fetching fire data:", error);
-      }
-    };
-
-    fetchFireData();
-  }, []);
 
   const handleMarkerClick = async (point: MapPoint) => {
     console.log("🔥 Marker clicked:", point);
@@ -90,7 +41,7 @@ export default function FirstResponderDashboard() {
   return (
     <main className="fixed inset-0 w-full h-full">
       <div className="absolute inset-0 w-full h-full">
-        <Map center={center} points={fireData} radius={50} onMarkerClick={handleMarkerClick} />
+        <Map center={center} points={fires} radius={50} onMarkerClick={handleMarkerClick} />
       </div>
 
       <ResponderSummarySidebar

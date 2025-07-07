@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { ModalStyles } from './styles';
+import React from "react";
+import { ModalStyles } from "./styles";
 
 interface ModalProps {
   isOpen: boolean;
@@ -16,7 +16,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, children, title }) => {
     <>
       {/* Backdrop */}
       <div className={ModalStyles.backdrop} />
-      
+
       {/* Modal */}
       <div className={ModalStyles.container}>
         <div className={ModalStyles.content}>

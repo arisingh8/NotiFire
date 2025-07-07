@@ -1,15 +1,15 @@
-import { ButtonHTMLAttributes, ReactNode } from 'react';
+import { ButtonHTMLAttributes, ReactNode } from "react";
 
-export type ButtonVariant = 
-  | 'primary' 
-  | 'secondary' 
-  | 'outline' 
-  | 'ghost'
-  | 'role-resident'    // New role variants
-  | 'role-dispatcher'
-  | 'role-firstresponder';
+export type ButtonVariant =
+  | "primary"
+  | "secondary"
+  | "outline"
+  | "ghost"
+  | "role-resident" // New role variants
+  | "role-dispatcher"
+  | "role-firstresponder";
 
-export type ButtonSize = 'small' | 'medium' | 'large';
+export type ButtonSize = "small" | "medium" | "large";
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;

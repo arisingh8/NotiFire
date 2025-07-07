@@ -1,4 +1,4 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 
 @reference "tailwindcss";
 
@@ -6,7 +6,7 @@
 :root {
   --background: #f8f9fa;
   --foreground: #171717;
-  --primary: #ffdbbb;  /* Light red accent */
+  --primary: #ffdbbb; /* Light red accent */
   --secondary: #0c0d0f; /* Cool gray */
   --muted: #adb5bd;
   --border: #dee2e6;
@@ -16,7 +16,7 @@
   :root {
     --background: #121212;
     --foreground: #f1f3f5;
-    --primary: #ffdbbb;  /* Softer red */
+    --primary: #ffdbbb; /* Softer red */
     --secondary: #868e96;
     --muted: #ced4da;
     --border: #343a40;
@@ -30,7 +30,12 @@ body {
 }
 
 /* 🔺 Headings & Typography */
-h1, h2, h3, h4, h5, h6 {
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
   @apply font-bold text-(--secondary);
 }
 
@@ -94,6 +99,6 @@ footer {
 
 /* Hide scrollbar for IE, Edge and Firefox */
 * {
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
+  -ms-overflow-style: none; /* IE and Edge */
+  scrollbar-width: none; /* Firefox */
 }

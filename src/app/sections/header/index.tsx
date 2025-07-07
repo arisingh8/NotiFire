@@ -1,8 +1,8 @@
-import Link from 'next/link';
-import { HeaderStyles } from './styles';
-import { createClient } from '@/utils/supabase/server';
-import { getUser } from '@/utils/getUser';
-import { cookies } from 'next/headers';
+import Link from "next/link";
+import { HeaderStyles } from "./styles";
+import { createClient } from "@/utils/supabase/server";
+import { getUser } from "@/utils/getUser";
+import { cookies } from "next/headers";
 
 const Header: React.FC = async () => {
   const cookieStore = await cookies();
@@ -20,15 +20,17 @@ const Header: React.FC = async () => {
           <div className={HeaderStyles.links}>
             <Link href="/" className={HeaderStyles.link}>
               Home
-            </Link>{user ? (
-              <><Link href="/dashboard" className={HeaderStyles.link}>
-                Dashboard
-              </Link>
+            </Link>
+            {user ? (
+              <>
+                <Link href="/dashboard" className={HeaderStyles.link}>
+                  Dashboard
+                </Link>
 
                 <Link href="/profile" className={HeaderStyles.link}>
                   Profile
                 </Link>
-                
+
                 <form action="/auth/logout" method="post">
                   <button type="submit" className={HeaderStyles.link}>
                     Log Out
@@ -46,7 +48,6 @@ const Header: React.FC = async () => {
             <Link href="/contact" className={HeaderStyles.link}>
               Contact
             </Link>
-            
           </div>
         </div>
       </div>

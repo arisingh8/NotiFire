@@ -1,19 +1,8 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import Sidebar from '../sidebar';
-import { LayoutStyles } from './styles';
-
-// Import the SidebarItem type from Sidebar component
-interface SidebarItem {
-  label: string;
-  icon?: React.ReactNode;
-  onClick?: () => void;
-  items?: {
-    label: string;
-    onClick: () => void;
-  }[];
-}
+import React, { useState } from "react";
+import Sidebar, { SidebarItem } from "../sidebar";
+import { LayoutStyles } from "./styles";
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -30,9 +19,9 @@ const Layout: React.FC<LayoutProps> = ({ children, sidebarItems }) => {
         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
         className={`
           ${LayoutStyles.toggle}
-          ${isSidebarOpen ? LayoutStyles.toggleOpen : ''}
+          ${isSidebarOpen ? LayoutStyles.toggleOpen : ""}
         `}
-        aria-label={isSidebarOpen ? 'Close sidebar' : 'Open sidebar'}
+        aria-label={isSidebarOpen ? "Close sidebar" : "Open sidebar"}
       >
         <svg
           className={`
@@ -40,7 +29,7 @@ const Layout: React.FC<LayoutProps> = ({ children, sidebarItems }) => {
             h-6 
             transition-transform 
             duration-650
-            ${isSidebarOpen ? 'rotate-180' : ''}
+            ${isSidebarOpen ? "rotate-180" : ""}
           `}
           fill="none"
           stroke="currentColor"
@@ -64,10 +53,12 @@ const Layout: React.FC<LayoutProps> = ({ children, sidebarItems }) => {
       />
 
       {/* Main Content */}
-      <main className={`
+      <main
+        className={`
         ${LayoutStyles.main}
-        ${isSidebarOpen ? LayoutStyles.mainWithSidebar : ''}
-      `}>
+        ${isSidebarOpen ? LayoutStyles.mainWithSidebar : ""}
+      `}
+      >
         {children}
       </main>
     </div>

@@ -1,11 +1,18 @@
-'use client';
+"use client";
 
-import React, { useRef } from 'react';
-import { MapContainer, TileLayer, Circle, Marker, Popup, useMap } from 'react-leaflet';
-import 'leaflet/dist/leaflet.css';
-import L from 'leaflet';
-import { MapStyles } from './styles';
-import { MapPoint } from './index';
+import React, { useRef } from "react";
+import {
+  MapContainer,
+  TileLayer,
+  Circle,
+  Marker,
+  Popup,
+  useMap,
+} from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import L from "leaflet";
+import { MapStyles } from "./styles";
+import { MapPoint } from "./index";
 
 interface LeafletMapProps {
   center: [number, number];
@@ -35,24 +42,24 @@ const LeafletMap: React.FC<LeafletMapProps> = ({
   // Define world bounds that exclude the poles
   const worldBounds = L.latLngBounds(
     L.latLng(-85, -180), // South West (adjusted to avoid Antarctic)
-    L.latLng(85, 180)    // North East (adjusted to avoid Arctic)
+    L.latLng(85, 180), // North East (adjusted to avoid Arctic)
   );
 
   // Function to create custom icons dynamically
-  const createCustomIcon = (type: MapPoint['type'], severity?: string) => {
+  const createCustomIcon = (type: MapPoint["type"], severity?: string) => {
     const color =
-      type === 'fire'
-        ? severity === 'high'
-          ? '#ef4444'
-          : severity === 'medium'
-          ? '#f97316'
-          : '#eab308'
-        : type === 'unit'
-        ? '#3b82f6'
-        : '#22c55e';
+      type === "fire"
+        ? severity === "high"
+          ? "#ef4444"
+          : severity === "medium"
+            ? "#f97316"
+            : "#eab308"
+        : type === "unit"
+          ? "#3b82f6"
+          : "#22c55e";
 
     return L.divIcon({
-      className: 'custom-marker',
+      className: "custom-marker",
       html: `
         <div style="
           background-color: ${color};
@@ -71,9 +78,9 @@ const LeafletMap: React.FC<LeafletMapProps> = ({
 
   return (
     <div className={MapStyles.container}>
-      <MapContainer 
-        center={center} 
-        zoom={10} 
+      <MapContainer
+        center={center}
+        zoom={10}
         className={MapStyles.map}
         ref={mapRef}
         minZoom={3}
@@ -83,7 +90,7 @@ const LeafletMap: React.FC<LeafletMapProps> = ({
         zoomControl={false}
       >
         <ChangeView center={center} />
-        
+
         <TileLayer
           attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
           url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
@@ -96,8 +103,8 @@ const LeafletMap: React.FC<LeafletMapProps> = ({
           center={center}
           radius={radiusInMeters}
           pathOptions={{
-            color: '#ffdbbb',
-            fillColor: '#ffdbbb',
+            color: "#ffdbbb",
+            fillColor: "#ffdbbb",
             fillOpacity: 0.1,
           }}
         />
@@ -115,21 +122,25 @@ const LeafletMap: React.FC<LeafletMapProps> = ({
             {point.details && (
               <Popup>
                 <div>
-                  <h3 style={{ margin: '0', fontWeight: 'bold' }}>{point.details.title}</h3>
-                  <p style={{ margin: '5px 0' }}>{point.details.description}</p>
+                  <h3 style={{ margin: "0", fontWeight: "bold" }}>
+                    {point.details.title}
+                  </h3>
+                  <p style={{ margin: "5px 0" }}>{point.details.description}</p>
                   {point.details.severity && (
                     <span
                       style={{
-                        display: 'inline-block',
-                        padding: '2px 6px',
-                        borderRadius: '5px',
+                        display: "inline-block",
+                        padding: "2px 6px",
+                        borderRadius: "5px",
                         backgroundColor:
-                          point.details.severity === 'high' ? '#ef4444' :
-                          point.details.severity === 'medium' ? '#f97316' :
-                          '#eab308',
-                        color: '#fff',
-                        fontSize: '12px',
-                        fontWeight: 'bold',
+                          point.details.severity === "high"
+                            ? "#ef4444"
+                            : point.details.severity === "medium"
+                              ? "#f97316"
+                              : "#eab308",
+                        color: "#fff",
+                        fontSize: "12px",
+                        fontWeight: "bold",
                       }}
                     >
                       {point.details.severity.toUpperCase()}
@@ -145,4 +156,4 @@ const LeafletMap: React.FC<LeafletMapProps> = ({
   );
 };
 
-export default LeafletMap; 
+export default LeafletMap;

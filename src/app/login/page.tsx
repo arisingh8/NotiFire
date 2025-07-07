@@ -17,7 +17,7 @@ export default function LoginPage() {
     password: "",
   });
   const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, _setIsLoading] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -46,7 +46,10 @@ export default function LoginPage() {
           </div>
         )}
 
-        <form className="bg-gray-800 rounded-lg shadow-xl p-8 space-y-6" action={login}>
+        <form
+          className="bg-gray-800 rounded-lg shadow-xl p-8 space-y-6"
+          action={login}
+        >
           <Input
             label="Email Address"
             name="email"

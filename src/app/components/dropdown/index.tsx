@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import React, { useState, useRef, useEffect } from 'react';
-import { DropdownStyles } from './styles';
+import React, { useState, useRef, useEffect } from "react";
+import { DropdownStyles } from "./styles";
 
 interface DropdownItem {
   label: string;
@@ -13,28 +13,31 @@ interface DropdownItem {
 interface DropdownProps {
   trigger: React.ReactNode;
   items: DropdownItem[];
-  align?: 'left' | 'right';
+  align?: "left" | "right";
   className?: string;
 }
 
 const Dropdown: React.FC<DropdownProps> = ({
   trigger,
   items,
-  align = 'left',
-  className = ''
+  align = "left",
+  className = "",
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(event.target as Node)
+      ) {
         setIsOpen(false);
       }
     };
 
-    document.addEventListener('mousedown', handleClickOutside);
-    return () => document.removeEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
   const handleItemClick = (item: DropdownItem) => {
@@ -45,9 +48,12 @@ const Dropdown: React.FC<DropdownProps> = ({
   };
 
   return (
-    <div className={`${DropdownStyles.container} ${className}`} ref={dropdownRef}>
+    <div
+      className={`${DropdownStyles.container} ${className}`}
+      ref={dropdownRef}
+    >
       {/* Trigger Button */}
-      <div 
+      <div
         onClick={() => setIsOpen(!isOpen)}
         className={DropdownStyles.trigger}
       >
@@ -56,7 +62,9 @@ const Dropdown: React.FC<DropdownProps> = ({
 
       {/* Dropdown Menu */}
       {isOpen && (
-        <div className={`${DropdownStyles.menu} ${DropdownStyles[`align_${align}`]}`}>
+        <div
+          className={`${DropdownStyles.menu} ${DropdownStyles[`align_${align}`]}`}
+        >
           {items.map((item) => (
             <button
               key={item.value}

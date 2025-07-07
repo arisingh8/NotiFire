@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import React from 'react';
+import React from "react";
 
 export default function About() {
   return (
@@ -18,15 +18,15 @@ export default function About() {
         <div className="bg-gray-800 rounded-lg shadow-xl p-8 space-y-6">
           <div className="space-y-4">
             <p className="text-[#ffdbbb] font-(family-name:--font-eb-garamond) text-lg">
-              Notifire is a comprehensive fire safety management system designed to
-              protect communities and save lives.
+              Notifire is a comprehensive fire safety management system designed
+              to protect communities and save lives.
             </p>
-            
+
             <p className="text-[#ffdbbb] font-(family-name:--font-eb-garamond) text-lg">
-              Our mission is to provide cutting-edge technology solutions for fire
-              departments and emergency responders.
+              Our mission is to provide cutting-edge technology solutions for
+              fire departments and emergency responders.
             </p>
-            
+
             <p className="text-[#ffdbbb] font-(family-name:--font-eb-garamond) text-lg">
               With real-time monitoring and advanced analytics, we help make
               informed decisions when every second counts.

@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import Link from 'next/link';
-import { Facebook, Twitter, Instagram } from 'lucide-react';
-import { FooterStyles } from './styles';
+import Link from "next/link";
+import { Facebook, Twitter, Instagram } from "lucide-react";
+import { FooterStyles } from "./styles";
 
 const Footer: React.FC = () => {
   return (
@@ -27,13 +27,25 @@ const Footer: React.FC = () => {
 
           {/* Social Media Icons */}
           <div className={FooterStyles.socialIcons}>
-            <Link href="https://facebook.com" aria-label="Facebook" target="_blank">
+            <Link
+              href="https://facebook.com"
+              aria-label="Facebook"
+              target="_blank"
+            >
               <Facebook size={20} className={FooterStyles.icon} />
             </Link>
-            <Link href="https://twitter.com" aria-label="Twitter" target="_blank">
+            <Link
+              href="https://twitter.com"
+              aria-label="Twitter"
+              target="_blank"
+            >
               <Twitter size={20} className={FooterStyles.icon} />
             </Link>
-            <Link href="https://instagram.com" aria-label="Instagram" target="_blank">
+            <Link
+              href="https://instagram.com"
+              aria-label="Instagram"
+              target="_blank"
+            >
               <Instagram size={20} className={FooterStyles.icon} />
             </Link>
           </div>

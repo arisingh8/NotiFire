@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { ChevronDown, ChevronUp } from 'lucide-react';
-import { CollapserStyles } from './styles';
+import React, { useState } from "react";
+import { ChevronDown, ChevronUp } from "lucide-react";
+import { CollapserStyles } from "./styles";
 
 interface CollapserProps {
   title: string;
@@ -11,11 +11,11 @@ interface CollapserProps {
   className?: string;
 }
 
-export default function Collapser({ 
-  title, 
-  children, 
+export default function Collapser({
+  title,
+  children,
   defaultOpen = false,
-  className = ''
+  className = "",
 }: CollapserProps) {
   const [isOpen, setIsOpen] = useState(defaultOpen);
 
@@ -33,11 +33,9 @@ export default function Collapser({
           <ChevronDown className={CollapserStyles.icon} />
         )}
       </button>
-      
+
       <div className={CollapserStyles.content(isOpen)}>
-        <div className={CollapserStyles.innerContent}>
-          {children}
-        </div>
+        <div className={CollapserStyles.innerContent}>{children}</div>
       </div>
     </div>
   );

@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { AlertStyles } from './styles';
+import React from "react";
+import { AlertStyles } from "./styles";
 
-export type AlertSeverity = 'info' | 'warning' | 'error' | 'success';
+export type AlertSeverity = "info" | "warning" | "error" | "success";
 
 interface AlertProps {
   title: string;
@@ -26,18 +26,20 @@ const Alert: React.FC<AlertProps> = ({
   onRead,
   onDismiss,
   actionLabel,
-  onAction
+  onAction,
 }) => {
   const formatTime = (date: Date) => {
-    return new Intl.DateTimeFormat('en-US', {
-      hour: 'numeric',
-      minute: 'numeric',
-      hour12: true
+    return new Intl.DateTimeFormat("en-US", {
+      hour: "numeric",
+      minute: "numeric",
+      hour12: true,
     }).format(date);
   };
 
   return (
-    <div className={`${AlertStyles.container} ${AlertStyles[severity]} ${isRead ? AlertStyles.read : ''}`}>
+    <div
+      className={`${AlertStyles.container} ${AlertStyles[severity]} ${isRead ? AlertStyles.read : ""}`}
+    >
       {/* Indicator dot */}
       {!isRead && <div className={AlertStyles.unreadDot} />}
 
@@ -53,25 +55,19 @@ const Alert: React.FC<AlertProps> = ({
         {/* Actions */}
         <div className={AlertStyles.actions}>
           {!isRead && onRead && (
-            <button 
-              onClick={onRead}
-              className={AlertStyles.readButton}
-            >
+            <button onClick={onRead} className={AlertStyles.readButton}>
               Mark as Read
             </button>
           )}
 
           {actionLabel && onAction && (
-            <button 
-              onClick={onAction}
-              className={AlertStyles.actionButton}
-            >
+            <button onClick={onAction} className={AlertStyles.actionButton}>
               {actionLabel}
             </button>
           )}
 
           {onDismiss && (
-            <button 
+            <button
               onClick={onDismiss}
               className={AlertStyles.dismissButton}
               aria-label="Dismiss"

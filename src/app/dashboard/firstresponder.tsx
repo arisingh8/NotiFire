@@ -11,7 +11,13 @@ interface SummaryData {
   police: string;
 }
 
-export default function FirstResponderDashboard({ fires, center }: { fires: MapPoint[], center: [number, number] }) {
+export default function FirstResponderDashboard({
+  fires,
+  center,
+}: {
+  fires: MapPoint[];
+  center: [number, number];
+}) {
   const [showSummarySidebar, setShowSummarySidebar] = useState(false);
   const [summaryData, setSummaryData] = useState<SummaryData | null>(null);
 
@@ -22,7 +28,9 @@ export default function FirstResponderDashboard({ fires, center }: { fires: MapP
       console.log("📩 Sending request to generate summary...");
 
       // Use GET method (no need to specify method or headers)
-      const response = await fetch(`http://127.0.0.1:8000/generate-summary?fire_id=${point.id}`);
+      const response = await fetch(
+        `http://127.0.0.1:8000/generate-summary?fire_id=${point.id}`,
+      );
 
       if (!response.ok) {
         throw new Error(`Error generating summary: ${response.status}`);
@@ -41,7 +49,12 @@ export default function FirstResponderDashboard({ fires, center }: { fires: MapP
   return (
     <main className="fixed inset-0 w-full h-full">
       <div className="absolute inset-0 w-full h-full">
-        <Map center={center} points={fires} radius={50} onMarkerClick={handleMarkerClick} />
+        <Map
+          center={center}
+          points={fires}
+          radius={50}
+          onMarkerClick={handleMarkerClick}
+        />
       </div>
 
       <ResponderSummarySidebar

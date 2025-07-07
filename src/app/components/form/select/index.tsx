@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { SelectStyles } from './styles';
+import React, { useState } from "react";
+import { SelectStyles } from "./styles";
 
 interface Option {
   value: string;
@@ -29,24 +29,24 @@ const Select: React.FC<SelectProps> = ({
   error,
   helperText,
   required = false,
-  placeholder = 'Select an option'
+  placeholder = "Select an option",
 }) => {
   const id = React.useId();
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [isOpen, setIsOpen] = useState(false);
 
-  const filteredOptions = options.filter(option =>
-    option.label.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredOptions = options.filter((option) =>
+    option.label.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   const handleSelect = (selectedValue: string) => {
     onChange({
       target: {
         name,
-        value: selectedValue
-      }
+        value: selectedValue,
+      },
     });
-    setSearchTerm('');
+    setSearchTerm("");
     setIsOpen(false);
   };
 
@@ -54,25 +54,25 @@ const Select: React.FC<SelectProps> = ({
     const newValue = e.target.value;
     setSearchTerm(newValue);
     setIsOpen(true);
-    
+
     // Clear the selected value whenever the input changes
     onChange({
       target: {
         name,
-        value: ''
-      }
+        value: "",
+      },
     });
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Backspace' && value) {
+    if (e.key === "Backspace" && value) {
       // Clear both the search term and the selected value
-      setSearchTerm('');
+      setSearchTerm("");
       onChange({
         target: {
           name,
-          value: ''
-        }
+          value: "",
+        },
       });
     }
   };
@@ -81,22 +81,19 @@ const Select: React.FC<SelectProps> = ({
     setTimeout(() => {
       setIsOpen(false);
       if (!value) {
-        setSearchTerm('');
+        setSearchTerm("");
       }
     }, 200);
   };
 
   // Get the display value
-  const displayValue = value 
-    ? options.find(opt => opt.value === value)?.label 
+  const displayValue = value
+    ? options.find((opt) => opt.value === value)?.label
     : searchTerm;
 
   return (
     <div className={SelectStyles.container}>
-      <label 
-        htmlFor={id} 
-        className={SelectStyles.label}
-      >
+      <label htmlFor={id} className={SelectStyles.label}>
         {label}
         {required && <span className={SelectStyles.required}>*</span>}
       </label>
@@ -104,18 +101,18 @@ const Select: React.FC<SelectProps> = ({
       <div className="relative">
         <input
           type="text"
-          value={displayValue || ''}
+          value={displayValue || ""}
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
           onFocus={() => setIsOpen(true)}
           onBlur={handleBlur}
           placeholder={placeholder}
-          className={`${SelectStyles.input} ${error ? SelectStyles.error : ''}`}
+          className={`${SelectStyles.input} ${error ? SelectStyles.error : ""}`}
         />
-        
+
         {isOpen && filteredOptions.length > 0 && (
           <div className={SelectStyles.dropdown}>
-            {filteredOptions.map(option => (
+            {filteredOptions.map((option) => (
               <button
                 key={option.value}
                 type="button"
@@ -130,20 +127,17 @@ const Select: React.FC<SelectProps> = ({
       </div>
 
       {error && (
-        <span 
-          id={`${id}-error`} 
+        <span
+          id={`${id}-error`}
           className={SelectStyles.errorText}
           role="alert"
         >
           {error}
         </span>
       )}
-      
+
       {helperText && !error && (
-        <span 
-          id={`${id}-helper`} 
-          className={SelectStyles.helperText}
-        >
+        <span id={`${id}-helper`} className={SelectStyles.helperText}>
           {helperText}
         </span>
       )}

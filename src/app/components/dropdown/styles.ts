@@ -1,7 +1,7 @@
 export const DropdownStyles = {
-    container: "relative inline-block",
-    trigger: "cursor-pointer",
-    menu: `
+  container: "relative inline-block",
+  trigger: "cursor-pointer",
+  menu: `
       w-full
       absolute
       z-50
@@ -16,9 +16,9 @@ export const DropdownStyles = {
       py-1
       font-(family-name:--font-eb-garamond)
     `,
-    align_left: "left-0",
-    align_right: "right-0",
-    item: `
+  align_left: "left-0",
+  align_right: "right-0",
+  item: `
       w-full
       px-4
       py-2
@@ -31,5 +31,5 @@ export const DropdownStyles = {
       transition-colors
       duration-150
     `,
-    icon: "w-5 h-5"
-  };
+  icon: "w-5 h-5",
+};

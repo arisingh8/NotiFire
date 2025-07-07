@@ -1,9 +1,10 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { TextareaStyles } from './styles';
+import React from "react";
+import { TextareaStyles } from "./styles";
 
-interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
+interface TextareaProps
+  extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
   label: string;
   error?: string;
   helperText?: string;
@@ -20,7 +21,7 @@ const Textarea: React.FC<TextareaProps> = ({
   maxLength,
   showCharacterCount = false,
   className,
-  value = '',
+  value = "",
   ...props
 }) => {
   const id = React.useId();
@@ -28,41 +29,37 @@ const Textarea: React.FC<TextareaProps> = ({
 
   return (
     <div className={TextareaStyles.container}>
-      <label 
-        htmlFor={id} 
-        className={TextareaStyles.label}
-      >
+      <label htmlFor={id} className={TextareaStyles.label}>
         {label}
         {required && <span className={TextareaStyles.required}>*</span>}
       </label>
-      
+
       <textarea
         id={id}
-        className={`${TextareaStyles.textarea} ${error ? TextareaStyles.error : ''} ${className || ''}`}
+        className={`${TextareaStyles.textarea} ${error ? TextareaStyles.error : ""} ${className || ""}`}
         aria-invalid={!!error}
-        aria-describedby={error ? `${id}-error` : helperText ? `${id}-helper` : undefined}
+        aria-describedby={
+          error ? `${id}-error` : helperText ? `${id}-helper` : undefined
+        }
         required={required}
         maxLength={maxLength}
         value={value}
         {...props}
       />
-      
+
       <div className={TextareaStyles.footer}>
         {error && (
-          <span 
-            id={`${id}-error`} 
+          <span
+            id={`${id}-error`}
             className={TextareaStyles.errorText}
             role="alert"
           >
             {error}
           </span>
         )}
-        
+
         {helperText && !error && (
-          <span 
-            id={`${id}-helper`} 
-            className={TextareaStyles.helperText}
-          >
+          <span id={`${id}-helper`} className={TextareaStyles.helperText}>
             {helperText}
           </span>
         )}

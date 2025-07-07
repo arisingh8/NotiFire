@@ -13,7 +13,6 @@ export default async function Home() {
   const user = await getUser(supabase);
   return (
     <div className="flex flex-col items-center min-h-screen p-8 pt-24 pb-20 gap-16 sm:p-20 font-(family-name:--font-eb-garamond)">
-      
       {/* Hero Section */}
       <Hero />
 
@@ -27,11 +26,7 @@ export default async function Home() {
       {/* Get Started Button */}
       <div className="flex justify-center w-full">
         <Link href="/login">
-          <Button 
-            variant="primary" 
-            size="large"
-            className="font-bold"
-          >
+          <Button variant="primary" size="large" className="font-bold">
             Get Started
           </Button>
         </Link>

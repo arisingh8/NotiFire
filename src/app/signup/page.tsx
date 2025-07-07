@@ -1,10 +1,10 @@
 "use client";
 
-import { useState } from 'react';
-import Link from 'next/link';
-import Input from '@/app/components/form/input';
-import Button from '@/app/components/button';
-import { signup } from './actions';
+import { useState } from "react";
+import Link from "next/link";
+import Input from "@/app/components/form/input";
+import Button from "@/app/components/button";
+import { signup } from "./actions";
 
 interface SignUpForm {
   email: string;
@@ -14,25 +14,23 @@ interface SignUpForm {
 
 export default function SignUpPage() {
   const [formData, setFormData] = useState<SignUpForm>({
-    email: '',
-    password: '',
-    confirmPassword: ''
+    email: "",
+    password: "",
+    confirmPassword: "",
   });
   const [error, setError] = useState<string | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, _setIsLoading] = useState(false);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement>
-  ) => {
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [name]: value
+      [name]: value,
     }));
     // Clear error when user starts typing
     if (error) setError(null);
   };
-  
+
   return (
     <div className="min-h-screen bg-gray-900 flex items-center justify-center px-4 overflow-hidden fixed inset-0">
       <div className="w-full max-w-md">
@@ -51,7 +49,10 @@ export default function SignUpPage() {
           </div>
         )}
 
-        <form className="bg-gray-800 rounded-lg shadow-xl p-8 space-y-6" action={signup}>
+        <form
+          className="bg-gray-800 rounded-lg shadow-xl p-8 space-y-6"
+          action={signup}
+        >
           <Input
             label="Email Address"
             name="email"
@@ -95,17 +96,17 @@ export default function SignUpPage() {
               rounded-lg
               font-bold
               transition-opacity
-              ${isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:opacity-90'}'
+              ${isLoading ? "opacity-50 cursor-not-allowed" : "hover:opacity-90"}'
             `}
           >
-            {isLoading ? 'Creating Account...' : 'Create Account'}
+            {isLoading ? "Creating Account..." : "Create Account"}
           </Button>
 
           <div className="text-center mt-4">
             <p className="text-gray-400 font-(family-name:--font-eb-garamond)">
-              Already have an account?{' '}
-              <Link 
-                href="/login" 
+              Already have an account?{" "}
+              <Link
+                href="/login"
                 className="text-[#ffdbbb] hover:underline font-(family-name:--font-eb-garamond)"
               >
                 Sign in here

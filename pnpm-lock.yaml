@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@mapbox/search-js-core':
+        specifier: ^1.2.0
+        version: 1.2.0
       '@supabase/ssr':
         specifier: ^0.6.1
         version: 0.6.1(@supabase/supabase-js@2.50.3)
@@ -289,6 +292,10 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.29':
     resolution: {integrity: sha512-uw6guiW/gcAGPDhLmd77/6lW8QLeiV5RUTsAX46Db6oLhGaVj4lhnPwb184s1bkc8kdVg/+h988dro8GRDpmYQ==}
+
+  '@mapbox/search-js-core@1.2.0':
+    resolution: {integrity: sha512-iUXpAs3tIByzSy6goEoXfT5n4XGTrgnSSc+EA6g4oPBhErlm285aFOhb4aSAZ1bT64eg67KVqv0ODVhizO9h/Q==}
+    engines: {node: '>=12.20.1'}
 
   '@napi-rs/wasm-runtime@0.2.11':
     resolution: {integrity: sha512-9DPkXtvHydrcOsopiYpUgPHpmj0HWZKMUnL2dZqpvC42lsratuBG06V5ipyno0fUek5VlFsNQ+AcFATSrJXgMA==}
@@ -2183,6 +2190,10 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.4
+
+  '@mapbox/search-js-core@1.2.0':
+    dependencies:
+      '@types/geojson': 7946.0.16
 
   '@napi-rs/wasm-runtime@0.2.11':
     dependencies:

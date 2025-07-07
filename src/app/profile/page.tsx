@@ -232,6 +232,7 @@ export default function ProfilePage() {
                     value={editData.data.street || ''}
                     onChange={(e) => handleInputChange('street', e.target.value)}
                     placeholder="Street address"
+                    autoComplete="address-line1"
                   />
                 ) : (
                   <span className={ProfileStyles.value}>{userRole.data.street || 'N/A'}</span>
@@ -245,6 +246,7 @@ export default function ProfilePage() {
                     value={editData.data.city || ''}
                     onChange={(e) => handleInputChange('city', e.target.value)}
                     placeholder="City"
+                    autoComplete="address-level2"
                   />
                 ) : (
                   <span className={ProfileStyles.value}>{userRole.data.city || 'N/A'}</span>
@@ -258,6 +260,7 @@ export default function ProfilePage() {
                     value={editData.data.state || ''}
                     onChange={(e) => handleInputChange('state', e.target.value)}
                     placeholder="State"
+                    autoComplete="address-level1"
                   />
                 ) : (
                   <span className={ProfileStyles.value}>{userRole.data.state || 'N/A'}</span>
@@ -271,6 +274,7 @@ export default function ProfilePage() {
                     value={editData.data.zipcode || ''}
                     onChange={(e) => handleInputChange('zipcode', e.target.value)}
                     placeholder="ZIP code"
+                    autoComplete="postal-code"
                   />
                 ) : (
                   <span className={ProfileStyles.value}>{userRole.data.zipcode || 'N/A'}</span>
@@ -376,6 +380,7 @@ export default function ProfilePage() {
                     value={editData.data.state || ''}
                     onChange={(e) => handleInputChange('state', e.target.value)}
                     placeholder="State"
+                    autoComplete="address-level1"
                   />
                 ) : (
                   <span className={ProfileStyles.value}>{userRole.data.state || 'N/A'}</span>
@@ -389,6 +394,7 @@ export default function ProfilePage() {
                     value={editData.data.zipcode || ''}
                     onChange={(e) => handleInputChange('zipcode', e.target.value)}
                     placeholder="ZIP code"
+                    autoComplete="postal-code"
                   />
                 ) : (
                   <span className={ProfileStyles.value}>{userRole.data.zipcode || 'N/A'}</span>
@@ -492,6 +498,7 @@ export default function ProfilePage() {
                     value={editData.data.street || ''}
                     onChange={(e) => handleInputChange('street', e.target.value)}
                     placeholder="Street address"
+                    autoComplete="address-line1"
                   />
                 ) : (
                   <span className={ProfileStyles.value}>{userRole.data.street || 'N/A'}</span>
@@ -505,6 +512,7 @@ export default function ProfilePage() {
                     value={editData.data.city || ''}
                     onChange={(e) => handleInputChange('city', e.target.value)}
                     placeholder="City"
+                    autoComplete="address-level2"
                   />
                 ) : (
                   <span className={ProfileStyles.value}>{userRole.data.city || 'N/A'}</span>
@@ -518,6 +526,7 @@ export default function ProfilePage() {
                     value={editData.data.state || ''}
                     onChange={(e) => handleInputChange('state', e.target.value)}
                     placeholder="State"
+                    autoComplete="address-level1"
                   />
                 ) : (
                   <span className={ProfileStyles.value}>{userRole.data.state || 'N/A'}</span>
@@ -531,6 +540,7 @@ export default function ProfilePage() {
                     value={editData.data.zipcode || ''}
                     onChange={(e) => handleInputChange('zipcode', e.target.value)}
                     placeholder="ZIP code"
+                    autoComplete="postal-code"
                   />
                 ) : (
                   <span className={ProfileStyles.value}>{userRole.data.zipcode || 'N/A'}</span>

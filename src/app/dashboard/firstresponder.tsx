@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Map from "@/app/components/map";
 import ResponderSummarySidebar from "@/app/components/sidebar/ResponderSummarySidebar";
 import { MapPoint } from "@/app/components/map";

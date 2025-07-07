@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Map, { MapPoint } from "@/app/components/map";
 import Sidebar from "@/app/components/sidebar";
 import Button from "@/app/components/button"; // Adjust the path if necessary

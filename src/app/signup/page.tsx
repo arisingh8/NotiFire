@@ -32,18 +32,6 @@ export default function SignUpPage() {
     // Clear error when user starts typing
     if (error) setError(null);
   };
-
-  const validateForm = (): boolean => {
-    if (formData.password !== formData.confirmPassword) {
-      setError('Passwords do not match');
-      return false;
-    }
-    if (formData.password.length < 8) {
-      setError('Password must be at least 8 characters long');
-      return false;
-    }
-    return true;
-  };
   
   return (
     <div className="min-h-screen bg-gray-900 flex items-center justify-center px-4 overflow-hidden fixed inset-0">

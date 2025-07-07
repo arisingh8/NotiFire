@@ -1,9 +1,8 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import Map, { MapPoint } from '@/app/components/map';
 import Sidebar from '@/app/components/sidebar';
-import { Fire } from './page';
 
 export default function ResidentDashboard({ fires }: { fires: MapPoint[] }) {
     const center: [number, number] = [34.0522, -118.2437]; // Los Angeles coordinates

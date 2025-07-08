@@ -9,6 +9,7 @@ interface Summary {
   police: string;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function isSummary(summary: any): summary is Summary {
   return (
     summary.firefighter &&

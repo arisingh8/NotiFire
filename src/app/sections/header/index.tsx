@@ -31,7 +31,7 @@ const Header: React.FC = async () => {
                   Profile
                 </Link>
 
-                <form action="/auth/logout" method="post">
+                <form action="/api/auth/logout" method="post">
                   <button type="submit" className={HeaderStyles.link}>
                     Log Out
                   </button>

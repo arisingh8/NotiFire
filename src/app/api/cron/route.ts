@@ -28,10 +28,22 @@ export async function GET(request: NextRequest) {
       },
     },
   );
-  const { data: _existingFires, error: existingFiresError } = await supabase.from("fires").delete().lte("created_at", new Date(Date.now() - (parseInt(process.env.FIRE_RETENTION_DAYS!) * 1000 * 60 * 60 * 24)).toISOString());
+  const { data: _existingFires, error: existingFiresError } = await supabase
+    .from("fires")
+    .delete()
+    .lte(
+      "created_at",
+      new Date(
+        Date.now() -
+          parseInt(process.env.FIRE_RETENTION_DAYS!) * 1000 * 60 * 60 * 24,
+      ).toISOString(),
+    );
   if (existingFiresError) {
     console.error("Error deleting existing fires:", existingFiresError);
-    return NextResponse.json({ error: "Error deleting existing fires" }, { status: 500 });
+    return NextResponse.json(
+      { error: "Error deleting existing fires" },
+      { status: 500 },
+    );
   }
 
   const { data, error } = await supabase.from("fires").insert(

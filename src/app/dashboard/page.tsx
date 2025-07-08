@@ -96,20 +96,22 @@ async function getResidents(): Promise<Resident[]> {
     console.error("Error fetching residents:", error);
     return [];
   }
-  return data.map((resident: Database["public"]["Tables"]["at_risk"]["Row"]) => ({
-    name: resident.name,
-    street: resident.street,
-    city: resident.city,
-    state: resident.state,
-    zipcode: resident.zipcode,
-    lat: resident.lat,
-    lng: resident.lng,
-    medical_needs: resident.medical_needs,
-    mobility_status: resident.mobility_status,
-    additional_info: resident.additional_info,
-    phone: resident.phone,
-    distance: 0,
-  }));
+  return data.map(
+    (resident: Database["public"]["Tables"]["at_risk"]["Row"]) => ({
+      name: resident.name,
+      street: resident.street,
+      city: resident.city,
+      state: resident.state,
+      zipcode: resident.zipcode,
+      lat: resident.lat,
+      lng: resident.lng,
+      medical_needs: resident.medical_needs,
+      mobility_status: resident.mobility_status,
+      additional_info: resident.additional_info,
+      phone: resident.phone,
+      distance: 0,
+    }),
+  );
 }
 
 export default async function Dashboard() {

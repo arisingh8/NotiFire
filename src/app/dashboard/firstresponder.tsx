@@ -48,7 +48,7 @@ export default function FirstResponderDashboard({
               : Infinity,
         };
       });
-  
+
       const nearbyResidents = residentsWithDistances.filter((resident) => {
         return resident.distance <= 20;
       });
@@ -58,23 +58,25 @@ export default function FirstResponderDashboard({
         setSummaryData({
           firefighter: "No residents nearby",
           emt: "No residents nearby",
-          police: "No residents nearby"
+          police: "No residents nearby",
         });
         setShowSummarySidebar(true);
         return;
       }
 
       console.log("📩 Sending request to generate summary...");
-      
+
       const summary = await generateSummary(nearbyResidents);
 
       console.log("✅ Summary generated:", summary);
 
-      setSummaryData(summary ?? {
-        firefighter: "No summary available",
-        emt: "No summary available",
-        police: "No summary available"
-      });
+      setSummaryData(
+        summary ?? {
+          firefighter: "No summary available",
+          emt: "No summary available",
+          police: "No summary available",
+        },
+      );
       setShowSummarySidebar(true);
     } catch (error) {
       console.error("❌ Error in handleMarkerClick:", error);

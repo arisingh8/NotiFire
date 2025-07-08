@@ -14,7 +14,7 @@
 - Allows dispatchers to locate nearby first responder units to dispatch them on command in relation to distance of the crisis
 - Allows first responders to recieve accurate AI summaries regarding residents, reducing the time it takes them to assess a crisis situation.
 
-✅ **Real-Time Data** – Integrates NASA FIRMS satellite data, updated via Vercel Cron Jobs
+✅ **Real-Time Data** – Integrates NASA FIRMS satellite data, updated via Vercel Cron Jobs.  
 ✅ **Real-Time Insights** – Provides analytics on notification engagement and effectiveness.  
 ✅ **Seamless Integrations** – Easily integrates with third-party services via APIs.
 
@@ -82,6 +82,6 @@ We welcome contributions! To get started:
 
 ## Contact
 
-For inquiries or collaboration, reach out at tpuvvala@gatech.edu, ari.singh@duke.edu, sli967@gatech.edu, or pingale3@gatech.ede.
+For inquiries or collaboration, reach out at tpuvvala@gatech.edu, ari.singh@duke.edu, sli967@gatech.edu, or pingale3@gatech.edu.
 
 🚀 **Stay notified, stay ahead with NotiFire!** 🔥

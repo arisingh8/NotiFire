@@ -24,6 +24,21 @@ export interface FirstResponder {
   lng: number | null;
 }
 
+export interface Resident {
+  name: string;
+  street: string | null;
+  city: string | null;
+  state: string | null;
+  zipcode: string | null;
+  phone: string | null;
+  distance: number;
+  lat: number | null;
+  lng: number | null;
+  medical_needs: string | null;
+  mobility_status: string | null;
+  additional_info: string | null;
+}
+
 async function getFires(): Promise<MapPoint[]> {
   const cookieStore = await cookies();
   const supabase = createClient(cookieStore);
@@ -52,7 +67,6 @@ async function getFires(): Promise<MapPoint[]> {
       },
     }),
   );
-  console.log(formattedFires);
   return formattedFires;
 }
 
@@ -71,6 +85,30 @@ async function getResponders(): Promise<FirstResponder[]> {
     distance: 0,
     lat: responder.lat,
     lng: responder.lng,
+  }));
+}
+
+async function getResidents(): Promise<Resident[]> {
+  const cookieStore = await cookies();
+  const supabase = createClient(cookieStore);
+  const { data, error } = await supabase.from("at_risk").select("*");
+  if (error) {
+    console.error("Error fetching residents:", error);
+    return [];
+  }
+  return data.map((resident: Database["public"]["Tables"]["at_risk"]["Row"]) => ({
+    name: resident.name,
+    street: resident.street,
+    city: resident.city,
+    state: resident.state,
+    zipcode: resident.zipcode,
+    lat: resident.lat,
+    lng: resident.lng,
+    medical_needs: resident.medical_needs,
+    mobility_status: resident.mobility_status,
+    additional_info: resident.additional_info,
+    phone: resident.phone,
+    distance: 0,
   }));
 }
 
@@ -104,10 +142,12 @@ export default async function Dashboard() {
       />
     );
   } else {
+    const allResidents = getResidents();
     return (
       <FirstResponderDashboard
         formattedFires={formattedFires}
         center={center}
+        allResidents={allResidents}
       />
     );
   }

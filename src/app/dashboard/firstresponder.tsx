@@ -4,6 +4,9 @@ import React, { use, useState } from "react";
 import Map from "@/app/components/map";
 import ResponderSummarySidebar from "@/app/components/sidebar/ResponderSummarySidebar";
 import { MapPoint } from "@/app/components/map";
+import { Resident } from "./page";
+import { convertDistance, getDistance } from "geolib";
+import { generateSummary } from "./actions";
 
 interface SummaryData {
   firefighter: string;
@@ -14,32 +17,64 @@ interface SummaryData {
 export default function FirstResponderDashboard({
   formattedFires,
   center,
+  allResidents,
 }: {
   formattedFires: Promise<MapPoint[]>;
   center: [number, number];
+  allResidents: Promise<Resident[]>;
 }) {
   const [showSummarySidebar, setShowSummarySidebar] = useState(false);
   const [summaryData, setSummaryData] = useState<SummaryData | null>(null);
   const fires = use(formattedFires);
+  const residents = use(allResidents);
   const handleMarkerClick = async (point: MapPoint) => {
     console.log("🔥 Marker clicked:", point);
 
     try {
-      console.log("📩 Sending request to generate summary...");
+      const residentsWithDistances = residents.map((resident) => {
+        return {
+          ...resident,
+          distance:
+            resident.lat && resident.lng
+              ? Math.round(
+                  convertDistance(
+                    getDistance(
+                      { latitude: resident.lat, longitude: resident.lng },
+                      { latitude: point.lat, longitude: point.lng },
+                    ),
+                    "mi",
+                  ),
+                )
+              : Infinity,
+        };
+      });
+  
+      const nearbyResidents = residentsWithDistances.filter((resident) => {
+        return resident.distance <= 20;
+      });
+      console.log(nearbyResidents);
 
-      // Use GET method (no need to specify method or headers)
-      const response = await fetch(
-        `http://127.0.0.1:8000/generate-summary?fire_id=${point.id}`,
-      );
-
-      if (!response.ok) {
-        throw new Error(`Error generating summary: ${response.status}`);
+      if (nearbyResidents.length === 0) {
+        setSummaryData({
+          firefighter: "No residents nearby",
+          emt: "No residents nearby",
+          police: "No residents nearby"
+        });
+        setShowSummarySidebar(true);
+        return;
       }
 
-      const data = await response.json();
-      console.log("✅ Summary generated:", data);
+      console.log("📩 Sending request to generate summary...");
+      
+      const summary = await generateSummary(nearbyResidents);
 
-      setSummaryData(data);
+      console.log("✅ Summary generated:", summary);
+
+      setSummaryData(summary ?? {
+        firefighter: "No summary available",
+        emt: "No summary available",
+        police: "No summary available"
+      });
       setShowSummarySidebar(true);
     } catch (error) {
       console.error("❌ Error in handleMarkerClick:", error);

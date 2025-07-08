@@ -8,22 +8,21 @@
 
 ## Features
 
-✅ **Smart Connection&Filtering** – Role-based sign-up:
+✅ **Smart Connection & Filtering** – Role-based sign-up:
 
 - Allows residents to provide information about themselves and property.
 - Allows dispatchers to locate nearby first responder units to dispatch them on command in relation to distance of the crisis
 - Allows first responders to recieve accurate AI summaries regarding residents, reducing the time it takes them to assess a crisis situation.
 
-✅ **Real-Time Data** – Integrates NASA FIRMS Sattelite Data
+✅ **Real-Time Data** – Integrates NASA FIRMS satellite data, updated via Vercel Cron Jobs
 ✅ **Real-Time Insights** – Provides analytics on notification engagement and effectiveness.  
 ✅ **Seamless Integrations** – Easily integrates with third-party services via APIs.
 
 ## Tech Stack
 
-- **Backend:** FastAPI
-- **AI/ML:** Claude Sonnet 3.5 for Real-time AI Summaries Based on database
+- **Frontend/Backend:** Next.js (Full-stack)
+- **AI/ML:** Gemini 2.5 Flash for Real-time AI Summaries Based on database
 - **Database:** Supabase
-- **Frontend:** Next.js
 
 ## Installation
 
@@ -31,8 +30,8 @@
 
 Ensure you have the following installed:
 
-- Python 3.9+
-- Node.js (if using the frontend)
+- Node.js 18+
+- npm or pnpm
 - Supabase
 
 ### Setup
@@ -44,42 +43,32 @@ Ensure you have the following installed:
    cd notifire
    ```
 
-2. **Set up a virtual environment** (recommended)
+2. **Install dependencies**
 
    ```sh
-   python -m venv venv
-   source venv/bin/activate  # macOS/Linux
-   venv\Scripts\activate  # Windows
+   pnpm install
    ```
 
-3. **Install dependencies**
+3. **Set up environment variables**  
+   Create a `.env.local` file in the root directory and configure:
+
+   ```
+   FIRE_RETENTION_DAYS="3"
+   GEMINI_API_KEY=your_gemini_api_key
+   MAP_KEY=your_nasa_firms_map_key
+   NEXT_PUBLIC_MAPBOX_TOKEN=your_mapbox_token
+   NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+   NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
+   SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
+   ```
+
+4. **Run the application**
 
    ```sh
-   pip install -r requirements.txt
+   pnpm dev
    ```
 
-4. **Set up environment variables**  
-   Create a `.env` file in the root directory and configure:
-
-   ```
-   SUPABASE_URL=your_supabase_url
-   SUPABASE_KEY=your_supabase_key
-   ANTHROPIC_API_KEY =your_anthropic_key
-
-   ```
-
-5. **Run the application**
-
-   ```sh
-   uvicorn app.main:app --reload
-   ```
-
-6. **Run the frontend (if applicable)**
-   ```sh
-   cd frontend
-   npm install
-   npm start
-   ```
+   The application will be available at `http://localhost:3000`
 
 ## Contributing
 

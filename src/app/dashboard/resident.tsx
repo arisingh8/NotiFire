@@ -1,19 +1,20 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, use } from "react";
 import Map, { MapPoint } from "@/app/components/map";
 import Sidebar from "@/app/components/sidebar";
 
 export default function ResidentDashboard({
-  fires,
+  formattedFires,
   center,
 }: {
-  fires: MapPoint[];
+  formattedFires: Promise<MapPoint[]>;
   center: [number, number];
 }) {
   const [showAlerts, setShowAlerts] = useState(false);
   const [showNotifications, setShowNotifications] = useState(false);
   const [showContacts, setShowContacts] = useState(false);
+  const fires = use(formattedFires);
 
   const handleMarkerClick = (point: MapPoint) => {
     console.log("Marker clicked:", point);

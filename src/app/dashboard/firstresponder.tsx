@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { use, useState } from "react";
 import Map from "@/app/components/map";
 import ResponderSummarySidebar from "@/app/components/sidebar/ResponderSummarySidebar";
 import { MapPoint } from "@/app/components/map";
@@ -12,15 +12,15 @@ interface SummaryData {
 }
 
 export default function FirstResponderDashboard({
-  fires,
+  formattedFires,
   center,
 }: {
-  fires: MapPoint[];
+  formattedFires: Promise<MapPoint[]>;
   center: [number, number];
 }) {
   const [showSummarySidebar, setShowSummarySidebar] = useState(false);
   const [summaryData, setSummaryData] = useState<SummaryData | null>(null);
-
+  const fires = use(formattedFires);
   const handleMarkerClick = async (point: MapPoint) => {
     console.log("🔥 Marker clicked:", point);
 

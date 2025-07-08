@@ -5,7 +5,7 @@ import dynamic from "next/dynamic";
 import { MapStyles } from "./styles";
 
 export interface MapPoint {
-  id: number;
+  id: string;
   lat: number;
   lng: number;
   type: "fire" | "unit" | "resident";

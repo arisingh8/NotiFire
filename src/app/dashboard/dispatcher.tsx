@@ -1,23 +1,20 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { use, useState } from "react";
 import Map, { MapPoint } from "@/app/components/map";
 import Sidebar from "@/app/components/sidebar";
 import Button from "@/app/components/button"; // Adjust the path if necessary
-
-// Define the FirstResponder type
-interface FirstResponder {
-  user_id: string;
-  role: string;
-  unit_name: string;
-  distance: number;
-}
+import { convertDistance, getDistance } from "geolib";
+import { createClient } from "@/utils/supabase/client";
+import { FirstResponder } from "@/app/dashboard/page";
 
 export default function DispatcherDashboard({
-  fires,
+  formattedFires,
+  allResponders,
   center,
 }: {
-  fires: MapPoint[];
+  formattedFires: Promise<MapPoint[]>;
+  allResponders: Promise<FirstResponder[]>;
   center: [number, number];
 }) {
   const [selectedMarker, setSelectedMarker] = useState<MapPoint | null>(null);
@@ -25,45 +22,51 @@ export default function DispatcherDashboard({
   const [nearbyResponders, setNearbyResponders] = useState<FirstResponder[]>(
     [],
   );
+  const fires = use(formattedFires);
+  const responders = use(allResponders);
 
   const handleMarkerClick = async (point: MapPoint) => {
     console.log("Marker clicked:", point);
     setSelectedMarker(point);
     setShowSidebar(true);
 
-    try {
-      const response = await fetch(
-        `http://127.0.0.1:8000/responders_within?fire_id=${point.id}&radius_miles=10`,
-      );
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status: ${response.status}`);
-      }
+    const respondersWithDistances = responders.map((responder) => {
+      return {
+        ...responder,
+        distance:
+          responder.lat && responder.lng
+            ? Math.round(
+                convertDistance(
+                  getDistance(
+                    { latitude: responder.lat, longitude: responder.lng },
+                    { latitude: point.lat, longitude: point.lng },
+                  ),
+                  "mi",
+                ),
+              )
+            : Infinity,
+      };
+    });
 
-      const responders = await response.json();
-      console.log("Nearby responders:", responders);
-      setNearbyResponders(responders);
-    } catch (error) {
-      console.error("Error fetching responders:", error);
-      setNearbyResponders([]);
-    }
+    const nearbyResponders = respondersWithDistances.filter((responder) => {
+      return responder.distance <= 100;
+    });
+    console.log("Nearby responders:", nearbyResponders);
+    setNearbyResponders(nearbyResponders);
   };
 
-  const handleDispatch = async (fire_id: number, responder_id: string) => {
+  const handleDispatch = async (fire_id: string, responder_id: string) => {
     try {
-      console.log(`Dispatching responder: ${responder_id}`);
-      const response = await fetch("http://127.0.0.1:8000/dispatch", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          fire_id: fire_id,
-          responder_id: responder_id,
-        }),
+      console.log(`Dispatching responder: ${responder_id} to fire: ${fire_id}`);
+
+      const supabase = createClient();
+      const { error } = await supabase.from("dispatches").insert({
+        fire_id: fire_id,
+        responder_id: responder_id,
       });
-      if (!response.ok) {
+      if (error) {
         throw new Error(
-          `Failed to dispatch responder. Status: ${response.status}`,
+          `Failed to dispatch responder. Status: ${error.message}`,
         );
       }
 
